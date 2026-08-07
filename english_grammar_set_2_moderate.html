@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Grammar Masterclass - Moderate Level (Set 2)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            min-height: 100vh;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        .option-btn {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center left;
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            border-color: #8b5cf6;
+            background-color: #f5f3ff;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+        }
+        .correct-ans {
+            background-color: #ecfdf5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+        .wrong-ans {
+            background-color: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-card w-full max-w-4xl p-6 sm:p-10 relative overflow-hidden flex flex-col min-h-[650px]">
+        
+        <!-- Progress Bar -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-indigo-100">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+
+        <header class="flex justify-between items-center mb-8 mt-2 border-b border-slate-100 pb-6">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-violet-700 to-fuchsia-600 tracking-tight">Grammar Master Set 2</h1>
+                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Moderate Level - 50 MCQs</p>
+            </div>
+            <div class="bg-violet-50 px-5 py-3 rounded-2xl border border-violet-100 text-right shadow-sm">
+                <div class="text-[10px] text-violet-400 font-bold uppercase tracking-widest mb-1">Question</div>
+                <div class="text-2xl font-black text-violet-700 leading-none"><span id="q-number">1</span><span class="text-lg text-violet-300">/50</span></div>
+                <div class="text-xs font-bold text-slate-500 mt-2">Score: <span id="current-score" class="text-slate-800">0</span></div>
+            </div>
+        </header>
+
+        <div id="quiz-area" class="fade-in flex-grow flex flex-col">
+            <div class="mb-6">
+                <span id="topic-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-fuchsia-100 text-fuchsia-700 mb-4 shadow-sm">Topic</span>
+                <h2 id="question-text" class="text-xl sm:text-2xl font-bold text-slate-800 leading-snug">Loading question...</h2>
+            </div>
+
+            <div id="options-grid" class="space-y-3 flex-grow custom-scroll overflow-y-auto pr-2 pb-2">
+                <!-- Buttons rendered via JS -->
+            </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 min-h-[85px]">
+            <div id="feedback-panel" class="w-full sm:w-2/3 hidden p-4 rounded-xl text-sm font-semibold border leading-relaxed"></div>
+            
+            <button id="next-btn" class="hidden w-full sm:w-1/3 px-8 py-4 bg-slate-900 hover:bg-violet-600 text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 whitespace-nowrap text-lg">
+                Next <span class="ml-2">→</span>
+            </button>
+        </div>
+
+        <div id="result-screen" class="hidden text-center py-10 fade-in flex-grow flex flex-col justify-center items-center">
+            <div class="w-24 h-24 bg-gradient-to-tr from-violet-100 to-fuchsia-100 rounded-full flex items-center justify-center mb-6 shadow-inner border-4 border-white">
+                <span class="text-5xl">🎯</span>
+            </div>
+            
+            <h2 class="text-4xl font-extrabold text-slate-800 mb-3 tracking-tight">Set 2 Completed!</h2>
+            <p class="text-slate-500 mb-10 text-lg font-medium">You've successfully tackled the moderate level grammar questions.</p>
+            
+            <div class="grid grid-cols-2 gap-6 w-full max-w-md mb-10">
+                <div class="bg-white p-6 border border-slate-100 rounded-3xl shadow-sm text-center">
+                    <span class="block text-xs text-slate-400 font-bold uppercase tracking-widest mb-2">Final Score</span>
+                    <span class="text-4xl font-black text-slate-800"><span id="final-score">0</span><span class="text-xl text-slate-400">/50</span></span>
+                </div>
+                <div class="bg-slate-900 p-6 rounded-3xl shadow-xl text-center relative overflow-hidden">
+                    <span class="relative block text-xs text-slate-400 font-bold uppercase tracking-widest mb-2">Accuracy</span>
+                    <span id="final-accuracy" class="relative text-4xl font-black text-fuchsia-400">0%</span>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="px-10 py-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white font-bold rounded-xl transition-all shadow-[0_10px_20px_-10px_rgba(139,92,246,0.5)] active:scale-95 text-lg">
+                Retake Set 2
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const grammarData = [
+            // Subject-Verb Agreement & Pronouns (Moderate)
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>Many a man _______ succumbed to this temptation.", options: ["have", "has", "are", "were"], a: 1, exp: "The phrase 'Many a' is always followed by a singular noun and takes a singular verb ('has')." },
+            { topic: "Subject-Verb Agreement", q: "Identify the correct verb:<br>The jury _______ divided in their verdict.", options: ["was", "were", "is", "has been"], a: 1, exp: "When a collective noun (jury) acts individually or shows disagreement, it takes a plural verb ('were')." },
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>Neither the principal nor the teachers _______ allowed to leave early.", options: ["is", "are", "was", "has"], a: 1, exp: "In 'Neither... nor', the verb agrees with the subject closest to it. 'teachers' is plural, so 'are' is correct." },
+            { topic: "Subject-Verb Agreement", q: "Identify the correct verb:<br>He is one of those writers who _______ won universal acclaim.", options: ["has", "have", "is", "was"], a: 1, exp: "The relative pronoun 'who' refers to the antecedent 'writers' (plural), so the verb must be plural ('have')." },
+            { topic: "Pronouns", q: "Fill in the blank:<br>It is I who _______ responsible for this delay.", options: ["is", "am", "are", "was"], a: 1, exp: "The relative pronoun 'who' refers to 'I'. Therefore, the verb must agree with 'I' ('am')." },
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>Every boy and every girl _______ given a certificate.", options: ["were", "are", "was", "have been"], a: 2, exp: "When two singular nouns are joined by 'and' but preceded by 'each' or 'every', they take a singular verb." },
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>The number of attendees _______ steadily increasing.", options: ["is", "are", "were", "have been"], a: 0, exp: "'The number of' denotes a specific quantity and takes a singular verb, unlike 'A number of' which takes a plural verb." },
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>A number of cases _______ been reported today.", options: ["has", "have", "is", "was"], a: 1, exp: "'A number of' means 'many' and always takes a plural verb." },
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>Nothing but trees _______ seen on the island.", options: ["was", "were", "are", "have been"], a: 0, exp: "Sentences beginning with 'Nothing but' take a singular verb, regardless of whether the noun following 'but' is singular or plural." },
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>The manager and owner of the firm _______ dead.", options: ["is", "are", "were", "have been"], a: 0, exp: "When two nouns refer to the same person (indicated by a single article 'The'), a singular verb is used." },
+
+            { topic: "Conditionals", q: "Fill in the blank:<br>I wish I _______ the answer to that tricky question.", options: ["know", "knew", "have known", "will know"], a: 1, exp: "After 'I wish', we use the simple past tense to express a hypothetical or unreal situation in the present." },
+            { topic: "Conditionals", q: "Fill in the blank:<br>If I had known you were coming, I _______ a cake.", options: ["would bake", "will bake", "would have baked", "baked"], a: 2, exp: "This is a Third Conditional (unreal past). Structure: If + Past Perfect, Main clause + would have + V3." },
+            { topic: "Tenses & Moods", q: "Fill in the blank:<br>He orders me around as if he _______ my boss.", options: ["is", "was", "were", "has been"], a: 2, exp: "'As if' expressing an unreal situation takes the subjunctive mood 'were' for all subjects." },
+            { topic: "Tenses", q: "Fill in the blank:<br>By next month, we _______ the bridge construction.", options: ["will complete", "complete", "will have completed", "are completing"], a: 2, exp: "'By next month' indicates an action that will be finished before a certain time in the future. We use Future Perfect (will have + V3)." },
+            { topic: "Conjunctions & Inversion", q: "Fill in the blank:<br>Hardly had I left the house _______ it started raining.", options: ["than", "when", "then", "after"], a: 1, exp: "'Hardly' and 'Scarcely' are correlative conjunctions that are always followed by 'when'." },
+            { topic: "Tenses", q: "Fill in the blank:<br>She _______ in this company since 2015.", options: ["is working", "works", "has been working", "worked"], a: 2, exp: "An action starting in the past and continuing to the present uses the Present Perfect Continuous tense." },
+            { topic: "Tenses & Moods", q: "Fill in the blank:<br>It's high time we _______ for the airport.", options: ["leave", "left", "will leave", "are leaving"], a: 1, exp: "The phrase 'It is (high) time' is followed by a subject and the simple past tense (V2) to indicate something should have been done already." },
+            { topic: "Tenses", q: "Fill in the blank:<br>While I _______ a book, the phone rang suddenly.", options: ["read", "was reading", "had read", "am reading"], a: 1, exp: "For a longer background action interrupted by a shorter action in the past, use the Past Continuous tense." },
+            { topic: "Tenses", q: "Fill in the blank:<br>He _______ out five minutes ago.", options: ["has gone", "went", "had gone", "is going"], a: 1, exp: "Words like 'ago', 'yesterday', and 'last week' specify a definite point in the past, requiring the Simple Past tense." },
+            { topic: "Conditionals", q: "Fill in the blank:<br>If she _______ hard, she will clear the examination.", options: ["will work", "worked", "works", "had worked"], a: 2, exp: "First Conditional (real possibility): If + Simple Present, Main clause + Simple Future." },
+
+            { topic: "Prepositions", q: "Fill in the blank:<br>He parted _______ his friends with a heavy heart.", options: ["with", "from", "by", "of"], a: 1, exp: "You 'part from' a person, but you 'part with' a thing." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>A miser cannot easily part _______ his money.", options: ["from", "with", "by", "for"], a: 1, exp: "You 'part with' a thing (money/possessions), whereas you 'part from' a person." },
+            { topic: "Phrasal Verbs", q: "Fill in the blank:<br>She takes _______ her grandmother in appearance.", options: ["after", "in", "down", "off"], a: 0, exp: "'Take after' means to resemble an older relative in appearance or character." },
+            { topic: "Phrasal Verbs", q: "Fill in the blank:<br>He broke _______ in the middle of his emotional speech.", options: ["out", "into", "down", "up"], a: 2, exp: "'Break down' means to lose control of one's emotions and start crying or stop functioning." },
+            { topic: "Phrasal Verbs", q: "Fill in the blank:<br>His careless attitude brought _______ his eventual ruin.", options: ["in", "about", "up", "out"], a: 1, exp: "'Bring about' means to cause something to happen." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>I am not accustomed _______ working so late at night.", options: ["for", "with", "to", "in"], a: 2, exp: "The adjective 'accustomed' is followed by the preposition 'to'." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>The orphans were deprived _______ their rightful inheritance.", options: ["from", "of", "with", "by"], a: 1, exp: "The verb 'deprive' is always followed by the preposition 'of'." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>You must comply _______ the rules of the institution.", options: ["to", "by", "with", "in"], a: 2, exp: "We 'comply with' rules, regulations, or requests (meaning to obey or adhere to them)." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>He was honorably acquitted _______ all charges.", options: ["from", "of", "by", "with"], a: 1, exp: "The legal term 'acquitted' (cleared of charges) takes the preposition 'of'." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>The teacher was annoyed _______ the student's rude behavior.", options: ["with", "at", "on", "by"], a: 1, exp: "You are annoyed 'with' a person, but annoyed 'at' a thing or a behavior." },
+
+            { topic: "Question Tags", q: "Fill in the blank:<br>Let's go for a walk, _______?", options: ["will we", "shall we", "don't we", "aren't we"], a: 1, exp: "Sentences beginning with 'Let us' or 'Let's' always take the question tag 'shall we?'" },
+            { topic: "Question Tags", q: "Fill in the blank:<br>Few people knew the answer, _______?", options: ["didn't they", "did they", "don't they", "do they"], a: 1, exp: "'Few' has a negative meaning. Therefore, the question tag must be positive: 'did they?'" },
+            { topic: "Parallelism", q: "Fill in the blank to maintain parallel structure:<br>He enjoys swimming, reading, and _______.", options: ["to write", "writes", "writing", "written"], a: 2, exp: "Parallel structure requires items in a list to be in the same grammatical form (gerunds: swimming, reading, writing)." },
+            { topic: "Modifiers", q: "Complete the sentence correctly:<br>Walking along the road, _______.", options: ["a car hit him", "a dog bit him", "the wind blew hard", "he saw a beautiful bird"], a: 3, exp: "To avoid a dangling modifier, the subject of the main clause ('he') must be the one doing the action in the participle phrase ('walking')." },
+            { topic: "Determiners", q: "Fill in the blank:<br>I have _______ friends in this new city, so I feel quite lonely.", options: ["a few", "few", "the few", "some"], a: 1, exp: "'Few' means almost none and carries a negative meaning, which aligns with feeling lonely." },
+            { topic: "Adjectives", q: "Fill in the blank:<br>Of the two brothers, he is the _______.", options: ["tallest", "taller", "most tall", "more taller"], a: 1, exp: "When comparing exactly two people or things, the comparative degree ('taller') preceded by 'the' is used." },
+            { topic: "Conjunctions", q: "Fill in the blank:<br>No sooner did the bell ring _______ the students rushed out.", options: ["when", "then", "than", "but"], a: 2, exp: "The correlative conjunction 'No sooner' is always paired with 'than'." },
+            { topic: "Conjunctions", q: "Fill in the blank:<br>Walk carefully lest you _______ fall.", options: ["should", "would", "may", "will"], a: 0, exp: "The conjunction 'lest' (meaning 'to avoid the risk of') is traditionally followed by 'should' or the base form of the verb." },
+            { topic: "Adverbs", q: "Fill in the blank:<br>He is too weak _______ walk.", options: ["for", "to", "that", "and"], a: 1, exp: "The structure is 'too + adjective + to-infinitive' (too weak to walk)." },
+            { topic: "Conjunctions", q: "Fill in the blank:<br>I would rather die _______ beg.", options: ["to", "than", "from", "then"], a: 1, exp: "'Would rather' is used to express preference and is followed by the conjunction 'than'." },
+
+            { topic: "Active/Passive Voice", q: "Change into Passive Voice:<br>They elected him chairman.", options: ["He is elected chairman by them.", "He was elected chairman by them.", "Chairman was elected to him.", "He has been elected chairman."], a: 1, exp: "Simple Past (elected) changes to 'was/were + V3' (was elected). 'Him' becomes the subject 'He'." },
+            { topic: "Active/Passive Voice", q: "Change into Passive Voice:<br>One must keep one's promises.", options: ["Promises must be kept by one.", "Promises must be kept.", "One's promises are kept.", "Promises have to be kept."], a: 1, exp: "When the subject is vague ('One', 'People'), it is omitted in the passive voice. 'Must keep' becomes 'must be kept'." },
+            { topic: "Active/Passive Voice", q: "Change into Passive Voice:<br>It is time to close the shop.", options: ["It is time that the shop is closed.", "It is time for the shop to be closed.", "The shop is time to be closed.", "It is time to be closing the shop."], a: 1, exp: "Sentences starting with 'It is time to + V1' change to 'It is time + for + object + to be + V3'." },
+            { topic: "Active/Passive Voice", q: "Change into Passive Voice:<br>Who taught you grammar?", options: ["By whom you were taught grammar?", "By whom were you taught grammar?", "Whom were you taught grammar by?", "Who was taught grammar to you?"], a: 1, exp: "'Who' changes to 'By whom' followed by the auxiliary verb (were) + subject (you) + V3 (taught)." },
+            { topic: "Active/Passive Voice", q: "Change into Passive Voice:<br>People say that he is a spy.", options: ["It is said that he is a spy.", "He is said that he is a spy.", "It was said that he is a spy.", "People are saying he is a spy."], a: 0, exp: "General statements starting with 'People say/believe' change to 'It is said/believed that...' or 'He is said to be...'." },
+            { topic: "Direct/Indirect Speech", q: "Change into Indirect Speech:<br>He said, 'May God bless you!'", options: ["He said that God may bless me.", "He prayed that God might bless me.", "He wished that God may bless you.", "He told that God might bless me."], a: 1, exp: "Optative sentences (wishes/prayers) use reporting verbs like 'prayed' or 'wished'. 'May' changes to 'might'." },
+            { topic: "Direct/Indirect Speech", q: "Change into Indirect Speech:<br>The judge said, 'Call the first witness.'", options: ["The judge requested to call the first witness.", "The judge commanded them to call the first witness.", "The judge said to call the first witness.", "The judge ordered that the first witness is called."], a: 1, exp: "Imperative sentences expressing a command use reporting verbs like 'commanded' or 'ordered', followed by 'to + V1'." },
+            { topic: "Direct/Indirect Speech", q: "Change into Indirect Speech:<br>She said, 'Let us go for a picnic.'", options: ["She said that let's go for a picnic.", "She proposed that they should go for a picnic.", "She asked to go for a picnic.", "She told that we should go for a picnic."], a: 1, exp: "Sentences starting with 'Let us' expressing a suggestion use reporting verbs like 'proposed' or 'suggested' + that + they/we should." },
+            { topic: "Direct/Indirect Speech", q: "Change into Indirect Speech:<br>He said, 'What a beautiful sight!'", options: ["He exclaimed with joy that it was a very beautiful sight.", "He said that what a beautiful sight it was.", "He exclaimed that it is a beautiful sight.", "He asked what a beautiful sight."], a: 0, exp: "Exclamatory sentences use 'exclaimed with joy/sorrow/surprise'. The sentence structure becomes assertive (It was a very beautiful sight)." },
+            { topic: "Direct/Indirect Speech", q: "Change into Indirect Speech:<br>The stranger asked, 'Where do you live?'", options: ["The stranger asked where did I live.", "The stranger inquired where I lived.", "The stranger asked where do I live.", "The stranger inquired where I live."], a: 1, exp: "In interrogative sentences starting with a Wh-word, the Wh-word acts as the conjunction. The sentence becomes assertive (Subject + Verb: I lived)." }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let answerLocked = false;
+
+        const topicBadge = document.getElementById('topic-badge');
+        const qText = document.getElementById('question-text');
+        const qNumber = document.getElementById('q-number');
+        const optionsGrid = document.getElementById('options-grid');
+        const feedbackPanel = document.getElementById('feedback-panel');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreDisplay = document.getElementById('current-score');
+        const quizArea = document.getElementById('quiz-area');
+
+        function loadQuestion() {
+            answerLocked = false;
+            nextBtn.classList.add('hidden');
+            feedbackPanel.classList.add('hidden');
+            
+            // Re-trigger animation
+            quizArea.classList.remove('fade-in');
+            void quizArea.offsetWidth;
+            quizArea.classList.add('fade-in');
+
+            const qData = grammarData[currentIdx];
+            
+            topicBadge.innerText = qData.topic;
+            qText.innerHTML = qData.q;
+            qNumber.innerText = currentIdx + 1;
+            progressBar.style.width = `${(currentIdx / grammarData.length) * 100}%`;
+            
+            optionsGrid.innerHTML = '';
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full p-4 rounded-2xl border-2 border-slate-200 bg-white text-left font-bold text-slate-700 flex items-center gap-4 group";
+                btn.innerHTML = `
+                    <span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-sm font-black group-hover:bg-violet-100 group-hover:text-violet-700 transition-colors shrink-0 shadow-sm border border-slate-200 group-hover:border-violet-200">
+                        ${String.fromCharCode(65 + idx)}
+                    </span>
+                    <span class="text-base sm:text-lg">${opt}</span>
+                `;
+                btn.onclick = () => selectOption(idx, btn);
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            if (answerLocked) return;
+            answerLocked = true;
+
+            const qData = grammarData[currentIdx];
+            const correctIndex = qData.a;
+            const allBtns = optionsGrid.querySelectorAll('button');
+
+            allBtns.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.add('opacity-70', 'cursor-not-allowed');
+                
+                if (idx === correctIndex) {
+                    btn.classList.remove('opacity-70', 'border-slate-200');
+                    btn.classList.add('correct-ans', 'opacity-100', 'shadow-md');
+                    btn.querySelector('span').classList.add('bg-emerald-200', 'text-emerald-800', 'border-emerald-300');
+                    btn.querySelector('span').classList.remove('bg-slate-100', 'text-slate-500');
+                }
+            });
+
+            feedbackPanel.classList.remove('hidden');
+
+            if (selectedIndex === correctIndex) {
+                score++;
+                scoreDisplay.innerText = score;
+                feedbackPanel.className = 'w-full sm:w-2/3 p-4 rounded-xl text-sm font-semibold border bg-emerald-50 text-emerald-800 border-emerald-200 fade-in';
+                feedbackPanel.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl leading-none mt-1">✨</span>
+                        <div>
+                            <span class="block font-black mb-1 text-emerald-900 tracking-wide uppercase text-xs">Correct</span>
+                            <span class="font-medium text-emerald-800 leading-snug">${qData.exp}</span>
+                        </div>
+                    </div>`;
+            } else {
+                selectedBtn.classList.remove('opacity-70', 'border-slate-200');
+                selectedBtn.classList.add('wrong-ans', 'opacity-100', 'shadow-md');
+                selectedBtn.querySelector('span').classList.add('bg-red-200', 'text-red-800', 'border-red-300');
+                
+                feedbackPanel.className = 'w-full sm:w-2/3 p-4 rounded-xl text-sm font-semibold border bg-rose-50 text-rose-800 border-rose-200 fade-in';
+                feedbackPanel.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl leading-none mt-1">💡</span>
+                        <div>
+                            <span class="block font-black mb-1 text-rose-900 tracking-wide uppercase text-xs">Incorrect</span>
+                            <span class="font-medium text-rose-800 leading-snug">${qData.exp}</span>
+                        </div>
+                    </div>`;
+            }
+
+            nextBtn.classList.remove('hidden');
+            if (currentIdx === grammarData.length - 1) {
+                nextBtn.innerHTML = `View Results <span class="ml-2">🏆</span>`;
+            }
+        }
+
+        nextBtn.onclick = () => {
+            if (currentIdx < grammarData.length - 1) {
+                currentIdx++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            quizArea.classList.add('hidden');
+            document.querySelector('header').classList.add('hidden');
+            nextBtn.parentElement.classList.add('hidden');
+            
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.classList.remove('hidden');
+            
+            document.getElementById('final-score').innerText = score;
+            
+            const accuracy = Math.round((score / grammarData.length) * 100);
+            
+            let currentAcc = 0;
+            const interval = setInterval(() => {
+                if (currentAcc >= accuracy) {
+                    clearInterval(interval);
+                    document.getElementById('final-accuracy').innerText = `${accuracy}%`;
+                } else {
+                    currentAcc += (accuracy > 50 ? 2 : 1);
+                    document.getElementById('final-accuracy').innerText = `${Math.min(currentAcc, accuracy)}%`;
+                }
+            }, 25);
+        }
+
+        // Initialize App
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>

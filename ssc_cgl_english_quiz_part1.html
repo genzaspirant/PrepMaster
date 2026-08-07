@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC CGL English Comprehension Quiz Master</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            min-height: 100vh;
+            color: #334155;
+        }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-btn:hover:not(.disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-color: #6366f1;
+        }
+        .correct {
+            background-color: #d1fae5 !important;
+            color: #065f46 !important;
+            border-color: #10b981 !important;
+        }
+        .wrong {
+            background-color: #fee2e2 !important;
+            color: #991b1b !important;
+            border-color: #ef4444 !important;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .topic-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #ede9fe;
+            color: #6d28d9;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4 sm:p-8">
+
+    <div class="max-w-3xl w-full glass-morphism rounded-3xl shadow-2xl p-6 md:p-10 relative overflow-hidden flex flex-col min-h-[500px]">
+        <!-- Progress Bar -->
+        <div class="absolute top-0 left-0 h-1.5 bg-indigo-100 w-full">
+            <div id="progress-bar" class="h-full bg-indigo-600 transition-all duration-500" style="width: 0%"></div>
+        </div>
+
+        <!-- Quiz Header -->
+        <div class="flex justify-between items-center mb-6 mt-2">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800 tracking-tight">CGL English Mock Test</h1>
+                <p class="text-sm text-slate-500 font-medium mt-1">Based on Latest Syllabus</p>
+            </div>
+            <div class="text-right flex flex-col items-end">
+                <div class="flex items-baseline gap-1">
+                    <span id="q-counter" class="text-2xl font-bold text-indigo-600">1</span>
+                    <span class="text-sm font-semibold text-slate-400">/50</span>
+                </div>
+                <p id="score-display" class="text-xs font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-md mt-1">Score: 0</p>
+            </div>
+        </div>
+
+        <!-- Question Section -->
+        <div id="quiz-content" class="fade-in flex-grow flex flex-col">
+            <span id="topic-tag" class="topic-badge">Topic Loading...</span>
+            <div id="question-text" class="text-lg md:text-xl font-semibold text-slate-700 leading-relaxed mb-6">
+                Loading question...
+            </div>
+
+            <div id="options-container" class="space-y-3 flex-grow">
+                <!-- Buttons injected by JS -->
+            </div>
+        </div>
+
+        <!-- Feedback & Next Button -->
+        <div class="mt-8 flex flex-col md:flex-row items-center justify-between gap-4 min-h-[50px]">
+            <p id="feedback" class="text-sm font-semibold flex-grow text-center md:text-left"></p>
+            <button id="next-btn" class="hidden w-full md:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-indigo-500/30 active:scale-95 whitespace-nowrap">
+                Next Question →
+            </button>
+        </div>
+
+        <!-- Results Screen (Hidden) -->
+        <div id="result-screen" class="hidden text-center py-8 fade-in flex-grow flex flex-col justify-center">
+            <div class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-white shadow-sm">
+                <svg class="w-12 h-12 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+            </div>
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">Test Completed!</h2>
+            <p class="text-slate-500 mb-8">Here is your performance summary for the English section.</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-8 text-left max-w-sm mx-auto w-full">
+                <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-2xl text-center">
+                    <span class="block text-xs text-indigo-400 uppercase tracking-widest font-bold mb-1">Accuracy</span>
+                    <span id="final-accuracy" class="text-3xl font-black text-indigo-700">0%</span>
+                </div>
+                <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl text-center">
+                    <span class="block text-xs text-slate-400 uppercase tracking-widest font-bold mb-1">Total Score</span>
+                    <span id="final-score" class="text-3xl font-black text-slate-700">0</span>
+                    <span class="text-sm font-bold text-slate-400">/ 50</span>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="mx-auto w-full max-w-sm py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-2xl transition-all shadow-xl shadow-slate-200">
+                Retake Quiz
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Spot the Error
+            { topic: "Spot the Error", q: "Identify the segment that contains a grammatical error:<br>Neither of the boys have returned the books to the library.", options: ["Neither of the boys", "have returned", "the books", "to the library"], a: 1, explanation: "'Neither of' takes a singular verb. 'have' should be 'has'." },
+            { topic: "Spot the Error", q: "Identify the segment that contains a grammatical error:<br>She is one of the best mothers that has ever lived.", options: ["She is one of", "the best mothers", "that has ever lived", "No error"], a: 2, explanation: "The relative pronoun 'that' refers to the plural antecedent 'mothers', so the verb should be plural 'have'." },
+            { topic: "Spot the Error", q: "Identify the segment that contains a grammatical error:<br>I and he went to the market yesterday.", options: ["I and he", "went to", "the market", "yesterday"], a: 0, explanation: "The rule of pronouns is 231 (Second, Third, First person) for positive statements. It should be 'He and I'." },
+            { topic: "Spot the Error", q: "Identify the segment that contains a grammatical error:<br>The sceneries of Kashmir is very charming.", options: ["The sceneries", "of Kashmir", "is very", "charming"], a: 0, explanation: "'Scenery' is an uncountable noun and does not have a plural form 'sceneries'." },
+            { topic: "Spot the Error", q: "Identify the segment that contains a grammatical error:<br>He is guilty for murder and will be sentenced soon.", options: ["He is guilty", "for murder", "and will be", "sentenced soon"], a: 1, explanation: "The correct preposition after 'guilty' is 'of'. It should be 'guilty of murder'." },
+            
+            // Fill in the Blanks
+            { topic: "Fill in the Blanks", q: "He is entirely addicted _____ smoking.", options: ["to", "with", "by", "on"], a: 0, explanation: "'Addicted' is always followed by the preposition 'to'." },
+            { topic: "Fill in the Blanks", q: "The committee _____ divided on this crucial issue.", options: ["was", "were", "is", "has"], a: 1, explanation: "When a collective noun (committee) acts as individuals with divided opinions, a plural verb (were) is used." },
+            { topic: "Fill in the Blanks", q: "Hardly had he left the room _____ it started raining heavily.", options: ["when", "than", "then", "before"], a: 0, explanation: "'Hardly/Scarcely' is followed by the conjunction 'when'." },
+            { topic: "Fill in the Blanks", q: "She has been living in this city _____ 2015.", options: ["from", "since", "for", "till"], a: 1, explanation: "'Since' is used for a specific point in time in perfect continuous tenses." },
+            { topic: "Fill in the Blanks", q: "He is exceptionally good _____ mathematics.", options: ["in", "at", "with", "about"], a: 1, explanation: "The correct phrase is 'good at' a subject or skill." },
+
+            // Synonyms/Homonyms
+            { topic: "Synonyms", q: "Select the most appropriate SYNONYM of the given word: ABUNDANT", options: ["Plentiful", "Scarce", "Rare", "Limited"], a: 0, explanation: "Abundant means existing or available in large quantities; plentiful." },
+            { topic: "Synonyms", q: "Select the most appropriate SYNONYM of the given word: LETHARGIC", options: ["Active", "Sluggish", "Energetic", "Swift"], a: 1, explanation: "Lethargic means affected by lethargy; sluggish and apathetic." },
+            { topic: "Synonyms", q: "Select the most appropriate SYNONYM of the given word: DILIGENT", options: ["Lazy", "Industrious", "Careless", "Idle"], a: 1, explanation: "Diligent means having or showing care and conscientiousness; industrious." },
+            { topic: "Synonyms", q: "Select the most appropriate SYNONYM of the given word: CANDID", options: ["Frank", "Deceptive", "Secretive", "Artful"], a: 0, explanation: "Candid means truthful and straightforward; frank." },
+            
+            // Antonyms
+            { topic: "Antonyms", q: "Select the most appropriate ANTONYM of the given word: ARROGANT", options: ["Haughty", "Humble", "Proud", "Conceited"], a: 1, explanation: "Arrogant means having an exaggerated sense of one's own importance. The opposite is humble." },
+            { topic: "Antonyms", q: "Select the most appropriate ANTONYM of the given word: BARREN", options: ["Fertile", "Empty", "Desolate", "Vain"], a: 0, explanation: "Barren land is too poor to produce much vegetation. The opposite is fertile." },
+            { topic: "Antonyms", q: "Select the most appropriate ANTONYM of the given word: OPTIMIST", options: ["Pessimist", "Realist", "Idealist", "Activist"], a: 0, explanation: "An optimist tends to see the positive side of things. A pessimist sees the negative side." },
+            { topic: "Antonyms", q: "Select the most appropriate ANTONYM of the given word: TRANSPARENT", options: ["Opaque", "Clear", "Translucent", "Lucid"], a: 0, explanation: "Transparent allows light to pass through. Opaque does not let light pass through." },
+
+            // Spellings
+            { topic: "Spellings", q: "Select the correctly spelt word.", options: ["Accomodation", "Accommodation", "Acommodation", "Acomodation"], a: 1, explanation: "The correct spelling has double 'c' and double 'm': Accommodation." },
+            { topic: "Spellings", q: "Select the correctly spelt word.", options: ["Embarrassment", "Embarasment", "Embarrasment", "Embarassment"], a: 0, explanation: "The correct spelling has double 'r' and double 's': Embarrassment." },
+            { topic: "Detecting Mis-spelt Words", q: "Find the incorrectly spelt word from the following options:", options: ["Receive", "Believe", "Deceive", "Peice"], a: 3, explanation: "The correct spelling is 'Piece'. Remember the rule: 'i' before 'e' except after 'c'." },
+            { topic: "Spellings", q: "Select the correctly spelt word.", options: ["Fascinating", "Fascineting", "Fasinating", "Fascinatting"], a: 0, explanation: "The correct spelling is Fascinating (from root 'fascinate')." },
+
+            // Idioms & Phrases
+            { topic: "Idioms & Phrases", q: "Select the most appropriate meaning of the given idiom: 'A piece of cake'", options: ["A very easy task", "A very difficult task", "A sweet reward", "An incomplete task"], a: 0, explanation: "'A piece of cake' refers to something that is easily achieved." },
+            { topic: "Idioms & Phrases", q: "Select the most appropriate meaning of the given idiom: 'Spill the beans'", options: ["Drop one's food", "Reveal a secret", "Waste money", "Cook a meal"], a: 1, explanation: "To 'spill the beans' means to reveal secret information unintentionally or indiscreetly." },
+            { topic: "Idioms & Phrases", q: "Select the most appropriate meaning of the given idiom: 'Once in a blue moon'", options: ["Frequently", "Rarely", "Never", "Every night"], a: 1, explanation: "A 'blue moon' is a rare event, hence the idiom means very rarely." },
+            { topic: "Idioms & Phrases", q: "Select the most appropriate meaning of the given idiom: 'Bite the bullet'", options: ["To face a difficult situation courageously", "To eat very hard food", "To become extremely angry", "To fight in a war physically"], a: 0, explanation: "To 'bite the bullet' is to decide to do something difficult or unpleasant that one has been putting off." },
+            { topic: "Idioms & Phrases", q: "Select the most appropriate meaning of the given idiom: 'Under the weather'", options: ["Enjoying the rain", "Feeling slightly unwell", "Traveling constantly", "Checking the forecast"], a: 1, explanation: "To be 'under the weather' means to feel ill." },
+
+            // One Word Substitution
+            { topic: "One Word Substitution", q: "Select the word which means the same as the group of words given: A person who loves mankind.", options: ["Misanthrope", "Philanthropist", "Egoist", "Fatalist"], a: 1, explanation: "Philanthropist means a person who seeks to promote the welfare of others. A Misanthrope hates mankind." },
+            { topic: "One Word Substitution", q: "Select the word which means the same as the group of words given: One who cannot read or write.", options: ["Illiterate", "Scholar", "Ignorant", "Novice"], a: 0, explanation: "Illiterate directly means unable to read or write." },
+            { topic: "One Word Substitution", q: "Select the word which means the same as the group of words given: A government by the people.", options: ["Autocracy", "Aristocracy", "Democracy", "Monarchy"], a: 2, explanation: "Democracy comes from demos (people) and kratos (power/rule)." },
+            { topic: "One Word Substitution", q: "Select the word which means the same as the group of words given: A place where birds are kept.", options: ["Aquarium", "Apiary", "Aviary", "Zoo"], a: 2, explanation: "An Aviary is for birds (Avis). An Apiary is for bees (Apis)." },
+            { topic: "One Word Substitution", q: "Select the word which means the same as the group of words given: One who walks in sleep.", options: ["Somnambulist", "Somniloquist", "Insomniac", "Dreamer"], a: 0, explanation: "Somnambulist (somnus = sleep, ambulare = to walk). Somniloquist talks in sleep." },
+
+            // Improvement of Sentences
+            { topic: "Improvement of Sentences", q: "Select the most appropriate option to substitute the underlined segment: He is <u>more taller</u> than his brother.", options: ["taller", "most tall", "very taller", "No improvement"], a: 0, explanation: "'Taller' is already a comparative adjective. Using 'more' with it is redundant (double comparative)." },
+            { topic: "Improvement of Sentences", q: "Select the most appropriate option to substitute the underlined segment: I <u>prefer coffee than</u> tea.", options: ["prefer coffee to", "prefers coffee than", "preferred coffee than", "No improvement"], a: 0, explanation: "The verb 'prefer' is followed by the preposition 'to', not 'than'." },
+            { topic: "Improvement of Sentences", q: "Select the most appropriate option to substitute the underlined segment: If I <u>was</u> a bird, I would fly in the sky.", options: ["am", "were", "had been", "No improvement"], a: 1, explanation: "In imaginary or conditional sentences expressing a wish or impossible situation, 'were' is used with all subjects." },
+            { topic: "Improvement of Sentences", q: "Select the most appropriate option to substitute the underlined segment: The train <u>left</u> before we reached the station.", options: ["has left", "had left", "leaves", "No improvement"], a: 1, explanation: "When two past actions are mentioned, the earlier action takes Past Perfect (had left) and the later takes Simple Past (reached)." },
+            { topic: "Improvement of Sentences", q: "Select the most appropriate option to substitute the underlined segment: He usually <u>go</u> to school by bus.", options: ["goes", "going", "gone", "No improvement"], a: 0, explanation: "For habitual actions in the present (usually), simple present tense with a singular verb (goes for 'He') is used." },
+
+            // Active/Passive Voice
+            { topic: "Active/Passive Voice", q: "Select the correct passive form of the given sentence: She writes a letter.", options: ["A letter is written by her.", "A letter was written by her.", "A letter is being written by her.", "A letter has been written by her."], a: 0, explanation: "Simple present active (writes) becomes simple present passive (is/am/are + V3)." },
+            { topic: "Active/Passive Voice", q: "Select the correct passive form of the given sentence: The police caught the thief.", options: ["The thief is caught by the police.", "The thief was caught by the police.", "The thief has been caught by the police.", "The thief had been caught by the police."], a: 1, explanation: "Simple past active (caught) becomes simple past passive (was/were + V3)." },
+            { topic: "Active/Passive Voice", q: "Select the correct passive form of the given sentence: They will finish the work tomorrow.", options: ["The work will be finished by them tomorrow.", "The work is finished tomorrow by them.", "The work would be finished tomorrow.", "The work will finish them tomorrow."], a: 0, explanation: "Simple future active (will finish) becomes simple future passive (will be + V3)." },
+            { topic: "Active/Passive Voice", q: "Select the correct passive form of the given sentence: Who broke the window?", options: ["By whom was the window broken?", "By whom is the window broken?", "Who was the window broken by?", "Whom broke the window?"], a: 0, explanation: "'Who' changes to 'By whom' in passive voice, followed by the auxiliary verb." },
+
+            // Direct/Indirect Narration
+            { topic: "Direct/Indirect Narration", q: "Select the correct indirect form of the given sentence: He said, 'I am going to the market.'", options: ["He said that he was going to the market.", "He said that I am going to the market.", "He said that he is going to the market.", "He told that he was going to the market."], a: 0, explanation: "Present continuous changes to past continuous. 'I' changes to 'he'." },
+            { topic: "Direct/Indirect Narration", q: "Select the correct indirect form of the given sentence: She said to me, 'What are you doing?'", options: ["She asked me what I was doing.", "She asked me what am I doing.", "She asked me that what I was doing.", "She asked me what was I doing."], a: 0, explanation: "In interrogative sentences, 'said to' becomes 'asked'. The question structure changes to an assertive structure (Subject + Verb)." },
+            { topic: "Direct/Indirect Narration", q: "Select the correct indirect form of the given sentence: The teacher said, 'The earth revolves around the sun.'", options: ["The teacher said that the earth revolved around the sun.", "The teacher said that the earth revolves around the sun.", "The teacher asked if the earth revolves around the sun.", "The teacher told the earth revolves around the sun."], a: 1, explanation: "Universal truths do not change their tense in indirect speech." },
+            { topic: "Direct/Indirect Narration", q: "Select the correct indirect form of the given sentence: He said, 'Alas! I am undone.'", options: ["He exclaimed with sorrow that he was undone.", "He exclaimed with joy that he was undone.", "He said alas he is undone.", "He told that he is undone."], a: 0, explanation: "'Alas' indicates sorrow. The exclamatory sentence changes into an assertive one with 'exclaimed with sorrow'." },
+
+            // Shuffling of Sentence parts (Para Jumbles)
+            { topic: "Shuffling of Sentence parts", q: "Rearrange the parts of the sentence in correct order:<br>P: an important role<br>Q: Education plays<br>R: in one's life<br>S: a very", options: ["QSPR", "QPSR", "SPQR", "PQRS"], a: 0, explanation: "Education plays (Q) + a very (S) + important role (P) + in one's life (R)." },
+            { topic: "Shuffling of Sentence parts", q: "Rearrange the parts of the sentence in correct order:<br>P: the students<br>Q: by the principal<br>R: were punished<br>S: severely", options: ["PRSQ", "RSPQ", "PRQS", "PQRS"], a: 0, explanation: "The students (P) + were punished (R) + severely (S) + by the principal (Q)." },
+            
+            // Cloze / Context based
+            { topic: "Contextual Grammar", q: "Select the most appropriate word to fill in the blank: The sky is heavily overcast with dark clouds. It _____ rain today.", options: ["can", "may", "will", "ought to"], a: 1, explanation: "'May' is used to express a strong possibility based on present evidence (dark clouds)." },
+            { topic: "Contextual Grammar", q: "Select the most appropriate word to fill in the blank: His grand success is entirely _____ his immense hard work.", options: ["due to", "owing to", "because", "for"], a: 0, explanation: "'Due to' is used to modify a noun (success) and acts as an adjective, meaning 'caused by'." }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let canAnswer = true;
+
+        const topicTag = document.getElementById('topic-tag');
+        const qText = document.getElementById('question-text');
+        const optsContainer = document.getElementById('options-container');
+        const qCounter = document.getElementById('q-counter');
+        const nextBtn = document.getElementById('next-btn');
+        const feedback = document.getElementById('feedback');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreDisplay = document.getElementById('score-display');
+
+        function renderQuestion() {
+            const data = questions[currentIdx];
+            topicTag.innerText = data.topic;
+            qText.innerHTML = data.q;
+            qCounter.innerText = (currentIdx + 1);
+            progressBar.style.width = `${((currentIdx) / questions.length) * 100}%`;
+            
+            optsContainer.innerHTML = '';
+            data.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full p-4 text-left border-2 border-slate-200/60 rounded-2xl font-medium text-slate-600 bg-white/80 hover:bg-white flex items-center gap-4 group";
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-indigo-100 group-hover:text-indigo-700 flex items-center justify-center text-xs font-bold transition-colors shrink-0">
+                        ${String.fromCharCode(65 + i)}
+                    </span>
+                    <span class="flex-grow">${opt}</span>
+                `;
+                btn.onclick = () => handleSelection(i, btn);
+                optsContainer.appendChild(btn);
+            });
+
+            feedback.innerHTML = '';
+            nextBtn.classList.add('hidden');
+            canAnswer = true;
+        }
+
+        function handleSelection(idx, btn) {
+            if (!canAnswer) return;
+            canAnswer = false;
+
+            const currentQ = questions[currentIdx];
+            const correctIdx = currentQ.a;
+            const allBtns = optsContainer.querySelectorAll('button');
+
+            allBtns.forEach((b, i) => {
+                b.classList.add('disabled', 'opacity-60', 'cursor-not-allowed');
+                // Always highlight the correct answer
+                if (i === correctIdx) {
+                    b.classList.remove('opacity-60', 'border-slate-200/60');
+                    b.classList.add('correct', 'opacity-100', 'border-emerald-500');
+                    b.querySelector('span:first-child').classList.add('bg-emerald-200', 'text-emerald-800');
+                }
+            });
+
+            if (idx === correctIdx) {
+                score++;
+                scoreDisplay.innerText = `Score: ${score}`;
+                feedback.innerHTML = `<span class="text-emerald-600 flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Correct! ${currentQ.explanation}</span>`;
+            } else {
+                // Highlight the wrong selected answer
+                btn.classList.remove('opacity-60');
+                btn.classList.add('wrong', 'opacity-100');
+                btn.querySelector('span:first-child').classList.add('bg-red-200', 'text-red-800');
+                feedback.innerHTML = `<span class="text-rose-600 flex items-start gap-2"><svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> <span>Incorrect. ${currentQ.explanation}</span></span>`;
+            }
+
+            nextBtn.classList.remove('hidden');
+            if (currentIdx === questions.length - 1) {
+                nextBtn.innerText = "Finish Quiz & View Results";
+            }
+        }
+
+        nextBtn.onclick = () => {
+            if (currentIdx < questions.length - 1) {
+                currentIdx++;
+                renderQuestion();
+            } else {
+                showFinalResults();
+            }
+        };
+
+        function showFinalResults() {
+            progressBar.style.width = `100%`;
+            document.getElementById('quiz-content').classList.add('hidden');
+            document.querySelector('.flex.justify-between.items-center.mb-6').classList.add('hidden');
+            document.getElementById('next-btn').parentElement.classList.add('hidden');
+            
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.classList.remove('hidden');
+            
+            const accuracy = Math.round((score / questions.length) * 100);
+            document.getElementById('final-accuracy').innerText = `${accuracy}%`;
+            document.getElementById('final-score').innerText = score;
+        }
+
+        // Initialize the app
+        renderQuestion();
+    </script>
+</body>
+</html>

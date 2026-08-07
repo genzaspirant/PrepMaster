@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC CGL Practice Simulator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .quiz-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 700px;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .quiz-header h2 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+        .progress {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+        .question {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+        .options li {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+        .options li:hover {
+            background-color: #e2e6ea;
+            border-color: #dae0e5;
+        }
+        .options li.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+            pointer-events: none;
+        }
+        .options li.incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+            pointer-events: none;
+        }
+        .options li.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: none;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result-screen {
+            text-align: center;
+            display: none;
+        }
+        .result-screen h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+        }
+        .result-screen p {
+            font-size: 1.2rem;
+            color: #555;
+        }
+        .restart-btn {
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="quiz">
+    <div class="quiz-header">
+        <h2>SSC CGL Prep</h2>
+        <div class="progress" id="progress">Question 1 of 50</div>
+    </div>
+    
+    <div id="quiz-body">
+        <div class="question" id="question">Question text goes here</div>
+        <ul class="options" id="options">
+            <!-- Options will be injected here -->
+        </ul>
+        <div class="btn-container">
+            <button id="next-btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+    </div>
+
+    <div class="result-screen" id="result-screen">
+        <h2>Quiz Completed!</h2>
+        <p>You scored <strong id="score">0</strong> out of <strong id="total-questions">50</strong>.</p>
+        <button class="restart-btn" style="display: inline-block;" onclick="restartQuiz()">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "Who was the founder of the Maurya Empire?", options: ["Ashoka", "Chandragupta Maurya", "Bindusara", "Brihadratha"], ans: 1 },
+        { q: "The Battle of Plassey, a major turning point in Indian history, was fought in which year?", options: ["1757", "1764", "1857", "1905"], ans: 0 },
+        { q: "Who was the first Governor-General of independent India?", options: ["C. Rajagopalachari", "Lord Mountbatten", "Rajendra Prasad", "Jawaharlal Nehru"], ans: 1 },
+        { q: "The ruins of the ancient Indus Valley civilization city Mohenjo-Daro are located in which present-day neighboring country?", options: ["India", "Pakistan", "Afghanistan", "Bangladesh"], ans: 1 },
+        { q: "Which mass movement was launched by Mahatma Gandhi on August 8, 1942?", options: ["Non-Cooperation Movement", "Civil Disobedience Movement", "Quit India Movement", "Khilafat Movement"], ans: 2 },
+        { q: "Who among the following founded the Ramakrishna Mission?", options: ["Swami Vivekananda", "Raja Ram Mohan Roy", "Dayanand Saraswati", "Ishwar Chandra Vidyasagar"], ans: 0 },
+        { q: "In which year did India's neighboring country, Bangladesh, gain independence?", options: ["1947", "1965", "1971", "1999"], ans: 2 },
+        { q: "'Sattriya' is a recognized classical dance form originating from which Indian state?", options: ["Manipur", "Assam", "Odisha", "Kerala"], ans: 1 },
+        { q: "The famous Hornbill Festival is annually celebrated in which state?", options: ["Nagaland", "Mizoram", "Meghalaya", "Arunachal Pradesh"], ans: 0 },
+        { q: "'Madhubani' is a highly distinctive style of folk painting popular in which state?", options: ["Rajasthan", "Bihar", "Uttar Pradesh", "Madhya Pradesh"], ans: 1 },
+        { q: "Which Veda is considered the primary ancient source of Indian classical music and art?", options: ["Rigveda", "Samaveda", "Yajurveda", "Atharvaveda"], ans: 1 },
+        { q: "Ustad Bismillah Khan is famously associated with which Indian musical instrument?", options: ["Sitar", "Tabla", "Shehnai", "Flute"], ans: 2 },
+        { q: "Which of the following prominent water bodies separates the Andaman Islands from the Nicobar Islands?", options: ["Eight Degree Channel", "Ten Degree Channel", "Palk Strait", "Gulf of Mannar"], ans: 1 },
+        { q: "Which state in India possesses the longest mainland coastline?", options: ["Maharashtra", "Tamil Nadu", "Gujarat", "Andhra Pradesh"], ans: 2 },
+        { q: "The Majuli Island, recognized as the largest river island in the world, is located in the basin of which river?", options: ["Ganga", "Brahmaputra", "Godavari", "Indus"], ans: 1 },
+        { q: "Which Indian state shares its international border with three countries: Nepal, Bhutan, and China?", options: ["Arunachal Pradesh", "Sikkim", "West Bengal", "Uttarakhand"], ans: 1 },
+        { q: "Sri Vijaya Puram is the administrative capital of which Union Territory?", options: ["Lakshadweep", "Puducherry", "Andaman and Nicobar Islands", "Chandigarh"], ans: 2 },
+        { q: "What type of soil is predominantly found in the Deccan Plateau and is highly suitable for cotton cultivation?", options: ["Alluvial Soil", "Red Soil", "Black Soil", "Laterite Soil"], ans: 2 },
+        { q: "Which is the highest mountain peak located entirely within India?", options: ["Mount Everest", "Kangchenjunga", "Nanda Devi", "Makalu"], ans: 2 },
+        { q: "The standard time meridian of India, passing through Mirzapur, is:", options: ["82.5° E", "84.5° E", "80.5° E", "86.5° E"], ans: 0 },
+        { q: "Who serves as the Ex-officio Chairman of NITI Aayog?", options: ["President of India", "Prime Minister of India", "Finance Minister", "RBI Governor"], ans: 1 },
+        { q: "The primary rate at which the Reserve Bank of India (RBI) lends money to commercial banks is called:", options: ["Reverse Repo Rate", "Repo Rate", "Cash Reserve Ratio (CRR)", "Statutory Liquidity Ratio (SLR)"], ans: 1 },
+        { q: "Which economic sector currently contributes the largest percentage to India's Gross Domestic Product (GDP)?", options: ["Primary Sector (Agriculture)", "Secondary Sector (Manufacturing)", "Tertiary Sector (Services)", "Quaternary Sector"], ans: 2 },
+        { q: "The Goods and Services Tax (GST) implemented in India is fundamentally a type of:", options: ["Direct Tax", "Indirect Tax", "Corporate Tax", "Wealth Tax"], ans: 1 },
+        { q: "'Operation Flood' in India is directly associated with the massive production and distribution of:", options: ["Flood control infrastructure", "Milk and dairy products", "Wheat and rice", "Potable water"], ans: 1 },
+        { q: "What is the standard national currency of India's neighbor, Myanmar?", options: ["Rupee", "Taka", "Kyat", "Ngultrum"], ans: 2 },
+        { q: "Which economic curve graphically demonstrates the hypothetical relationship between tax rates and total tax revenue?", options: ["Lorenz Curve", "Laffer Curve", "Phillips Curve", "Kuznets Curve"], ans: 1 },
+        { q: "Who is universally acknowledged as the Father of the Indian Constitution?", options: ["Jawaharlal Nehru", "B.R. Ambedkar", "Sardar Vallabhbhai Patel", "Rajendra Prasad"], ans: 1 },
+        { q: "The concept of Fundamental Rights enshrined in the Indian Constitution was heavily inspired by the constitution of:", options: ["United Kingdom", "United States of America", "Ireland", "Canada"], ans: 1 },
+        { q: "Article 21 of the Indian Constitution guarantees which of the following?", options: ["Right to Equality", "Right to Freedom of Religion", "Protection of Life and Personal Liberty", "Right against Exploitation"], ans: 2 },
+        { q: "What is the minimum qualifying age required for an individual to become the President of India?", options: ["25 years", "30 years", "35 years", "40 years"], ans: 2 },
+        { q: "The Panchayati Raj system of local self-government was formalized and introduced by which Constitutional Amendment Act?", options: ["42nd Amendment", "44th Amendment", "73rd Amendment", "74th Amendment"], ans: 2 },
+        { q: "How many schedules are currently present in the Indian Constitution?", options: ["8", "10", "12", "14"], ans: 2 },
+        { q: "The Chief Election Commissioner of India is directly appointed by the:", options: ["Prime Minister", "Chief Justice of India", "President", "Parliament"], ans: 2 },
+        { q: "Which schedule of the Indian Constitution deals exclusively with the division of powers between the Union and the States?", options: ["5th Schedule", "6th Schedule", "7th Schedule", "8th Schedule"], ans: 2 },
+        { q: "A joint sitting of both houses of the Indian Parliament is formally presided over by the:", options: ["President", "Vice President", "Prime Minister", "Speaker of the Lok Sabha"], ans: 3 },
+        { q: "Directive Principles of State Policy (DPSP) are enumerated in which Part of the Indian Constitution?", options: ["Part II", "Part III", "Part IV", "Part V"], ans: 2 },
+        { q: "What is the standard SI unit of electric current?", options: ["Volt", "Ampere", "Ohm", "Watt"], ans: 1 },
+        { q: "Which gas is the most abundant by volume in the Earth's atmosphere?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], ans: 2 },
+        { q: "The common chemical formula for baking soda, widely used in cooking and households, is:", options: ["Na2CO3", "NaHCO3", "NaCl", "NaOH"], ans: 1 },
+        { q: "The disease Scurvy is primarily caused by a severe deficiency of:", options: ["Vitamin A", "Vitamin B12", "Vitamin C", "Vitamin D"], ans: 2 },
+        { q: "Which planet in our solar system is frequently referred to as the Red Planet due to iron oxide on its surface?", options: ["Venus", "Jupiter", "Mars", "Saturn"], ans: 2 },
+        { q: "A 'Light Year' is an astronomical unit used to measure:", options: ["Time", "Distance", "Speed", "Intensity of Light"], ans: 1 },
+        { q: "Which major organ in the human body is primarily responsible for filtering waste and purifying the blood?", options: ["Heart", "Liver", "Kidneys", "Lungs"], ans: 2 },
+        { q: "What is the approximate escape velocity from the Earth's surface required for a spacecraft to leave its gravitational pull?", options: ["9.8 km/s", "11.2 km/s", "14.5 km/s", "7.9 km/s"], ans: 1 },
+        { q: "The acronym 'API', fundamental in modern enterprise software integrations and web architectures, stands for:", options: ["Application Programming Interface", "Applied Program Index", "Automatic Process Integration", "Application Process Instruction"], ans: 0 },
+        { q: "Sound waves traveling through the air are an example of which type of wave?", options: ["Transverse Waves", "Longitudinal Waves", "Electromagnetic Waves", "Surface Waves"], ans: 1 },
+        { q: "Which human blood group is universally known as the 'Universal Donor'?", options: ["A+", "B-", "AB+", "O-"], ans: 3 },
+        { q: "The process by which plants convert light energy into chemical energy is called:", options: ["Respiration", "Transpiration", "Photosynthesis", "Germination"], ans: 2 },
+        { q: "What is the heaviest naturally occurring element found on Earth by atomic weight?", options: ["Uranium", "Plutonium", "Gold", "Lead"], ans: 0 }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const progressEl = document.getElementById("progress");
+    const nextBtn = document.getElementById("next-btn");
+    const quizBody = document.getElementById("quiz-body");
+    const resultScreen = document.getElementById("result-screen");
+    const scoreEl = document.getElementById("score");
+    const totalQuestionsEl = document.getElementById("total-questions");
+
+    function loadQuestion() {
+        nextBtn.style.display = "none";
+        const currentQuizData = quizData[currentQuestionIndex];
+        
+        progressEl.innerText = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
+        questionEl.innerText = currentQuizData.q;
+        optionsEl.innerHTML = "";
+
+        currentQuizData.options.forEach((option, index) => {
+            const li = document.createElement("li");
+            li.innerText = option;
+            li.addEventListener("click", () => selectAnswer(index, li));
+            optionsEl.appendChild(li);
+        });
+    }
+
+    function selectAnswer(selectedIndex, selectedElement) {
+        const currentQuizData = quizData[currentQuestionIndex];
+        const allOptions = optionsEl.children;
+
+        // Disable all options after selection
+        for (let i = 0; i < allOptions.length; i++) {
+            allOptions[i].classList.add("disabled");
+            if (i === currentQuizData.ans) {
+                allOptions[i].classList.add("correct");
+            }
+        }
+
+        if (selectedIndex === currentQuizData.ans) {
+            score++;
+        } else {
+            selectedElement.classList.add("incorrect");
+        }
+
+        nextBtn.style.display = "block";
+        if (currentQuestionIndex === quizData.length - 1) {
+            nextBtn.innerText = "Finish Quiz";
+        }
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        quizBody.style.display = "none";
+        document.querySelector('.quiz-header').style.display = "none";
+        resultScreen.style.display = "block";
+        scoreEl.innerText = score;
+        totalQuestionsEl.innerText = quizData.length;
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        quizBody.style.display = "block";
+        document.querySelector('.quiz-header').style.display = "flex";
+        resultScreen.style.display = "none";
+        nextBtn.innerText = "Next Question";
+        loadQuestion();
+    }
+
+    // Initialize the quiz
+    loadQuestion();
+</script>
+
+</body>
+</html>

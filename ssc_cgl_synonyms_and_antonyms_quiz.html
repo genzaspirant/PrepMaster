@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC CGL Vocabulary Quiz - Synonyms & Antonyms</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            min-height: 100vh;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .app-container {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 800px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .header-section {
+            border-bottom: 2px dashed #e2e8f0;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .progress-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #f1f5f9;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.4s ease;
+        }
+        .option-btn {
+            transition: all 0.2s ease;
+            border: 2px solid #e2e8f0;
+        }
+        .option-btn:hover:not(:disabled) {
+            border-color: #93c5fd;
+            background: #eff6ff;
+            transform: translateY(-2px);
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .correct-ans {
+            background: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #166534 !important;
+        }
+        .wrong-ans {
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .type-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+        .synonym-badge {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+        .antonym-badge {
+            background: #fce7f3;
+            color: #be185d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+        </div>
+
+        <div class="header-section" id="quiz-header">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">Vocab Master</h1>
+                <p class="text-sm text-slate-500 font-medium">SSC CGL Synonyms & Antonyms</p>
+            </div>
+            <div class="text-right">
+                <div class="text-xs text-slate-400 font-bold uppercase tracking-wider">Question</div>
+                <div class="text-2xl font-bold text-blue-600"><span id="current-q">1</span><span class="text-slate-400 text-lg">/50</span></div>
+            </div>
+        </div>
+
+        <div id="quiz-area" class="fade-in">
+            <span id="q-type" class="type-badge synonym-badge">Synonym</span>
+            <h2 class="text-xl sm:text-2xl font-semibold text-slate-700 mb-6" id="question-text">
+                Select the most appropriate SYNONYM of the given word: <br>
+                <span class="text-3xl font-bold text-slate-900 mt-2 block" id="vocab-word">WORD</span>
+            </h2>
+
+            <div id="options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Options injected by JS -->
+            </div>
+            
+            <div id="feedback-area" class="mt-6 hidden p-4 rounded-xl text-sm font-medium border">
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button id="next-btn" class="hidden px-8 py-3 bg-slate-900 hover:bg-blue-600 text-white font-semibold rounded-xl transition-colors shadow-lg">
+                    Next Word &rarr;
+                </button>
+            </div>
+        </div>
+
+        <div id="result-area" class="hidden text-center py-8 fade-in">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-6">
+                <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+            </div>
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">Quiz Completed!</h2>
+            <p class="text-slate-500 mb-8">You've mastered a solid set of high-frequency words.</p>
+            
+            <div class="flex justify-center gap-4 mb-8">
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 min-w-[150px]">
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Total Score</p>
+                    <p class="text-4xl font-black text-slate-800"><span id="final-score">0</span><span class="text-xl text-slate-400">/50</span></p>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors shadow-lg">
+                Retake Quiz
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const vocabData = [
+            // Synonyms
+            { type: 'synonym', word: 'ABUNDANT', options: ['Scarce', 'Plentiful', 'Rare', 'Limited'], ans: 1, exp: "Abundant means existing or available in large quantities; plentiful." },
+            { type: 'synonym', word: 'ACUMEN', options: ['Stupidity', 'Ignorance', 'Brilliance', 'Inability'], ans: 2, exp: "Acumen refers to the ability to make good judgments and quick decisions." },
+            { type: 'synonym', word: 'ADHERENT', options: ['Rival', 'Adversary', 'Follower', 'Enemy'], ans: 2, exp: "An adherent is someone who supports a particular party, person, or set of ideas." },
+            { type: 'synonym', word: 'ALLURE', options: ['Repulse', 'Entice', 'Repel', 'Deter'], ans: 1, exp: "Allure means to powerfully attract or charm; tempt." },
+            { type: 'synonym', word: 'CANDID', options: ['Deceptive', 'Secretive', 'Frank', 'Dishonest'], ans: 2, exp: "Candid means truthful and straightforward; frank." },
+            { type: 'synonym', word: 'DILIGENT', options: ['Lazy', 'Careless', 'Hardworking', 'Indifferent'], ans: 2, exp: "Diligent means having or showing care and conscientiousness in one's work." },
+            { type: 'synonym', word: 'ENORMOUS', options: ['Tiny', 'Moderate', 'Minute', 'Huge'], ans: 3, exp: "Enormous means very large in size, quantity, or extent." },
+            { type: 'synonym', word: 'FABRICATE', options: ['Destroy', 'Construct', 'Demolish', 'Break'], ans: 1, exp: "Fabricate means to invent or concoct (something), typically with deceitful intent, or to construct." },
+            { type: 'synonym', word: 'HOSTILE', options: ['Friendly', 'Amiable', 'Aggressive', 'Cordial'], ans: 2, exp: "Hostile means unfriendly; antagonistic." },
+            { type: 'synonym', word: 'INEPT', options: ['Skilled', 'Expert', 'Capable', 'Incompetent'], ans: 3, exp: "Inept means having or showing no skill; clumsy." },
+            { type: 'synonym', word: 'LUCID', options: ['Obscure', 'Clear', 'Confusing', 'Vague'], ans: 1, exp: "Lucid means expressed clearly; easy to understand." },
+            { type: 'synonym', word: 'METICULOUS', options: ['Careless', 'Sloppy', 'Precise', 'Negligent'], ans: 2, exp: "Meticulous means showing great attention to detail; very careful and precise." },
+            { type: 'synonym', word: 'OBSCURE', options: ['Obvious', 'Clear', 'Vague', 'Distinct'], ans: 2, exp: "Obscure means not discovered or known about; uncertain." },
+            { type: 'synonym', word: 'ROBUST', options: ['Fragile', 'Strong', 'Weak', 'Delicate'], ans: 1, exp: "Robust means strong and healthy; vigorous." },
+            { type: 'synonym', word: 'SERENE', options: ['Agitated', 'Disturbed', 'Peaceful', 'Noisy'], ans: 2, exp: "Serene means calm, peaceful, and untroubled; tranquil." },
+            { type: 'synonym', word: 'WARY', options: ['Reckless', 'Trusting', 'Careless', 'Cautious'], ans: 3, exp: "Wary means feeling or showing caution about possible dangers or problems." },
+            { type: 'synonym', word: 'ZEALOUS', options: ['Apathetic', 'Indifferent', 'Enthusiastic', 'Lazy'], ans: 2, exp: "Zealous means showing great energy or enthusiasm in pursuit of a cause or an objective." },
+            { type: 'synonym', word: 'CORDIAL', options: ['Warm', 'Cold', 'Distant', 'Unfriendly'], ans: 0, exp: "Cordial means warm and friendly." },
+            { type: 'synonym', word: 'GREGARIOUS', options: ['Introverted', 'Sociable', 'Reclusive', 'Antisocial'], ans: 1, exp: "Gregarious means fond of company; sociable." },
+            { type: 'synonym', word: 'JOVIAL', options: ['Cheerful', 'Sad', 'Gloomy', 'Depressed'], ans: 0, exp: "Jovial means cheerful and friendly." },
+            { type: 'synonym', word: 'LANGUID', options: ['Energetic', 'Active', 'Sluggish', 'Vigorous'], ans: 2, exp: "Languid means displaying or having a disinclination for physical exertion or effort; slow and relaxed." },
+            { type: 'synonym', word: 'MUNDANE', options: ['Exciting', 'Ordinary', 'Extraordinary', 'Unusual'], ans: 1, exp: "Mundane means lacking interest or excitement; dull." },
+            { type: 'synonym', word: 'OPULENT', options: ['Poor', 'Destitute', 'Affluent', 'Impoverished'], ans: 2, exp: "Opulent means ostentatiously rich and luxurious or lavish." },
+            { type: 'synonym', word: 'TREPIDATION', options: ['Calmness', 'Confidence', 'Dread', 'Assurance'], ans: 2, exp: "Trepidation means a feeling of fear or agitation about something that may happen." },
+            { type: 'synonym', word: 'UBIQUITOUS', options: ['Rare', 'Omnipresent', 'Scarce', 'Infrequent'], ans: 1, exp: "Ubiquitous means present, appearing, or found everywhere." },
+
+            // Antonyms
+            { type: 'antonym', word: 'ABANDON', options: ['Forsake', 'Leave', 'Retain', 'Quit'], ans: 2, exp: "Abandon means to leave completely. Retain means to continue to have something." },
+            { type: 'antonym', word: 'AGILE', options: ['Nimble', 'Clumsy', 'Quick', 'Brisk'], ans: 1, exp: "Agile means able to move quickly and easily. Clumsy is the opposite." },
+            { type: 'antonym', word: 'AMIABLE', options: ['Friendly', 'Sociable', 'Hostile', 'Pleasant'], ans: 2, exp: "Amiable means having or displaying a friendly and pleasant manner. Hostile is unfriendly." },
+            { type: 'antonym', word: 'ARDUOUS', options: ['Difficult', 'Easy', 'Onerous', 'Laborious'], ans: 1, exp: "Arduous means involving or requiring strenuous effort; difficult and tiring. Easy is the opposite." },
+            { type: 'antonym', word: 'BENEVOLENT', options: ['Kind', 'Malevolent', 'Generous', 'Altruistic'], ans: 1, exp: "Benevolent means well meaning and kindly. Malevolent means having or showing a wish to do evil to others." },
+            { type: 'antonym', word: 'BLUNT', options: ['Dull', 'Edgeless', 'Sharp', 'Pointless'], ans: 2, exp: "Blunt means having a flat or rounded end; not sharp." },
+            { type: 'antonym', word: 'CAPRICIOUS', options: ['Fickle', 'Impulsive', 'Whimsical', 'Stable'], ans: 3, exp: "Capricious means given to sudden and unaccountable changes of mood or behavior. Stable is the opposite." },
+            { type: 'antonym', word: 'DEFIANT', options: ['Rebellious', 'Resistant', 'Submissive', 'Insubordinate'], ans: 2, exp: "Defiant means showing defiance. Submissive means ready to conform to the authority or will of others." },
+            { type: 'antonym', word: 'EPHEMERAL', options: ['Fleeting', 'Temporary', 'Permanent', 'Transitory'], ans: 2, exp: "Ephemeral means lasting for a very short time. Permanent is the opposite." },
+            { type: 'antonym', word: 'FLAMBOYANT', options: ['Flashy', 'Extravagant', 'Plain', 'Ostentatious'], ans: 2, exp: "Flamboyant means tending to attract attention because of their exuberance, confidence, and stylishness. Plain is the opposite." },
+            { type: 'antonym', word: 'HYPOTHETICAL', options: ['Theoretical', 'Factual', 'Speculative', 'Conjectural'], ans: 1, exp: "Hypothetical means based on or serving as a hypothesis. Factual is the opposite." },
+            { type: 'antonym', word: 'INDIGNANT', options: ['Annoyed', 'Outraged', 'Angered', 'Pleased'], ans: 3, exp: "Indignant means feeling or showing anger or annoyance at what is perceived as unfair treatment. Pleased is the opposite." },
+            { type: 'antonym', word: 'KUDOS', options: ['Praise', 'Recognition', 'Criticism', 'Commendation'], ans: 2, exp: "Kudos means praise and honor received for an achievement. Criticism is the opposite." },
+            { type: 'antonym', word: 'LUCRATIVE', options: ['Profitable', 'Unprofitable', 'Rewarding', 'Gainful'], ans: 1, exp: "Lucrative means producing a great deal of profit. Unprofitable is the opposite." },
+            { type: 'antonym', word: 'NEBULOUS', options: ['Vague', 'Unclear', 'Ambiguous', 'Clear'], ans: 3, exp: "Nebulous means in the form of a cloud or haze; hazy, unclear. Clear is the opposite." },
+            { type: 'antonym', word: 'PENSIVE', options: ['Thoughtful', 'Reflective', 'Unthinking', 'Contemplative'], ans: 2, exp: "Pensive means engaged in, involving, or reflecting deep or serious thought. Unthinking is the opposite." },
+            { type: 'antonym', word: 'QUIXOTIC', options: ['Romantic', 'Idealistic', 'Pragmatic', 'Impractical'], ans: 2, exp: "Quixotic means exceedingly idealistic; unrealistic and impractical. Pragmatic (practical) is the opposite." },
+            { type: 'antonym', word: 'REPREHENSIBLE', options: ['Disgraceful', 'Deplorable', 'Shameful', 'Commendable'], ans: 3, exp: "Reprehensible means deserving censure or condemnation. Commendable is the opposite." },
+            { type: 'antonym', word: 'STOIC', options: ['Emotional', 'Unemotional', 'Impassive', 'Indifferent'], ans: 0, exp: "Stoic means a person who can endure pain or hardship without showing their feelings or complaining. Emotional is the opposite." },
+            { type: 'antonym', word: 'VEX', options: ['Annoy', 'Irritate', 'Bother', 'Soothe'], ans: 3, exp: "Vex means make (someone) feel annoyed, frustrated, or worried. Soothe is the opposite." },
+            { type: 'antonym', word: 'WHIMSICAL', options: ['Quirky', 'Predictable', 'Eccentric', 'Unusual'], ans: 1, exp: "Whimsical means playfully quaint or fanciful, especially in an appealing and amusing way; unpredictable. Predictable is the opposite." },
+            { type: 'antonym', word: 'YEARN', options: ['Crave', 'Desire', 'Long for', 'Despise'], ans: 3, exp: "Yearn means have an intense feeling of longing for something. Despise (hate) is the opposite." },
+            { type: 'antonym', word: 'FRUGAL', options: ['Economical', 'Thrifty', 'Extravagant', 'Sparing'], ans: 2, exp: "Frugal means sparing or economical with regard to money or food. Extravagant is the opposite." },
+            { type: 'antonym', word: 'BARREN', options: ['Desolate', 'Fertile', 'Sterile', 'Empty'], ans: 1, exp: "Barren means (of land) too poor to produce much or any vegetation. Fertile is the opposite." },
+            { type: 'antonym', word: 'ABATE', options: ['Decrease', 'Moderate', 'Aggravate', 'Lessen'], ans: 2, exp: "Abate means (of something perceived as hostile, threatening, or negative) become less intense or widespread. Aggravate means to make worse." }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let answered = false;
+
+        const progressEl = document.getElementById('progress-bar');
+        const qTypeEl = document.getElementById('q-type');
+        const qTextEl = document.getElementById('question-text');
+        const wordEl = document.getElementById('vocab-word');
+        const optionsGrid = document.getElementById('options-grid');
+        const feedbackArea = document.getElementById('feedback-area');
+        const nextBtn = document.getElementById('next-btn');
+        const currentQEl = document.getElementById('current-q');
+        const quizArea = document.getElementById('quiz-area');
+
+        // Shuffle the array to mix synonyms and antonyms
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        shuffle(vocabData);
+
+        function loadQuestion() {
+            answered = false;
+            nextBtn.classList.add('hidden');
+            feedbackArea.classList.add('hidden');
+            
+            // Reflow animation
+            quizArea.classList.remove('fade-in');
+            void quizArea.offsetWidth;
+            quizArea.classList.add('fade-in');
+
+            const currentQ = vocabData[currentIdx];
+            
+            // Update UI text
+            currentQEl.innerText = currentIdx + 1;
+            progressEl.style.width = `${((currentIdx) / vocabData.length) * 100}%`;
+            
+            if(currentQ.type === 'synonym') {
+                qTypeEl.innerText = 'Synonym';
+                qTypeEl.className = 'type-badge synonym-badge';
+                qTextEl.innerHTML = `Select the most appropriate <strong class="text-indigo-600">SYNONYM</strong> (similar meaning) of the given word:<br><span class="text-3xl font-black text-slate-900 mt-3 block uppercase tracking-wide">${currentQ.word}</span>`;
+            } else {
+                qTypeEl.innerText = 'Antonym';
+                qTypeEl.className = 'type-badge antonym-badge';
+                qTextEl.innerHTML = `Select the most appropriate <strong class="text-pink-600">ANTONYM</strong> (opposite meaning) of the given word:<br><span class="text-3xl font-black text-slate-900 mt-3 block uppercase tracking-wide">${currentQ.word}</span>`;
+            }
+
+            optionsGrid.innerHTML = '';
+            
+            currentQ.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full p-4 rounded-xl text-left font-medium text-slate-700 bg-white flex items-center justify-between";
+                btn.innerHTML = `
+                    <span class="text-lg">${opt}</span>
+                    <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center indicator"></div>
+                `;
+                btn.onclick = () => selectAnswer(idx, btn);
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(idx, btn) {
+            if (answered) return;
+            answered = true;
+
+            const currentQ = vocabData[currentIdx];
+            const isCorrect = idx === currentQ.ans;
+            
+            const allBtns = optionsGrid.querySelectorAll('button');
+            allBtns.forEach((b, i) => {
+                b.disabled = true;
+                if (i === currentQ.ans) {
+                    b.classList.add('correct-ans');
+                    b.querySelector('.indicator').innerHTML = `<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>`;
+                    b.querySelector('.indicator').classList.add('border-green-600', 'bg-green-100');
+                    b.querySelector('.indicator').classList.remove('border-slate-200');
+                }
+            });
+
+            feedbackArea.classList.remove('hidden');
+
+            if (isCorrect) {
+                score++;
+                feedbackArea.className = 'mt-6 p-4 rounded-xl text-sm font-medium border bg-green-50 text-green-800 border-green-200';
+                feedbackArea.innerHTML = `<strong>Correct!</strong> ${currentQ.exp}`;
+            } else {
+                btn.classList.add('wrong-ans');
+                btn.querySelector('.indicator').innerHTML = `<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+                btn.querySelector('.indicator').classList.add('border-red-600', 'bg-red-100');
+                btn.querySelector('.indicator').classList.remove('border-slate-200');
+                
+                feedbackArea.className = 'mt-6 p-4 rounded-xl text-sm font-medium border bg-red-50 text-red-800 border-red-200';
+                feedbackArea.innerHTML = `<strong>Incorrect.</strong> ${currentQ.exp}`;
+            }
+
+            nextBtn.classList.remove('hidden');
+            if (currentIdx === vocabData.length - 1) {
+                nextBtn.innerText = "View Results";
+            }
+        }
+
+        nextBtn.onclick = () => {
+            if (currentIdx < vocabData.length - 1) {
+                currentIdx++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function showResults() {
+            progressEl.style.width = '100%';
+            document.getElementById('quiz-area').style.display = 'none';
+            document.getElementById('quiz-header').style.display = 'none';
+            
+            const resultArea = document.getElementById('result-area');
+            resultArea.classList.remove('hidden');
+            document.getElementById('final-score').innerText = score;
+        }
+
+        // Init
+        loadQuestion();
+    </script>
+</body>
+</html>

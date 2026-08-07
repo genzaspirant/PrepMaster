@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Mock Test Series</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7f6;
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    h1, h2, h3 {
+        color: #2c3e50;
+        text-align: center;
+    }
+    .container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .btn {
+        background: #3498db;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+    .btn:hover {
+        background: #2980b9;
+    }
+    .btn:disabled {
+        background: #95a5a6;
+        cursor: not-allowed;
+    }
+    .quiz-section {
+        display: none;
+    }
+    .header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #ecf0f1;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+    .timer {
+        color: #e74c3c;
+    }
+    .question {
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    .options {
+        list-style-type: none;
+        padding: 0;
+    }
+    .options li {
+        margin-bottom: 10px;
+    }
+    .options label {
+        cursor: pointer;
+        background: #fdfdfd;
+        display: block;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: background 0.2s;
+    }
+    .options label:hover {
+        background: #f1f2f6;
+    }
+    .submit-btn {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        background: #27ae60;
+    }
+    .submit-btn:hover {
+        background: #2ecc71;
+    }
+    .result {
+        text-align: center;
+        font-size: 1.2em;
+        margin-top: 20px;
+        font-weight: bold;
+        display: none;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Mock Test Series</h1>
+    <p style="text-align: center;">Select a set below to begin. You have 30 seconds per question.</p>
+    
+    <div class="menu" id="set-menu">
+        <!-- Buttons will be injected here by JS -->
+    </div>
+
+    <div class="quiz-section" id="quiz-section">
+        <div class="header-bar">
+            <span id="set-title">Set 1</span>
+            <span class="timer" id="timer">Time Left: 00:00</span>
+        </div>
+        <div id="questions-container">
+            <!-- Questions injected here -->
+        </div>
+        <button class="btn submit-btn" id="submit-btn" onclick="submitQuiz()">Submit Test</button>
+        <div class="result" id="result-display"></div>
+        <button class="btn" style="margin-top: 20px; width: 100%; display: none;" id="back-btn" onclick="showMenu()">Back to Menu</button>
+    </div>
+</div>
+
+<script>
+    const mockData = {
+        "Set 1: Ancient History": [
+            { q: "Who discovered Mohenjodaro in 1922?[cite: 1]", options: ["R.B. Dayaram Sahni", "R.D. Banerjee", "Max Muller", "Ashoka"], a: 1 },
+            { q: "Where did Buddha deliver his first sermon?[cite: 1]", options: ["Lumbini", "Kushinagar", "Sarnath", "Pataliputra"], a: 2 },
+            { q: "Who was the 24th and last Tirthankar of Jainism?[cite: 1]", options: ["Rishabhnath", "Parshwanath", "Vardhman Mahavira", "Siddhartha"], a: 2 }
+        ],
+        "Set 2: Medieval History": [
+            { q: "Who founded the Slave Dynasty?[cite: 1]", options: ["Iltutmish", "Balban", "Qutab-Ud-Din Aibak", "Raziya"], a: 2 },
+            { q: "Who defeated Ibrahim Lodi in the First Battle of Panipat (1526)?[cite: 1]", options: ["Sher Shah Suri", "Humayun", "Akbar", "Babur"], a: 3 },
+            { q: "Who built the Tajmahal and Red Fort at Delhi?[cite: 1]", options: ["Jahangir", "Shahjahan", "Aurangzeb", "Akbar"], a: 1 }
+        ],
+        "Set 3: Modern Indian History": [
+            { q: "Who founded the Brahmo Samaj in 1828?[cite: 1]", options: ["Swami Dayanand", "Vivekanand", "Raja Ram Mohan Roy", "Jyotirao Phule"], a: 2 },
+            { q: "In which year did the Dandi March (Salt Satyagraha) start?[cite: 1]", options: ["1920", "1929", "1930", "1942"], a: 2 },
+            { q: "Who is popularly known as Frontier Gandhi?[cite: 1]", options: ["Khan Abdul Ghaffar Khan", "Subhash Chandra Bose", "Maulana Abul Kalam Azad", "B.R. Ambedkar"], a: 0 }
+        ],
+        "Set 4: Solar System & World Geo": [
+            { q: "Which planet is known as the Red Planet?[cite: 1]", options: ["Venus", "Jupiter", "Saturn", "Mars"], a: 3 },
+            { q: "What is the largest desert in the world by area?[cite: 1]", options: ["Arabian", "Gobi", "Sahara", "Kalahari"], a: 2 },
+            { q: "What is the highest mountain peak in the world?[cite: 1]", options: ["K2", "Kanchanjanga", "Makalu", "Everest"], a: 3 }
+        ],
+        "Set 5: Indian Geography": [
+            { q: "Through how many Indian states does the Tropic of Cancer pass?[cite: 1]", options: ["6", "7", "8", "9"], a: 2 },
+            { q: "Which is the longest river in India?[cite: 1]", options: ["Ganges", "Godavari", "Yamuna", "Brahmaputra"], a: 0 },
+            { q: "Where is the Gir Forests National Park, home of the Asiatic lion, located?[cite: 1]", options: ["Assam", "Gujarat", "Uttarakhand", "Madhya Pradesh"], a: 1 }
+        ],
+        "Set 6: Indian Polity - Constitution": [
+            { q: "How long did the Constituent Assembly take to complete the Constitution?[cite: 1]", options: ["2 years-11 months-17 days", "3 years", "1 year-10 months", "2 years-5 months"], a: 0 },
+            { q: "How many languages are listed in the Eighth Schedule of the Constitution?[cite: 1]", options: ["18", "21", "22", "24"], a: 2 },
+            { q: "What is the minimum age required to become the President of India?[cite: 1]", options: ["25 years", "30 years", "35 years", "40 years"], a: 2 }
+        ],
+        "Set 7: Indian Polity - Institutions": [
+            { q: "Who is the ex-officio Chairman of the Rajya Sabha?[cite: 1]", options: ["President", "Prime Minister", "Vice-President", "Speaker"], a: 2 },
+            { q: "What is the retirement age for a Supreme Court judge?[cite: 1]", options: ["60 years", "62 years", "65 years", "70 years"], a: 2 },
+            { q: "Who appoints the Chief Election Commissioner?[cite: 1]", options: ["Prime Minister", "President", "Chief Justice of India", "Parliament"], a: 1 }
+        ],
+        "Set 8: Economy & Five Year Plans": [
+            { q: "Which Five Year Plan is also called the Mahalanobis Plan?[cite: 1]", options: ["First Plan", "Second Plan", "Third Plan", "Fourth Plan"], a: 1 },
+            { q: "Who is the Chairperson of the NITI Aayog?[cite: 1]", options: ["Finance Minister", "President", "Prime Minister", "RBI Governor"], a: 2 },
+            { q: "The term 'Green Revolution' was given by whom?[cite: 1]", options: ["Dr. Norman Borlaug", "Dr. M.S. Swaminathan", "Dr. William Gande", "P.C. Mahalanobis"], a: 2 }
+        ],
+        "Set 9: Science - Physics & Chem": [
+            { q: "Who invented the Aeroplane in 1903?[cite: 1]", options: ["Orville & Wilbur Wright", "Thomas Alva Edison", "Karl Benz", "Carrier"], a: 0 },
+            { q: "What is the chemical name for Vitamin C?[cite: 1]", options: ["Retinol", "Thiamine", "Ascorbic Acid", "Calciferol"], a: 2 },
+            { q: "Which gas is commonly known as Laughing Gas?[cite: 1]", options: ["Methane", "Nitrous Oxide", "Carbon Dioxide", "Hydrogen"], a: 1 }
+        ],
+        "Set 10: Science - Biology & Med": [
+            { q: "Who discovered Penicillin in 1928?[cite: 1]", options: ["Louis Pasteur", "Alexander Fleming", "Edward Jenner", "Robert Koch"], a: 1 },
+            { q: "How many pairs of cranial nerves are there in the human body?[cite: 1]", options: ["10 pairs", "12 pairs", "31 pairs", "24 pairs"], a: 1 },
+            { q: "What is the normal pH of human blood?[cite: 1]", options: ["6.0", "7.0", "7.35-7.45", "1.4"], a: 2 }
+        ]
+    };
+
+    let currentSet = "";
+    let timerInterval;
+    let timeRemaining = 0;
+
+    function initMenu() {
+        const menu = document.getElementById('set-menu');
+        Object.keys(mockData).forEach((setName, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn';
+            btn.innerText = `Set ${index + 1}`;
+            btn.onclick = () => startQuiz(setName);
+            menu.appendChild(btn);
+        });
+    }
+
+    function startQuiz(setName) {
+        currentSet = setName;
+        document.getElementById('set-menu').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        document.getElementById('result-display').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+        document.getElementById('back-btn').style.display = 'none';
+        document.getElementById('set-title').innerText = setName;
+        
+        const questions = mockData[setName];
+        const container = document.getElementById('questions-container');
+        container.innerHTML = '';
+
+        questions.forEach((qObj, qIndex) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question-block';
+            
+            const qText = document.createElement('div');
+            qText.className = 'question';
+            qText.innerText = `${qIndex + 1}. ${qObj.q}`;
+            qDiv.appendChild(qText);
+            
+            const optionsList = document.createElement('ul');
+            optionsList.className = 'options';
+            qObj.options.forEach((opt, optIndex) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<label><input type="radio" name="q${qIndex}" value="${optIndex}"> ${opt}</label>`;
+                optionsList.appendChild(li);
+            });
+            qDiv.appendChild(optionsList);
+            container.appendChild(qDiv);
+        });
+
+        // 30 seconds per question
+        timeRemaining = questions.length * 30;
+        updateTimerDisplay();
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            updateTimerDisplay();
+            if(timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+        const secs = (timeRemaining % 60).toString().padStart(2, '0');
+        document.getElementById('timer').innerText = `Time Left: ${mins}:${secs}`;
+    }
+
+    function submitQuiz() {
+        clearInterval(timerInterval);
+        document.getElementById('submit-btn').style.display = 'none';
+        
+        const questions = mockData[currentSet];
+        let score = 0;
+        
+        questions.forEach((qObj, qIndex) => {
+            const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+            const options = document.querySelectorAll(`input[name="q${qIndex}"]`);
+            
+            options.forEach(opt => opt.disabled = true); // Disable further input
+            
+            if (selected && parseInt(selected.value) === qObj.a) {
+                score++;
+                selected.parentElement.style.backgroundColor = '#d4edda';
+                selected.parentElement.style.borderColor = '#c3e6cb';
+            } else {
+                if (selected) {
+                    selected.parentElement.style.backgroundColor = '#f8d7da';
+                    selected.parentElement.style.borderColor = '#f5c6cb';
+                }
+                // Highlight correct answer
+                const correctLabel = document.querySelector(`input[name="q${qIndex}"][value="${qObj.a}"]`).parentElement;
+                correctLabel.style.backgroundColor = '#d4edda';
+                correctLabel.style.borderColor = '#c3e6cb';
+            }
+        });
+
+        const resultDiv = document.getElementById('result-display');
+        resultDiv.innerText = `You scored ${score} out of ${questions.length}!`;
+        resultDiv.style.display = 'block';
+        document.getElementById('back-btn').style.display = 'block';
+    }
+
+    function showMenu() {
+        document.getElementById('set-menu').style.display = 'flex';
+        document.getElementById('quiz-section').style.display = 'none';
+    }
+
+    window.onload = initMenu;
+</script>
+
+</body>
+</html>

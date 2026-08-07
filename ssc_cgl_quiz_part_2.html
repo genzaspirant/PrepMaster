@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC CGL Quiz Master - Set 2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-btn:hover:not(.disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .correct {
+            background-color: #10b981 !important;
+            color: white !important;
+            border-color: #059669 !important;
+        }
+        .wrong {
+            background-color: #ef4444 !important;
+            color: white !important;
+            border-color: #dc2626 !important;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+
+    <div class="max-w-2xl w-full glass-morphism rounded-3xl shadow-2xl p-6 md:p-10 relative overflow-hidden">
+        <!-- Progress Bar -->
+        <div class="absolute top-0 left-0 h-1.5 bg-blue-100 w-full">
+            <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-500" style="width: 0%"></div>
+        </div>
+
+        <!-- Quiz Header -->
+        <div class="flex justify-between items-center mb-8 mt-2">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">CGL Quiz Simulator</h1>
+                <p class="text-sm text-slate-500 font-medium">Set 02: Questions 51 - 100</p>
+            </div>
+            <div class="text-right">
+                <span id="q-counter" class="text-lg font-bold text-blue-600">1/50</span>
+                <p id="score-display" class="text-xs text-slate-400">Score: 0</p>
+            </div>
+        </div>
+
+        <!-- Question Section -->
+        <div id="quiz-content" class="fade-in">
+            <div id="question-text" class="text-xl font-semibold text-slate-700 leading-relaxed mb-8">
+                Loading question...
+            </div>
+
+            <div id="options-container" class="space-y-4">
+                <!-- Buttons injected by JS -->
+            </div>
+        </div>
+
+        <!-- Feedback & Footer -->
+        <div class="mt-10 flex flex-col items-center">
+            <button id="next-btn" class="hidden w-full md:w-auto px-8 py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition-all shadow-lg active:scale-95">
+                Next Question →
+            </button>
+            <p id="feedback" class="mt-4 text-sm font-medium h-6"></p>
+        </div>
+
+        <!-- Results Screen (Hidden) -->
+        <div id="result-screen" class="hidden text-center py-10 fade-in">
+            <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 1118 0z"></path></svg>
+            </div>
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">Great Effort!</h2>
+            <p class="text-slate-500 mb-8">You have completed the second set of SSC CGL General Awareness MCQs.</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-8 text-left">
+                <div class="p-4 bg-slate-50 rounded-2xl">
+                    <span class="block text-xs text-slate-400 uppercase tracking-widest font-bold">Accuracy</span>
+                    <span id="final-accuracy" class="text-2xl font-bold text-slate-800">0%</span>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-2xl">
+                    <span class="block text-xs text-slate-400 uppercase tracking-widest font-bold">Final Score</span>
+                    <span id="final-score" class="text-2xl font-bold text-slate-800">0 / 50</span>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-xl shadow-blue-200">
+                Retake Quiz
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "Who was the Mughal Emperor when the East India Company was established in 1600?", options: ["Akbar", "Jahangir", "Shah Jahan", "Aurangzeb"], a: 0 },
+            { q: "Which part of the Indian Constitution deals with the 'Amendment of the Constitution'?", options: ["Part XX", "Part XVIII", "Part XV", "Part XXII"], a: 0 },
+            { q: "The 'Kandariya Mahadeva' temple at Khajuraho was built by which dynasty?", options: ["Paramaras", "Chandelas", "Pratiharas", "Solankis"], a: 1 },
+            { q: "Which neighbor of India is separated by the 'MacMahon Line'?", options: ["Pakistan", "Bangladesh", "China", "Nepal"], a: 2 },
+            { q: "What is the phenomenon called when the Moon comes between the Earth and the Sun?", options: ["Lunar Eclipse", "Solar Eclipse", "Full Moon", "Equinox"], a: 1 },
+            { q: "The 'Dumping' in international trade refers to:", options: ["Selling goods below cost of production", "Discarding waste in oceans", "Importing high quality goods", "Taxing exports"], a: 0 },
+            { q: "Who was the first woman President of the Indian National Congress?", options: ["Sarojini Naidu", "Annie Besant", "Nellie Sengupta", "Indira Gandhi"], a: 1 },
+            { q: "The 'Palk Strait' lies between which two countries?", options: ["India and Sri Lanka", "India and Maldives", "India and Indonesia", "India and Thailand"], a: 0 },
+            { q: "Article 44 of the Indian Constitution relates to:", options: ["Right to Education", "Uniform Civil Code", "Village Panchayats", "Separation of Judiciary"], a: 1 },
+            { q: "Which hormone is known as the 'Fight or Flight' hormone?", options: ["Insulin", "Thyroxine", "Adrenaline", "Oxytocin"], a: 2 },
+            { q: "Who founded the 'Prarthana Samaj' in 1867?", options: ["Atmaram Pandurang", "Jyotiba Phule", "Vivekananda", "M.G. Ranade"], a: 0 },
+            { q: "The largest producer of Rubber in India is:", options: ["Tamil Nadu", "Kerala", "Karnataka", "Assam"], a: 1 },
+            { q: "Which schedule of the Constitution deals with the allocation of seats in the Rajya Sabha?", options: ["Third Schedule", "Fourth Schedule", "Fifth Schedule", "Sixth Schedule"], a: 1 },
+            { q: "In the context of scientific research, what does 'ISRO' stand for?", options: ["Indian Space Research Organization", "International Space Radio Outlet", "Indian Solar Research Office", "Integrated Space Rocket Operation"], a: 0 },
+            { q: "The battle of 'Haldighati' (1576) was fought between Maharana Pratap and:", options: ["Akbar", "Ibrahim Lodi", "Hemu", "Sher Shah Suri"], a: 0 },
+            { q: "Which river is often called the 'Sorrow of Bengal'?", options: ["Kosi", "Damodar", "Ganga", "Hooghly"], a: 1 },
+            { q: "The 'Lothal' dockyard of Indus Valley Civilization is located in which state?", options: ["Rajasthan", "Gujarat", "Haryana", "Punjab"], a: 1 },
+            { q: "What is the primary objective of the 'Monetary Policy Committee' (MPC) in India?", options: ["Control Fiscal Deficit", "Inflation Targeting", "Regulate Stock Markets", "Foreign Aid Distribution"], a: 1 },
+            { q: "Which device is used to measure the depth of the ocean?", options: ["Fathometer", "Altimeter", "Galvanometer", "Hygrometer"], a: 0 },
+            { q: "Who led the 1857 revolt in Kanpur?", options: ["Begum Hazrat Mahal", "Nana Saheb", "Kunwar Singh", "Rani Lakshmibai"], a: 1 },
+            { q: "The 'Nilgiri Hills' are located at the junction of:", options: ["Western Ghats and Eastern Ghats", "Aravallis and Vindhyas", "Satpura and Vindhyas", "Himalayas and Siwaliks"], a: 0 },
+            { q: "Which Constitutional Amendment reduced the voting age from 21 to 18 years?", options: ["42nd", "44th", "61st", "73rd"], a: 2 },
+            { q: "The main constituent of 'Natural Gas' is:", options: ["Butane", "Propane", "Methane", "Ethane"], a: 2 },
+            { q: "Who authored the famous book 'The Wealth of Nations'?", options: ["John Maynard Keynes", "Adam Smith", "Karl Marx", "Amartya Sen"], a: 1 },
+            { q: "The 'Quit India' resolution was passed in which city?", options: ["Delhi", "Calcutta", "Bombay", "Madras"], a: 2 },
+            { q: "Which is the smallest neighboring country of India by area?", options: ["Bhutan", "Nepal", "Sri Lanka", "Maldives"], a: 3 },
+            { q: "The 'Money Bill' is defined in which Article of the Constitution?", options: ["Article 110", "Article 112", "Article 280", "Article 360"], a: 0 },
+            { q: "Which color of light travels the fastest through a glass prism?", options: ["Red", "Violet", "Green", "Yellow"], a: 0 },
+            { q: "The 'Golden Quadrilateral' project is associated with:", options: ["Railways", "Highways", "Airways", "Inland Waterways"], a: 1 },
+            { q: "In whose reign did the Chinese traveler Hiuen Tsang visit India?", options: ["Chandragupta Maurya", "Harshavardhana", "Ashoka", "Samudragupta"], a: 1 },
+            { q: "Which layer of the atmosphere contains the Ozone layer?", options: ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"], a: 1 },
+            { q: "The 'Sarkaria Commission' was set up to study:", options: ["Panchayati Raj", "Centre-State Relations", "Tax Reforms", "Bank Privatization"], a: 1 },
+            { q: "What is the chemical name of Vitamin B1?", options: ["Riboflavin", "Thiamine", "Ascorbic Acid", "Calciferol"], a: 1 },
+            { q: "Who is known as the 'Nightingale of India'?", options: ["Lata Mangeshkar", "Sarojini Naidu", "M.S. Subbulakshmi", "Asha Bhosle"], a: 1 },
+            { q: "Which state shares a border with 'Myanmar'?", options: ["Tripura", "Meghalaya", "Nagaland", "Sikkim"], a: 2 },
+            { q: "The 'Fiscal Policy' in India is formulated by:", options: ["Reserve Bank of India", "Ministry of Finance", "NITI Aayog", "SEBI"], a: 1 },
+            { q: "What is the SI unit of Pressure?", options: ["Newton", "Joule", "Pascal", "Watt"], a: 2 },
+            { q: "The 'Simlipal Biosphere Reserve' is located in:", options: ["West Bengal", "Odisha", "Jharkhand", "Chhattisgarh"], a: 1 },
+            { q: "Which fundamental right cannot be suspended even during an emergency?", options: ["Right to Equality", "Right to Freedom of Speech", "Right to Protection of Life", "Right to Constitutional Remedies"], a: 2 },
+            { q: "The process of 'Galvanization' involves coating iron with:", options: ["Lead", "Zinc", "Copper", "Tin"], a: 1 },
+            { q: "Who was the first Indian to win the Nobel Prize in Science?", options: ["C.V. Raman", "Homi J. Bhabha", "S. Chandrasekhar", "V. Ramakrishnan"], a: 0 },
+            { q: "The 'Durand Line' forms the border between:", options: ["India and Afghanistan", "Pakistan and Afghanistan", "India and China", "Pakistan and China"], a: 1 },
+            { q: "Which city is known as the 'Manchester of South India'?", options: ["Madurai", "Coimbatore", "Chennai", "Kochi"], a: 1 },
+            { q: "The 'Zero Hour' in the Indian Parliament starts at:", options: ["10:00 AM", "11:00 AM", "12:00 Noon", "1:00 PM"], a: 2 },
+            { q: "Human blood is slightly:", options: ["Acidic", "Basic", "Neutral", "Highly Acidic"], a: 1 },
+            { q: "The 'Gobar Gas' primarily contains:", options: ["Oxygen", "Carbon Dioxide", "Methane", "Hydrogen"], a: 2 },
+            { q: "The first Five-Year Plan of India was based on:", options: ["Mahalanobis Model", "Harrod-Domar Model", "Gandhian Model", "Liberalization Model"], a: 1 },
+            { q: "Which planet has the shortest revolution time around the Sun?", options: ["Venus", "Earth", "Mars", "Mercury"], a: 3 },
+            { q: "Who led the 'Bardoli Satyagraha' in 1928?", options: ["Mahatma Gandhi", "Sardar Patel", "Vitthalbhai Patel", "Mahadev Desai"], a: 1 },
+            { q: "What is the total number of High Courts currently in India?", options: ["21", "24", "25", "28"], a: 2 }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let canAnswer = true;
+
+        const qText = document.getElementById('question-text');
+        const optsContainer = document.getElementById('options-container');
+        const qCounter = document.getElementById('q-counter');
+        const nextBtn = document.getElementById('next-btn');
+        const feedback = document.getElementById('feedback');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreDisplay = document.getElementById('score-display');
+
+        function renderQuestion() {
+            const data = questions[currentIdx];
+            qText.innerText = data.q;
+            qCounter.innerText = `${currentIdx + 1}/${questions.length}`;
+            progressBar.style.width = `${((currentIdx + 1) / questions.length) * 100}%`;
+            
+            optsContainer.innerHTML = '';
+            data.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full p-4 text-left border-2 border-slate-100 rounded-2xl font-medium text-slate-600 bg-white hover:bg-slate-50 flex items-center gap-4 group";
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-blue-100 flex items-center justify-center text-xs font-bold transition-colors">
+                        ${String.fromCharCode(65 + i)}
+                    </span>
+                    <span>${opt}</span>
+                `;
+                btn.onclick = () => handleSelection(i, btn);
+                optsContainer.appendChild(btn);
+            });
+
+            feedback.innerText = '';
+            nextBtn.classList.add('hidden');
+            canAnswer = true;
+        }
+
+        function handleSelection(idx, btn) {
+            if (!canAnswer) return;
+            canAnswer = false;
+
+            const correctIdx = questions[currentIdx].a;
+            const allBtns = optsContainer.querySelectorAll('button');
+
+            allBtns.forEach((b, i) => {
+                b.classList.add('disabled', 'opacity-50', 'cursor-not-allowed');
+                if (i === correctIdx) b.classList.add('correct', 'opacity-100');
+            });
+
+            if (idx === correctIdx) {
+                score++;
+                scoreDisplay.innerText = `Score: ${score}`;
+                feedback.innerHTML = `<span class="text-emerald-600">✓ Correct Answer!</span>`;
+            } else {
+                btn.classList.add('wrong', 'opacity-100');
+                feedback.innerHTML = `<span class="text-rose-600">✗ Incorrect. The correct answer was ${questions[currentIdx].options[correctIdx]}</span>`;
+            }
+
+            nextBtn.classList.remove('hidden');
+            if (currentIdx === questions.length - 1) {
+                nextBtn.innerText = "Finish Quiz & View Results";
+            }
+        }
+
+        nextBtn.onclick = () => {
+            if (currentIdx < questions.length - 1) {
+                currentIdx++;
+                renderQuestion();
+            } else {
+                showFinalResults();
+            }
+        };
+
+        function showFinalResults() {
+            document.getElementById('quiz-content').classList.add('hidden');
+            document.querySelector('.quiz-header').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback').classList.add('hidden');
+            
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.classList.remove('hidden');
+            
+            const accuracy = Math.round((score / questions.length) * 100);
+            document.getElementById('final-accuracy').innerText = `${accuracy}%`;
+            document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+        }
+
+        // Initialize
+        renderQuestion();
+    </script>
+</body>
+</html>

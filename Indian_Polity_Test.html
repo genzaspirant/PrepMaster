@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Mock Test - Indian Polity</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7f6;
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    h1, h2, h3 {
+        color: #2c3e50;
+        text-align: center;
+    }
+    .container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .btn {
+        background: #3498db;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+    .btn:hover {
+        background: #2980b9;
+    }
+    .btn:disabled {
+        background: #95a5a6;
+        cursor: not-allowed;
+    }
+    .quiz-section {
+        display: none;
+    }
+    .header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #ecf0f1;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .timer {
+        color: #e74c3c;
+    }
+    .question-block {
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eaeaea;
+    }
+    .question {
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    .options {
+        list-style-type: none;
+        padding: 0;
+    }
+    .options li {
+        margin-bottom: 10px;
+    }
+    .options label {
+        cursor: pointer;
+        background: #fdfdfd;
+        display: block;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: background 0.2s;
+    }
+    .options label:hover {
+        background: #f1f2f6;
+    }
+    .submit-btn {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        background: #27ae60;
+        font-size: 1.1em;
+        padding: 15px;
+    }
+    .submit-btn:hover {
+        background: #2ecc71;
+    }
+    .result {
+        text-align: center;
+        font-size: 1.2em;
+        margin-top: 20px;
+        font-weight: bold;
+        display: none;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Indian Polity - Constitution Mock Test</h1>
+    <p style="text-align: center;">You have 30 seconds per question. Good luck!</p>
+    
+    <div class="menu" id="set-menu">
+        <!-- Buttons will be injected here by JS -->
+    </div>
+
+    <div class="quiz-section" id="quiz-section">
+        <div class="header-bar">
+            <span id="set-title">Polity Test</span>
+            <span class="timer" id="timer">Time Left: 00:00</span>
+        </div>
+        <div id="questions-container">
+            <!-- Questions injected here -->
+        </div>
+        <button class="btn submit-btn" id="submit-btn" onclick="submitQuiz()">Submit Test</button>
+        <div class="result" id="result-display"></div>
+        <button class="btn" style="margin-top: 20px; width: 100%; display: none;" id="back-btn" onclick="showMenu()">Back to Menu</button>
+    </div>
+</div>
+
+<script>
+    const mockData = {
+        "Indian Polity - Constitution (50 MCQs)": [
+            { q: "Under which plan was the Constituent Assembly set up?[cite: 1]", options: ["Wavell Plan", "Cabinet Mission Plan", "Mountbatten Plan", "Cripps Mission"], a: 1 },
+            { q: "How many members did the Constituent Assembly originally consist of?[cite: 1]", options: ["292", "385", "389", "395"], a: 1 },
+            { q: "Who was appointed as the Constitutional Advisor of the Assembly?[cite: 1]", options: ["B.N. Rao", "Dr. B.R. Ambedkar", "Dr. Rajendra Prasad", "K.M. Munshi"], a: 0 },
+            { q: "When did the first meeting of the Constituent Assembly take place?[cite: 1]", options: ["Dec 9, 1946", "Dec 11, 1946", "Aug 29, 1947", "Nov 26, 1949"], a: 0 },
+            { q: "Who was the interim President of the Constituent Assembly?[cite: 1]", options: ["Dr. Rajendra Prasad", "Syyed Mohd. Saadulla", "Dr. Sachidanand Sinha", "N. Gopalaswami Ayyangar"], a: 2 },
+            { q: "Who was the Chairman of the Drafting Committee formed on Aug 29, 1947?[cite: 1]", options: ["N. Madhav Rao", "Dr. Rajendra Prasad", "K.M. Munshi", "Dr. B. R. Ambedkar"], a: 3 },
+            { q: "How many members of the Assembly signed the official copies of the Indian Constitution?[cite: 1]", options: ["292", "385", "284", "395"], a: 2 },
+            { q: "Exactly how much time did the Constituent Assembly take to complete the Constitution?[cite: 1]", options: ["2 years-11 months-17 days", "3 years-1 month-15 days", "2 years-9 months-18 days", "2 years-10 months-17 days"], a: 0 },
+            { q: "Originally, how many Articles and Schedules did the Indian Constitution have?[cite: 1]", options: ["395 articles & 12 schedules", "465 articles & 8 schedules", "395 articles & 8 schedules", "400 articles & 10 schedules"], a: 2 },
+            { q: "Who designed the National Flag of India adopted on July 22, 1947?[cite: 1]", options: ["B.N. Rao", "Pingali Venkaiah", "M.N. Roy", "Dr. Sachidanand Sinha"], a: 1 },
+            { q: "Who gave the idea to have a Constitution?[cite: 1]", options: ["J.L. Nehru", "M.N. Roy", "B.R. Ambedkar", "Mahatma Gandhi"], a: 1 },
+            { q: "The 'Objective Resolution', which ultimately became the Preamble, was proposed by whom?[cite: 1]", options: ["Pandit Nehru", "Dr. Rajendra Prasad", "M.N. Roy", "B.N. Rao"], a: 0 },
+            { q: "Which words were added to the Preamble by the 42nd Amendment in 1976?[cite: 1]", options: ["Liberty, Equality, Fraternity", "Socialist, Secular, Unity & Integrity", "Sovereign, Socialist, Democratic", "Justice, Liberty, Equality"], a: 1 },
+            { q: "In which case did the Supreme Court hold that the Preamble contains the Basic Features of the Constitution?[cite: 1]", options: ["Golaknath Case", "Minerva Mills Case", "Keshavanda Bharati vs. State of Kerala", "Berubari Union Case"], a: 2 },
+            { q: "The concept of Single Citizenship was borrowed from the constitution of which country?[cite: 1]", options: ["U.S.A.", "U.K.", "U.S.S.R.", "Canada"], a: 1 },
+            { q: "The provision for Fundamental Rights was borrowed from which country?[cite: 1]", options: ["U.K.", "U.S.A.", "Ireland", "Australia"], a: 1 },
+            { q: "The concept of Fundamental Duties was borrowed from the constitution of which country?[cite: 1]", options: ["U.S.S.R.", "Japan", "Weimar Constitution of Germany", "South Africa"], a: 0 },
+            { q: "The 'Concurrent list' feature in the Indian Constitution was borrowed from:[cite: 1]", options: ["Canada", "Ireland", "Australia", "Japan"], a: 2 },
+            { q: "The Concept of Directive Principles of State Policy was borrowed from which country?[cite: 1]", options: ["Ireland", "Spain", "U.S.A.", "Canada"], a: 0 },
+            { q: "The Procedure of Constitutional Amendments is borrowed from:[cite: 1]", options: ["U.K.", "U.S.A.", "South Africa", "Japan"], a: 2 },
+            { q: "Which schedule contains the Forms of Oaths and Affirmations for Union Ministers?[cite: 1]", options: ["First Schedule", "Second Schedule", "Third Schedule", "Fourth Schedule"], a: 2 },
+            { q: "Which schedule allocates seats for each State of India in the Rajya Sabha?[cite: 1]", options: ["Third Schedule", "Fourth Schedule", "Fifth Schedule", "Sixth Schedule"], a: 1 },
+            { q: "How many subjects are there in the Union list according to the Seventh Schedule?[cite: 1]", options: ["61", "52", "97", "100"], a: 3 },
+            { q: "Sindhi was added to the Eighth Schedule by which amendment?[cite: 1]", options: ["21st amendment in 1967", "71st amendment in 1992", "92nd amendment in 2003", "1st amendment in 1951"], a: 0 },
+            { q: "The Tenth Schedule, containing provisions of disqualification on grounds of defection, was added by which amendment?[cite: 1]", options: ["42nd amendment", "44th amendment", "52nd amendment in 1985", "73rd amendment in 1992"], a: 2 },
+            { q: "The Eleventh Schedule, related to Panchayati Raj, was added in which year?[cite: 1]", options: ["1985", "1992", "1976", "2003"], a: 1 },
+            { q: "Which Article guarantees Equality before law and equal protection of law?[cite: 1]", options: ["Article 14", "Article 15", "Article 16", "Article 17"], a: 0 },
+            { q: "Which Article deals with the End of untouchability?[cite: 1]", options: ["Article 16", "Article 17", "Article 18", "Article 19"], a: 1 },
+            { q: "Which Article guarantees protection of life and personal liberty?[cite: 1]", options: ["Article 20", "Article 21", "Article 22", "Article 23"], a: 1 },
+            { q: "According to Article 24, no child below what age can be employed?[cite: 1]", options: ["12 years", "14 years", "16 years", "18 years"], a: 1 },
+            { q: "Which Article was called the 'Soul and heart of the Constitution' by B.R. Ambedkar?[cite: 1]", options: ["Article 14", "Article 19", "Article 21", "Article 32"], a: 3 },
+            { q: "Which writ literally means 'to have the body'?[cite: 1]", options: ["Mandamus", "Habeas Corpus", "Quo Warranto", "Certiorari"], a: 1 },
+            { q: "Which writ is a command issued by the court commanding a person or public authority to do their public duty?[cite: 1]", options: ["Prohibition", "Certiorari", "Mandamus", "Habeas Corpus"], a: 2 },
+            { q: "Which writ orders the removal of a suit from an inferior court to a superior court?[cite: 1]", options: ["Quo Warranto", "Certiorari", "Prohibition", "Mandamus"], a: 1 },
+            { q: "Which State was created by the State of Andhra Pradesh Act, 1953?[cite: 1]", options: ["Andhra Pradesh", "Maharashtra", "Gujarat", "Kerala"], a: 0 },
+            { q: "Sikkim got the status of a full State in 1975 by which Constitutional Amendment Act?[cite: 1]", options: ["35th", "36th", "42nd", "44th"], a: 1 },
+            { q: "Goa was made a full-fledged State by the Reorganisation Act of which year?[cite: 1]", options: ["1971", "1986", "1987", "2000"], a: 2 },
+            { q: "Part-II (Art. 5-11) of the Constitution deals with:[cite: 1]", options: ["Fundamental Rights", "Citizenship", "Directive Principles", "Union Territories"], a: 1 },
+            { q: "Part-IV (Art. 36-51) deals with:[cite: 1]", options: ["Fundamental Duties", "Directive Principles of State Policy", "Panchayats", "Elections"], a: 1 },
+            { q: "Part-IV-A (Art. 51A), containing the duties of the citizens, was added by which amendment?[cite: 1]", options: ["42nd amendment in 1976", "44th amendment in 1978", "52nd amendment in 1985", "73rd amendment in 1992"], a: 0 },
+            { q: "Which Part of the Constitution deals with the Panchayati Raj?[cite: 1]", options: ["Part - VIII", "Part - IX", "Part - IX A", "Part - X"], a: 1 },
+            { q: "Which Part of the Constitution deals with Elections (including Election Commission)?[cite: 1]", options: ["Part - XIV", "Part - XV", "Part - XVI", "Part - XVII"], a: 1 },
+            { q: "Part - XVIII (Art. 352-360) of the Constitution deals with:[cite: 1]", options: ["Emergency provisions", "Amendment of Constitution", "Official language", "Trade and Commerce"], a: 0 },
+            { q: "Which Article deals with the Amendment of the Constitution?[cite: 1]", options: ["Article 356", "Article 360", "Article 368", "Article 370"], a: 2 },
+            { q: "What is the minimum age limit to become the President of India?[cite: 1]", options: ["25 years", "30 years", "35 years", "40 years"], a: 2 },
+            { q: "Who administers the oath to the President of India?[cite: 1]", options: ["Vice-President", "Prime Minister", "Speaker of Lok Sabha", "Chief Justice of India"], a: 3 },
+            { q: "What is the current monthly salary of the President of India?[cite: 1]", options: ["Rs. 1,50,000", "Rs. 2,50,000", "Rs. 4,00,000", "Rs. 5,00,000"], a: 3 },
+            { q: "Under which Article can the President promulgate a National Emergency?[cite: 1]", options: ["Article 352", "Article 356", "Article 360", "Article 368"], a: 0 },
+            { q: "Who acts as the ex-officio Chairman of the NITI Aayog?[cite: 1]", options: ["President", "Vice-President", "Prime Minister", "Finance Minister"], a: 2 },
+            { q: "According to the Constitution, what is the maximum strength of the Lok Sabha (including States and UTs)?[cite: 1]", options: ["545", "550", "250", "500"], a: 1 }
+        ]
+    };
+
+    let currentSet = "";
+    let timerInterval;
+    let timeRemaining = 0;
+
+    function initMenu() {
+        const menu = document.getElementById('set-menu');
+        Object.keys(mockData).forEach((setName) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn';
+            btn.innerText = "Start: " + setName; 
+            btn.onclick = () => startQuiz(setName);
+            menu.appendChild(btn);
+        });
+    }
+
+    function startQuiz(setName) {
+        currentSet = setName;
+        document.getElementById('set-menu').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        document.getElementById('result-display').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+        document.getElementById('back-btn').style.display = 'none';
+        document.getElementById('set-title').innerText = "Indian Polity - Constitution";
+        
+        const questions = mockData[setName];
+        const container = document.getElementById('questions-container');
+        container.innerHTML = '';
+
+        questions.forEach((qObj, qIndex) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question-block';
+            
+            const qText = document.createElement('div');
+            qText.className = 'question';
+            qText.innerText = `${qIndex + 1}. ${qObj.q}`;
+            qDiv.appendChild(qText);
+            
+            const optionsList = document.createElement('ul');
+            optionsList.className = 'options';
+            qObj.options.forEach((opt, optIndex) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<label><input type="radio" name="q${qIndex}" value="${optIndex}"> ${opt}</label>`;
+                optionsList.appendChild(li);
+            });
+            qDiv.appendChild(optionsList);
+            container.appendChild(qDiv);
+        });
+
+        // 30 seconds per question dynamically applied
+        timeRemaining = questions.length * 30;
+        updateTimerDisplay();
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            updateTimerDisplay();
+            if(timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+        const secs = (timeRemaining % 60).toString().padStart(2, '0');
+        document.getElementById('timer').innerText = `Time Left: ${mins}:${secs}`;
+    }
+
+    function submitQuiz() {
+        clearInterval(timerInterval);
+        document.getElementById('submit-btn').style.display = 'none';
+        
+        const questions = mockData[currentSet];
+        let score = 0;
+        
+        questions.forEach((qObj, qIndex) => {
+            const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+            const options = document.querySelectorAll(`input[name="q${qIndex}"]`);
+            
+            options.forEach(opt => opt.disabled = true); 
+            
+            if (selected && parseInt(selected.value) === qObj.a) {
+                score++;
+                selected.parentElement.style.backgroundColor = '#d4edda';
+                selected.parentElement.style.borderColor = '#c3e6cb';
+            } else {
+                if (selected) {
+                    selected.parentElement.style.backgroundColor = '#f8d7da';
+                    selected.parentElement.style.borderColor = '#f5c6cb';
+                }
+                const correctLabel = document.querySelector(`input[name="q${qIndex}"][value="${qObj.a}"]`).parentElement;
+                correctLabel.style.backgroundColor = '#d4edda';
+                correctLabel.style.borderColor = '#c3e6cb';
+            }
+        });
+
+        const resultDiv = document.getElementById('result-display');
+        resultDiv.innerText = `You scored ${score} out of ${questions.length}!`;
+        resultDiv.style.display = 'block';
+        document.getElementById('back-btn').style.display = 'block';
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function showMenu() {
+        document.getElementById('set-menu').style.display = 'flex';
+        document.getElementById('quiz-section').style.display = 'none';
+        window.scrollTo(0, 0);
+    }
+
+    window.onload = initMenu;
+</script>
+
+</body>
+</html>

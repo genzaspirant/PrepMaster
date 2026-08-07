@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC CGL General Studies Masterclass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            min-height: 100vh;
+            color: #0f172a;
+        }
+        h1, h2, .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.15);
+        }
+        .option-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-btn:hover:not(.disabled) {
+            transform: translateX(6px);
+            background: #f8fafc;
+            border-color: #10b981;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+        }
+        .correct-opt {
+            background: #ecfdf5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+        .wrong-opt {
+            background: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+        .animate-slide-up {
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .topic-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(16, 185, 129, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4 sm:p-6 lg:p-10 relative overflow-x-hidden">
+
+    <main class="w-full max-w-4xl glass-card rounded-[2rem] p-6 sm:p-10 flex flex-col min-h-[650px] relative z-10">
+        
+        <!-- Progress Bar -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-emerald-100 rounded-t-[2rem] overflow-hidden">
+            <div id="progress-bar" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-2 transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+
+        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pt-4 pb-6 border-b border-emerald-100">
+            <div>
+                <h1 class="text-3xl sm:text-4xl font-bold text-emerald-900 mb-2">General Studies</h1>
+                <p class="text-sm font-bold text-emerald-600/70 uppercase tracking-widest">SSC CGL Tier I & II Mock</p>
+            </div>
+            <div class="flex items-center gap-4 bg-white px-5 py-3 rounded-2xl shadow-sm border border-emerald-50">
+                <div class="text-center">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Question</p>
+                    <p class="text-xl font-black text-emerald-700"><span id="q-current">1</span><span class="text-slate-300 text-sm">/50</span></p>
+                </div>
+                <div class="w-px h-8 bg-slate-200"></div>
+                <div class="text-center">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Score</p>
+                    <p id="score-display" class="text-xl font-black text-slate-700">0</p>
+                </div>
+            </div>
+        </header>
+
+        <div id="quiz-area" class="flex-grow flex flex-col animate-slide-up">
+            <div class="mb-8">
+                <span id="topic-badge" class="topic-badge mb-4 inline-block shadow-md">Topic</span>
+                <h2 id="question-text" class="text-xl sm:text-2xl font-medium text-slate-800 leading-relaxed">Loading question...</h2>
+            </div>
+
+            <div id="options-container" class="space-y-3 mt-auto">
+                <!-- Options injected by JavaScript -->
+            </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-emerald-100 flex flex-col sm:flex-row items-center justify-between gap-4 min-h-[90px]">
+            <div id="feedback-area" class="w-full sm:w-2/3 hidden p-4 rounded-xl text-sm font-medium leading-relaxed"></div>
+            <button id="next-btn" class="hidden w-full sm:w-1/3 px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-emerald-500/30 active:scale-95 text-lg">
+                Next <span class="ml-2">→</span>
+            </button>
+        </div>
+
+        <div id="result-area" class="hidden flex-col items-center justify-center text-center py-8 flex-grow animate-slide-up">
+            <div class="w-28 h-28 mb-8 rounded-full bg-emerald-100 flex items-center justify-center border-4 border-white shadow-xl">
+                <svg class="w-12 h-12 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 1118 0z"></path></svg>
+            </div>
+            <h2 class="text-4xl font-bold text-emerald-900 mb-3 serif-font">Test Completed!</h2>
+            <p class="text-slate-500 mb-10 text-lg">You have successfully evaluated your General Studies preparation.</p>
+            
+            <div class="grid grid-cols-2 gap-6 w-full max-w-lg mb-10">
+                <div class="bg-white border border-emerald-100 shadow-sm p-6 rounded-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-emerald-50 rounded-bl-full -z-10"></div>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-2">Final Score</p>
+                    <p class="text-4xl font-black text-emerald-700"><span id="final-score">0</span><span class="text-lg text-slate-400 font-medium">/50</span></p>
+                </div>
+                <div class="bg-slate-900 shadow-xl p-6 rounded-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-slate-800 rounded-bl-full -z-10"></div>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-2">Accuracy</p>
+                    <p id="final-accuracy" class="text-4xl font-black text-white">0%</p>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="px-10 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 text-lg">
+                Retake Exam
+            </button>
+        </div>
+    </main>
+
+    <script>
+        const gsData = [
+            // History (1-10)
+            { topic: "History", q: "The Indus Valley Civilization site 'Kalibangan' is situated in which Indian state?", options: ["Gujarat", "Rajasthan", "Haryana", "Punjab"], a: 1, exp: "Kalibangan is an ancient site of the Indus Valley Civilization located in the Hanumangarh district of Rajasthan. It is famous for its ploughed field and fire altars." },
+            { topic: "History", q: "Who among the following was the court poet of Harsha and author of the 'Harshacharita'?", options: ["Kalidasa", "Banabhatta", "Ravikirti", "Vishakhadatta"], a: 1, exp: "Banabhatta was the court poet of King Harshavardhana. He wrote 'Harshacharita' (a biography of Harsha) and 'Kadambari'." },
+            { topic: "History", q: "The First Battle of Panipat (1526) was fought between Babur and whom?", options: ["Rana Sanga", "Ibrahim Lodi", "Hemachandra Vikramaditya", "Mahmud Lodi"], a: 1, exp: "The First Battle of Panipat was fought on 21 April 1526 between the invading forces of Babur and the Lodi Kingdom led by Ibrahim Lodi, marking the beginning of the Mughal Empire in India." },
+            { topic: "History", q: "Who founded the 'Ramakrishna Mission' in 1897?", options: ["Swami Vivekananda", "Ramakrishna Paramahamsa", "Raja Ram Mohan Roy", "Dayananda Saraswati"], a: 0, exp: "The Ramakrishna Mission was founded by Swami Vivekananda in 1897 to carry out humanitarian and social work based on the teachings of his guru, Ramakrishna Paramahamsa." },
+            { topic: "History", q: "The 'Quit India Movement' was launched by Mahatma Gandhi in which year?", options: ["1920", "1930", "1942", "1947"], a: 2, exp: "The Quit India Movement, also known as the August Movement, was launched at the Bombay session of the All-India Congress Committee by Mahatma Gandhi on 8 August 1942, during World War II." },
+            { topic: "History", q: "In which year did the Jallianwala Bagh massacre take place?", options: ["1917", "1919", "1921", "1923"], a: 1, exp: "The Jallianwala Bagh massacre took place on 13 April 1919 in Amritsar, Punjab, when British troops under the command of General Dyer fired upon a peaceful crowd." },
+            { topic: "History", q: "Who was the founder of the Maurya Empire?", options: ["Ashoka", "Chandragupta Maurya", "Bindusara", "Ajatashatru"], a: 1, exp: "Chandragupta Maurya was the founder of the Maurya Empire in ancient India. He built one of the largest empires on the Indian subcontinent." },
+            { topic: "History", q: "Which Mughal Emperor abolished the 'Jizya' tax on non-Muslims in 1564?", options: ["Babur", "Humayun", "Akbar", "Aurangzeb"], a: 2, exp: "Akbar abolished the Jizya (a tax levied on non-Muslims) in 1564 to promote religious tolerance and integrate his diverse empire." },
+            { topic: "History", q: "The partition of Bengal took place in 1905 under the viceroyalty of:", options: ["Lord Curzon", "Lord Minto", "Lord Hardinge", "Lord Chelmsford"], a: 0, exp: "The partition of Bengal was announced in July 1905 by Lord Curzon, the then Viceroy of India, largely for administrative reasons but widely seen as a 'divide and rule' policy." },
+            { topic: "History", q: "Who was the first Indian woman President of the Indian National Congress?", options: ["Annie Besant", "Sarojini Naidu", "Indira Gandhi", "Sucheta Kripalani"], a: 1, exp: "Sarojini Naidu became the first Indian woman President of the INC at the Kanpur session in 1925. (Annie Besant was the first woman, but not Indian)." },
+
+            // Geography (11-20)
+            { topic: "Geography", q: "Which is the longest river in Peninsular India?", options: ["Narmada", "Krishna", "Godavari", "Kaveri"], a: 2, exp: "The Godavari is the longest river in Peninsular India and the second longest in India after the Ganga. It is often called the 'Dakshin Ganga'." },
+            { topic: "Geography", q: "The Majuli island, the largest river island in the world, is located in which river?", options: ["Ganga", "Brahmaputra", "Indus", "Teesta"], a: 1, exp: "Majuli is a river island in the Brahmaputra River in Assam, India. It was recognized as the first island district in India." },
+            { topic: "Geography", q: "Which soil is most suitable for cotton cultivation in India?", options: ["Alluvial Soil", "Red Soil", "Laterite Soil", "Black Soil"], a: 3, exp: "Black soil, also known as Regur soil, is ideal for growing cotton due to its high moisture retentive capacity. It is primarily found in the Deccan Plateau." },
+            { topic: "Geography", q: "The state of India with the longest coastline is:", options: ["Tamil Nadu", "Andhra Pradesh", "Gujarat", "Maharashtra"], a: 2, exp: "Gujarat has the longest mainland coastline in India, measuring over 1,600 km, dotted with several prominent ports." },
+            { topic: "Geography", q: "Through which of the following states does the Tropic of Cancer NOT pass?", options: ["Gujarat", "Jharkhand", "Odisha", "Tripura"], a: 2, exp: "The Tropic of Cancer passes through 8 Indian states: Gujarat, Rajasthan, MP, Chhattisgarh, Jharkhand, West Bengal, Tripura, and Mizoram. It does not pass through Odisha." },
+            { topic: "Geography", q: "Which is the highest peak in the Western Ghats?", options: ["Doda Betta", "Anaimudi", "Mahendragiri", "Kalsubai"], a: 1, exp: "Anaimudi, located in Kerala, is the highest peak in the Western Ghats and South India, with an elevation of 2,695 meters." },
+            { topic: "Geography", q: "The 'Ring of Fire' is associated with which ocean?", options: ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"], a: 2, exp: "The Ring of Fire is a major area in the basin of the Pacific Ocean where many earthquakes and volcanic eruptions occur." },
+            { topic: "Geography", q: "Which layer of the atmosphere contains the Ozone Layer?", options: ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"], a: 1, exp: "The ozone layer is a region of Earth's stratosphere that absorbs most of the Sun's ultraviolet radiation." },
+            { topic: "Geography", q: "The Palk Strait separates India from which country?", options: ["Maldives", "Sri Lanka", "Indonesia", "Myanmar"], a: 1, exp: "The Palk Strait is a strait between the Tamil Nadu state of India and the Jaffna District of the Northern Province of the island nation of Sri Lanka." },
+            { topic: "Geography", q: "Which planet is known as the 'Morning Star' or 'Evening Star'?", options: ["Mercury", "Mars", "Venus", "Jupiter"], a: 2, exp: "Venus is the brightest planet in the night sky and is visible just before sunrise or just after sunset, earning it the names Morning and Evening Star." },
+
+            // Polity (21-30)
+            { topic: "Polity", q: "Which Article of the Indian Constitution deals with the 'Right to Equality'?", options: ["Article 14-18", "Article 19-22", "Article 23-24", "Article 25-28"], a: 0, exp: "Articles 14 to 18 of the Indian Constitution guarantee the Right to Equality, ensuring equal rights before the law and prohibiting discrimination." },
+            { topic: "Polity", q: "Who appoints the Chief Justice of India?", options: ["Prime Minister", "President of India", "Parliament", "Law Minister"], a: 1, exp: "The Chief Justice of India and the Judges of the Supreme Court are appointed by the President under clause (2) of Article 124 of the Constitution." },
+            { topic: "Polity", q: "The Directive Principles of State Policy (DPSP) are borrowed from the constitution of which country?", options: ["USA", "UK", "Ireland", "Australia"], a: 2, exp: "The concept of Directive Principles of State Policy was borrowed from the Irish Constitution, which had copied it from the Spanish Constitution." },
+            { topic: "Polity", q: "What is the minimum age required to become a member of the Lok Sabha?", options: ["21 years", "25 years", "30 years", "35 years"], a: 1, exp: "Article 84 (b) of the Constitution provides that the minimum age for becoming a candidate for the Lok Sabha is 25 years." },
+            { topic: "Polity", q: "Which constitutional amendment added the Fundamental Duties to the Constitution?", options: ["42nd Amendment", "44th Amendment", "86th Amendment", "73rd Amendment"], a: 0, exp: "The 42nd Amendment Act of 1976 added 10 Fundamental Duties to the Indian Constitution on the recommendation of the Swaran Singh Committee." },
+            { topic: "Polity", q: "Under which Article can the President declare a National Emergency?", options: ["Article 352", "Article 356", "Article 360", "Article 365"], a: 0, exp: "Article 352 empowers the President to declare a National Emergency if there is a grave threat to the security of India due to war, external aggression, or armed rebellion." },
+            { topic: "Polity", q: "The Panchayati Raj system in India was introduced on the recommendation of which committee?", options: ["Sarkaria Commission", "Balwant Rai Mehta Committee", "Ashok Mehta Committee", "Kothari Commission"], a: 1, exp: "The Balwant Rai Mehta Committee (1957) recommended the establishment of the scheme of 'democratic decentralization', which finally came to be known as Panchayati Raj." },
+            { topic: "Polity", q: "How many schedules are there in the Indian Constitution currently?", options: ["8", "10", "12", "14"], a: 2, exp: "The original Indian Constitution had 8 schedules. Currently, it has 12 schedules, added through various amendments over time." },
+            { topic: "Polity", q: "Who is the ex-officio Chairman of the Rajya Sabha?", options: ["President", "Vice-President", "Prime Minister", "Speaker of Lok Sabha"], a: 1, exp: "The Vice-President of India acts as the ex-officio Chairman of the Rajya Sabha (Council of States)." },
+            { topic: "Polity", q: "Which writ is issued by a higher court to order a lower court or public authority to perform its legal duty?", options: ["Habeas Corpus", "Mandamus", "Certiorari", "Quo-Warranto"], a: 1, exp: "Mandamus (meaning 'we command') is issued to direct a public authority to perform its legal duties which it has not or refused to perform." },
+
+            // Economy (31-40)
+            { topic: "Economy", q: "What is the primary function of the Reserve Bank of India (RBI)?", options: ["Collecting taxes", "Formulating Fiscal Policy", "Formulating Monetary Policy", "Regulating stock markets"], a: 2, exp: "The RBI is the central bank of India and its primary function is to formulate, implement, and monitor the Monetary Policy to maintain price stability." },
+            { topic: "Economy", q: "The 'First Five-Year Plan' in India was based on which economic model?", options: ["Mahalanobis Model", "Harrod-Domar Model", "Gadgil Yojana", "Rostow Model"], a: 1, exp: "The First Five-Year Plan (1951-1956) was based largely on the Harrod-Domar model with few modifications, focusing heavily on agricultural development." },
+            { topic: "Economy", q: "Which sector contributes the maximum to India's GDP?", options: ["Primary Sector (Agriculture)", "Secondary Sector (Manufacturing)", "Tertiary Sector (Services)", "Quaternary Sector"], a: 2, exp: "The Tertiary (Services) sector is the largest contributor to India's Gross Domestic Product (GDP), accounting for over 50% of the total GDP." },
+            { topic: "Economy", q: "GST (Goods and Services Tax) is a type of:", options: ["Direct Tax", "Indirect Tax", "Corporate Tax", "Income Tax"], a: 1, exp: "GST is a comprehensive, multi-stage, destination-based indirect tax that is levied on every value addition in the supply chain." },
+            { topic: "Economy", q: "What does 'SEBI' stand for?", options: ["State Exchange Bank of India", "Securities and Exchange Board of India", "Stock Evolution Board of India", "Standard Economic Bank of India"], a: 1, exp: "SEBI stands for Securities and Exchange Board of India, which is the regulatory body for the securities and commodity market in India." },
+            { topic: "Economy", q: "Which of the following defines 'Inflation'?", options: ["Decrease in money supply", "General increase in prices and fall in the purchasing power of money", "Increase in production of goods", "A sudden crash in the stock market"], a: 1, exp: "Inflation is the rate at which the general level of prices for goods and services is rising, and consequently, the purchasing power of currency is falling." },
+            { topic: "Economy", q: "The Mahatma Gandhi National Rural Employment Guarantee Act (MGNREGA) guarantees a minimum of how many days of wage employment in a financial year?", options: ["50 Days", "100 Days", "120 Days", "150 Days"], a: 1, exp: "MGNREGA aims to enhance livelihood security in rural areas by providing at least 100 days of guaranteed wage employment in a financial year." },
+            { topic: "Economy", q: "What is 'Repo Rate'?", options: ["Rate at which RBI borrows from commercial banks", "Rate at which commercial banks lend to the public", "Rate at which RBI lends short-term money to commercial banks", "Rate of interest on government bonds"], a: 2, exp: "Repo rate is the rate at which the central bank (RBI) lends money to commercial banks in the event of any shortfall of funds." },
+            { topic: "Economy", q: "The planning commission of India was replaced by which institution?", options: ["Finance Commission", "NITI Aayog", "National Development Council", "Inter-State Council"], a: 1, exp: "The Planning Commission was replaced by NITI Aayog (National Institution for Transforming India) on January 1, 2015." },
+            { topic: "Economy", q: "In the context of the Indian economy, 'Open Market Operations' refers to:", options: ["Borrowing by scheduled banks from the RBI", "Lending by commercial banks to industry", "Purchase and sale of government securities by the RBI", "Foreign direct investment"], a: 2, exp: "Open Market Operations (OMO) is the sale and purchase of government securities and treasury bills by the RBI to regulate money supply in the economy." },
+
+            // Science & Miscellaneous (41-50)
+            { topic: "Science", q: "What is the chemical name of Vitamin C?", options: ["Thiamine", "Ascorbic Acid", "Calciferol", "Retinol"], a: 1, exp: "The chemical name of Vitamin C is Ascorbic Acid. Its deficiency causes Scurvy." },
+            { topic: "Science", q: "Which organelle is known as the 'powerhouse of the cell'?", options: ["Nucleus", "Ribosome", "Mitochondria", "Golgi Apparatus"], a: 2, exp: "Mitochondria are often referred to as the powerhouses of the cells because they generate most of the cell's supply of ATP, used as a source of chemical energy." },
+            { topic: "Science", q: "What is the SI unit of Force?", options: ["Joule", "Watt", "Pascal", "Newton"], a: 3, exp: "The SI unit of force is the Newton (N). One Newton is the force needed to accelerate one kilogram of mass at the rate of one metre per second squared." },
+            { topic: "Science", q: "Which gas is primarily responsible for the greenhouse effect on Earth?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], a: 2, exp: "Carbon Dioxide (CO2) is the primary greenhouse gas emitted through human activities, contributing significantly to global warming." },
+            { topic: "Science", q: "What is the pH value of pure water?", options: ["0", "7", "14", "5.5"], a: 1, exp: "Pure water is neutral, which means it is neither acidic nor basic, and has a pH value of exactly 7." },
+            { topic: "Science", q: "Which metal is the best conductor of electricity?", options: ["Gold", "Silver", "Copper", "Aluminum"], a: 1, exp: "Silver is the best conductor of electricity because it contains a higher number of movable atoms (free electrons) than any other element." },
+            { topic: "Science", q: "The deficiency of which element causes Goitre?", options: ["Iron", "Calcium", "Iodine", "Phosphorus"], a: 2, exp: "Goitre is an abnormal enlargement of your thyroid gland. The most common cause of goiters worldwide is a lack of iodine in the diet." },
+            { topic: "Science", q: "What is the chemical formula of common salt?", options: ["NaCl", "NaOH", "Na2CO3", "HCl"], a: 0, exp: "The chemical formula for common salt is NaCl (Sodium Chloride)." },
+            { topic: "Science", q: "Myopia is a defect of vision which is also known as:", options: ["Farsightedness", "Nearsightedness", "Astigmatism", "Cataract"], a: 1, exp: "Myopia is nearsightedness. A person with myopia can see nearby objects clearly but cannot see distant objects distinctly." },
+            { topic: "Science", q: "Which instrument is used to measure atmospheric pressure?", options: ["Hygrometer", "Lactometer", "Barometer", "Thermometer"], a: 2, exp: "A barometer is a scientific instrument used in meteorology to measure atmospheric pressure." }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let answered = false;
+
+        const qText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const qCounter = document.getElementById('q-current');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackArea = document.getElementById('feedback-area');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreDisplay = document.getElementById('score-display');
+        const topicBadge = document.getElementById('topic-badge');
+
+        function renderQuestion() {
+            // Reset state
+            answered = false;
+            nextBtn.classList.add('hidden');
+            feedbackArea.classList.add('hidden');
+            feedbackArea.innerHTML = '';
+            
+            // Re-trigger animation
+            const quizArea = document.getElementById('quiz-area');
+            quizArea.classList.remove('animate-slide-up');
+            void quizArea.offsetWidth; // Trigger reflow
+            quizArea.classList.add('animate-slide-up');
+
+            const currentQ = gsData[currentIdx];
+            
+            // Populate text
+            topicBadge.innerText = currentQ.topic;
+            qText.innerHTML = currentQ.q;
+            qCounter.innerText = currentIdx + 1;
+            
+            // Update Progress
+            const progressPct = ((currentIdx) / gsData.length) * 100;
+            progressBar.style.width = `${progressPct}%`;
+
+            optionsContainer.innerHTML = '';
+            currentQ.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full p-4 rounded-xl border border-slate-200 bg-white text-left font-semibold text-slate-700 flex items-center gap-4 group";
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-md bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-sm shrink-0 group-hover:bg-emerald-100 group-hover:text-emerald-700 transition-colors shadow-sm">
+                        ${String.fromCharCode(65 + index)}
+                    </span>
+                    <span class="text-base">${opt}</span>
+                `;
+                btn.onclick = () => selectOption(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex, btnElement) {
+            if (answered) return;
+            answered = true;
+
+            const currentQ = gsData[currentIdx];
+            const correctIndex = currentQ.a;
+            const allButtons = optionsContainer.querySelectorAll('button');
+
+            // Disable all buttons
+            allButtons.forEach((btn, i) => {
+                btn.classList.add('disabled', 'cursor-not-allowed', 'opacity-50');
+                btn.classList.remove('group-hover:bg-emerald-100');
+                
+                // Highlight correct answer
+                if (i === correctIndex) {
+                    btn.classList.add('correct-opt', 'opacity-100', 'shadow-md');
+                    btn.classList.remove('opacity-50', 'border-slate-200');
+                    btn.querySelector('span:first-child').classList.add('bg-emerald-200', 'text-emerald-900');
+                    btn.querySelector('span:first-child').classList.remove('bg-slate-100', 'text-slate-500');
+                }
+            });
+
+            feedbackArea.classList.remove('hidden');
+
+            if (selectedIndex === correctIndex) {
+                score++;
+                scoreDisplay.innerText = score;
+                feedbackArea.classList.add('bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-200');
+                feedbackArea.classList.remove('bg-rose-50', 'text-rose-800', 'border-rose-200');
+                feedbackArea.innerHTML = `<span class="flex items-start gap-2"><svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg> <span><strong class="block mb-1 text-emerald-900">Correct!</strong> ${currentQ.exp}</span></span>`;
+            } else {
+                // Highlight wrong selection
+                btnElement.classList.remove('opacity-50');
+                btnElement.classList.add('wrong-opt', 'opacity-100', 'shadow-md');
+                btnElement.querySelector('span:first-child').classList.add('bg-rose-200', 'text-rose-900');
+                btnElement.querySelector('span:first-child').classList.remove('bg-slate-100');
+
+                feedbackArea.classList.add('bg-rose-50', 'text-rose-800', 'border', 'border-rose-200');
+                feedbackArea.classList.remove('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+                feedbackArea.innerHTML = `<span class="flex items-start gap-2"><svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg> <span><strong class="block mb-1 text-rose-900">Incorrect.</strong> ${currentQ.exp}</span></span>`;
+            }
+
+            nextBtn.classList.remove('hidden');
+            if (currentIdx === gsData.length - 1) {
+                nextBtn.innerHTML = "View Results <span class='ml-2'>🏅</span>";
+            }
+        }
+
+        nextBtn.onclick = () => {
+            if (currentIdx < gsData.length - 1) {
+                currentIdx++;
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function showResults() {
+            progressBar.style.width = `100%`;
+            document.getElementById('quiz-area').classList.add('hidden');
+            document.querySelector('header').classList.add('hidden');
+            document.getElementById('next-btn').parentElement.classList.add('hidden');
+            
+            const resultArea = document.getElementById('result-area');
+            resultArea.classList.remove('hidden');
+            resultArea.classList.add('flex');
+            
+            const accuracy = Math.round((score / gsData.length) * 100);
+            
+            // Counter animation
+            let currentAcc = 0;
+            const interval = setInterval(() => {
+                if (currentAcc >= accuracy) {
+                    clearInterval(interval);
+                    document.getElementById('final-accuracy').innerText = `${accuracy}%`;
+                } else {
+                    currentAcc += (accuracy > 50 ? 2 : 1);
+                    document.getElementById('final-accuracy').innerText = `${Math.min(currentAcc, accuracy)}%`;
+                }
+            }, 30);
+
+            document.getElementById('final-score').innerText = score;
+        }
+
+        // Boot up
+        window.onload = renderQuestion;
+    </script>
+</body>
+</html>

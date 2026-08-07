@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Grammar Masterclass - 50 MCQs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            min-height: 100vh;
+            color: #2d3748;
+        }
+        .app-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .option-btn {
+            transition: all 0.2s ease-in-out;
+            transform-origin: left;
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            border-color: #f6ad55;
+            background-color: #fffaf0;
+        }
+        .correct-ans {
+            background-color: #f0fdf4 !important;
+            border-color: #22c55e !important;
+            color: #166534 !important;
+        }
+        .wrong-ans {
+            background-color: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+        .fade-enter {
+            animation: fadeIn 0.4s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom Scrollbar for Options */
+        .options-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .options-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .options-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4 sm:p-6 md:p-8">
+
+    <div class="app-card w-full max-w-4xl p-6 sm:p-10 relative overflow-hidden flex flex-col min-h-[650px]">
+        <!-- Progress Indicator -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-orange-100">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-orange-400 to-rose-500 transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8 mt-2 border-b border-gray-100 pb-6">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-rose-600">Grammar Master</h1>
+                <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mt-1">Comprehensive 50 MCQs</p>
+            </div>
+            <div class="bg-orange-50 px-5 py-3 rounded-2xl border border-orange-100 text-right shadow-sm">
+                <div class="text-xs text-orange-400 font-bold uppercase tracking-wider mb-1">Question</div>
+                <div class="text-2xl font-black text-orange-600 leading-none"><span id="q-number">1</span><span class="text-lg text-orange-300">/50</span></div>
+                <div class="text-xs font-bold text-gray-500 mt-2">Score: <span id="current-score" class="text-gray-800">0</span></div>
+            </div>
+        </header>
+
+        <!-- Quiz Area -->
+        <div id="quiz-area" class="fade-enter flex-grow flex flex-col">
+            <div class="mb-6">
+                <span id="topic-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-100 text-rose-600 mb-4">Topic</span>
+                <h2 id="question-text" class="text-xl sm:text-2xl font-bold text-gray-800 leading-snug">Loading question...</h2>
+            </div>
+
+            <div id="options-grid" class="space-y-3 flex-grow options-scroll overflow-y-auto pr-2 pb-2">
+                <!-- Buttons rendered via JS -->
+            </div>
+        </div>
+
+        <!-- Feedback & Footer Actions -->
+        <div class="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 min-h-[80px]">
+            <div id="feedback-panel" class="w-full sm:w-2/3 hidden p-4 rounded-xl text-sm font-semibold border"></div>
+            
+            <button id="next-btn" class="hidden w-full sm:w-1/3 px-8 py-4 bg-gray-900 hover:bg-orange-600 text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 whitespace-nowrap text-lg">
+                Next <span class="ml-2">→</span>
+            </button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden text-center py-10 fade-enter flex-grow flex flex-col justify-center items-center">
+            <div class="w-24 h-24 bg-gradient-to-tr from-orange-100 to-rose-100 rounded-full flex items-center justify-center mb-6 shadow-inner border-4 border-white">
+                <span class="text-5xl">🏆</span>
+            </div>
+            
+            <h2 class="text-4xl font-extrabold text-gray-800 mb-3">Quiz Completed!</h2>
+            <p class="text-gray-500 mb-10 text-lg font-medium">You have successfully evaluated your English Grammar skills.</p>
+            
+            <div class="grid grid-cols-2 gap-6 w-full max-w-md mb-10">
+                <div class="bg-white p-6 border border-gray-100 rounded-3xl shadow-sm text-center">
+                    <span class="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Final Score</span>
+                    <span class="text-4xl font-black text-gray-800"><span id="final-score">0</span><span class="text-xl text-gray-400">/50</span></span>
+                </div>
+                <div class="bg-gray-900 p-6 rounded-3xl shadow-xl text-center relative overflow-hidden">
+                    <span class="relative block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Accuracy</span>
+                    <span id="final-accuracy" class="relative text-4xl font-black text-orange-400">0%</span>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="px-10 py-4 bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-bold rounded-xl transition-all shadow-[0_10px_20px_-10px_rgba(244,63,94,0.5)] active:scale-95 text-lg">
+                Retake Masterclass
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const grammarData = [
+            // Error Spotting / Subject-Verb Agreement (1-10)
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>Neither of the two brothers _______ sure of the exact date.", options: ["is", "are", "were", "have been"], a: 0, exp: "'Neither of' is followed by a plural noun but always takes a singular verb." },
+            { topic: "Subject-Verb Agreement", q: "Identify the correct verb:<br>The committee _______ divided in their opinion regarding the new policy.", options: ["was", "were", "has", "is"], a: 1, exp: "When a collective noun (committee) acts individually or has divided opinions, a plural verb ('were') is used." },
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>One of my best friends _______ going to London tomorrow.", options: ["is", "are", "were", "have"], a: 0, exp: "'One of' is followed by a plural noun (friends) but takes a singular verb (is), as the actual subject is 'One'." },
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>A number of students _______ playing in the field right now.", options: ["is", "are", "has", "was"], a: 1, exp: "The expression 'A number of' takes a plural verb, whereas 'The number of' takes a singular verb." },
+            { topic: "Subject-Verb Agreement", q: "Identify the correct verb:<br>Not only the principal but also the teachers _______ present at the meeting.", options: ["was", "were", "has", "is"], a: 1, exp: "In 'Not only... but also', the verb agrees with the subject closest to it (the teachers - plural)." },
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>The captain, along with his team members, _______ warmly welcomed.", options: ["was", "were", "have been", "are"], a: 0, exp: "When subjects are joined by 'along with', 'as well as', or 'besides', the verb agrees with the first subject (The captain)." },
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>Bread and butter _______ my favorite breakfast.", options: ["are", "were", "is", "have been"], a: 2, exp: "When two singular nouns represent a single idea or unit (bread and butter as a meal), they take a singular verb." },
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>Each of the boys _______ given a prize.", options: ["were", "are", "have", "was"], a: 3, exp: "'Each of' is followed by a plural noun but takes a singular verb." },
+            { topic: "Subject-Verb Agreement", q: "Identify the correct verb:<br>Mathematics _______ an interesting subject.", options: ["are", "were", "is", "have been"], a: 2, exp: "Nouns ending in '-ics' (Mathematics, Physics, Politics) are singular when referring to subjects of study." },
+            { topic: "Subject-Verb Agreement", q: "Fill in the blank:<br>Either you or he _______ to blame for this mistake.", options: ["is", "are", "am", "were"], a: 0, exp: "When two subjects are joined by 'Either...or', the verb agrees with the nearest subject ('he' takes 'is')." },
+
+            // Prepositions (11-20)
+            { topic: "Prepositions", q: "Fill in the blank:<br>He is completely addicted _______ smoking.", options: ["with", "by", "to", "for"], a: 2, exp: "The adjective 'addicted' is always followed by the preposition 'to'." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>She is afraid _______ dogs.", options: ["from", "of", "with", "by"], a: 1, exp: "The correct preposition to use after 'afraid' is 'of'." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>He is exceptionally good _______ mathematics.", options: ["in", "at", "with", "about"], a: 1, exp: "When talking about skills or abilities, the correct phrase is 'good at' something." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>I congratulate you _______ your grand success.", options: ["for", "on", "about", "with"], a: 1, exp: "We congratulate someone 'on' their success or achievement." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>The police prevented him _______ entering the building.", options: ["to", "for", "from", "against"], a: 2, exp: "The verb 'prevent' is followed by the preposition 'from' + gerund (V-ing)." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>He has been suffering _______ malaria for two days.", options: ["with", "from", "by", "of"], a: 1, exp: "The correct preposition to use after 'suffer' (when referring to an illness) is 'from'." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>I prefer tea _______ coffee.", options: ["than", "over", "to", "from"], a: 2, exp: "The verb 'prefer' is always followed by the preposition 'to', not 'than'." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>You can always rely _______ me in times of need.", options: ["at", "in", "on", "with"], a: 2, exp: "The verb 'rely' takes the preposition 'on' (or 'upon')." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>The teacher was angry _______ the students for making noise.", options: ["at", "on", "with", "against"], a: 2, exp: "We are angry 'with' a person, but angry 'at' a thing or situation." },
+            { topic: "Prepositions", q: "Fill in the blank:<br>My father deals _______ garments.", options: ["with", "in", "for", "at"], a: 1, exp: "'Deal in' means to trade or do business in something. 'Deal with' means to handle a person or situation." },
+
+            // Tenses & Conditionals (21-30)
+            { topic: "Tenses & Conditionals", q: "Fill in the blank:<br>If I _______ a bird, I would fly across the world.", options: ["am", "was", "were", "have been"], a: 2, exp: "In conditional sentences expressing an unreal or imaginary situation, 'were' is used with all subjects." },
+            { topic: "Tenses & Conditionals", q: "Fill in the blank:<br>I wish I _______ her name.", options: ["know", "knew", "have known", "will know"], a: 1, exp: "After 'I wish', we use the past tense (knew) to express a present desire for something that isn't true." },
+            { topic: "Tenses & Conditionals", q: "Fill in the blank:<br>By this time next year, I _______ my degree.", options: ["will finish", "finish", "will have finished", "am finishing"], a: 2, exp: "For actions that will be completed before a certain time in the future, we use the Future Perfect tense (will have + V3)." },
+            { topic: "Tenses & Conditionals", q: "Fill in the blank:<br>He _______ in this city since 2010.", options: ["lives", "is living", "has been living", "lived"], a: 2, exp: "'Since 2010' indicates an action started in the past and continues to the present. Present Perfect Continuous is required." },
+            { topic: "Tenses & Conditionals", q: "Fill in the blank:<br>The patient _______ before the doctor arrived.", options: ["died", "dies", "has died", "had died"], a: 3, exp: "When two actions happen in the past, the earlier action takes the Past Perfect (had died) and the later takes Simple Past (arrived)." },
+            { topic: "Tenses & Conditionals", q: "Fill in the blank:<br>I _______ him yesterday at the mall.", options: ["see", "have seen", "saw", "had seen"], a: 2, exp: "With definite past time expressions like 'yesterday', 'last week', 'ago', we use the Simple Past tense." },
+            { topic: "Tenses & Conditionals", q: "Fill in the blank:<br>Look! The sun _______.", options: ["rises", "is rising", "rose", "has risen"], a: 1, exp: "'Look!' draws attention to an action happening exactly at the moment of speaking, requiring Present Continuous." },
+            { topic: "Tenses & Conditionals", q: "Fill in the blank:<br>She usually _______ to the gym in the evening.", options: ["is going", "gone", "goes", "go"], a: 2, exp: "Words like 'usually', 'daily', 'often' denote habitual actions, which require the Simple Present tense." },
+            { topic: "Tenses & Conditionals", q: "Fill in the blank:<br>If it rains, we _______ the trip.", options: ["would cancel", "will cancel", "canceled", "cancel"], a: 1, exp: "In the First Conditional (real possibility), the 'if' clause is in simple present, and the main clause uses simple future (will + V1)." },
+            { topic: "Tenses & Conditionals", q: "Fill in the blank:<br>If he had worked hard, he _______ the exam.", options: ["would pass", "will pass", "passed", "would have passed"], a: 3, exp: "In the Third Conditional (unreal past), the structure is: If + Past Perfect, Main Clause + would have + V3." },
+
+            // Articles (31-35)
+            { topic: "Articles", q: "Fill in the blank:<br>He is _______ honest man.", options: ["a", "an", "the", "no article"], a: 1, exp: "Though 'honest' starts with an 'h', it is silent. The word starts with a vowel sound (o), so we use 'an'." },
+            { topic: "Articles", q: "Fill in the blank:<br>_______ Ganges is a holy river.", options: ["A", "An", "The", "No article"], a: 2, exp: "The definite article 'The' is used before the names of specific rivers, oceans, and mountain ranges." },
+            { topic: "Articles", q: "Fill in the blank:<br>I met _______ European yesterday at the cafe.", options: ["a", "an", "the", "no article"], a: 0, exp: "The word 'European' starts with a consonant sound ('y' sound), so we use 'a', not 'an'." },
+            { topic: "Articles", q: "Fill in the blank:<br>He is _______ best student in the class.", options: ["a", "an", "the", "no article"], a: 2, exp: "We always use the definite article 'the' before superlative adjectives (best, tallest, most beautiful)." },
+            { topic: "Articles", q: "Fill in the blank:<br>Gold is _______ precious metal.", options: ["a", "an", "the", "no article"], a: 0, exp: "When referring to a singular countable noun in a general sense (a metal), we use the indefinite article 'a'." },
+
+            // Conjunctions & Error Spotting (36-40)
+            { topic: "Conjunctions", q: "Fill in the blank:<br>Scarcely had I reached the station _______ the train left.", options: ["than", "when", "then", "before"], a: 1, exp: "The correlative conjunctions 'Scarcely' and 'Hardly' are always followed by 'when'." },
+            { topic: "Conjunctions", q: "Fill in the blank:<br>No sooner did he see the tiger _______ he ran away.", options: ["when", "than", "then", "but"], a: 1, exp: "The correlative conjunction 'No sooner' is always paired with 'than'." },
+            { topic: "Error Spotting", q: "Identify the incorrect segment:<br>He is senior than me in the office.", options: ["He is", "senior", "than me", "in the office"], a: 2, exp: "Words ending in '-ior' (senior, junior, superior, inferior) are followed by the preposition 'to', not 'than'." },
+            { topic: "Error Spotting", q: "Identify the incorrect segment:<br>Unless you do not work hard, you will fail.", options: ["Unless you", "do not work hard", "you will fail", "No error"], a: 1, exp: "'Unless' means 'if not' and is already negative. Using 'do not' with it creates a double negative. It should be 'Unless you work hard'." },
+            { topic: "Conjunctions", q: "Fill in the blank:<br>He is not only a great singer _______ an excellent actor.", options: ["and also", "but also", "yet", "or"], a: 1, exp: "The correlative conjunction pair is strictly 'not only... but also'." },
+
+            // Active/Passive Voice (41-45)
+            { topic: "Active & Passive Voice", q: "Convert to Passive Voice:<br>Open the door.", options: ["The door must be opened.", "Let the door be opened.", "You are requested to open the door.", "The door should be open."], a: 1, exp: "Imperative sentences expressing a command typically start with 'Let' in the passive voice: Let + object + be + V3." },
+            { topic: "Active & Passive Voice", q: "Convert to Passive Voice:<br>Who wrote this book?", options: ["By whom was this book written?", "Who was this book written by?", "By who was this book written?", "Whom wrote this book?"], a: 0, exp: "In passive voice, 'Who' changes to 'By whom' followed by the auxiliary verb." },
+            { topic: "Active & Passive Voice", q: "Convert to Passive Voice:<br>They are building a house.", options: ["A house is built by them.", "A house was being built by them.", "A house is being built by them.", "A house has been built by them."], a: 2, exp: "Present Continuous Active (are building) changes to Present Continuous Passive (is/am/are + being + V3)." },
+            { topic: "Active & Passive Voice", q: "Convert to Passive Voice:<br>I know him.", options: ["He is known by me.", "He was known to me.", "He is known to me.", "He is being known to me."], a: 2, exp: "The verb 'know' takes the preposition 'to' instead of 'by' in the passive voice." },
+            { topic: "Active & Passive Voice", q: "Convert to Passive Voice:<br>Please help me.", options: ["Let me be helped.", "You are requested to help me.", "You should help me.", "I must be helped."], a: 1, exp: "Imperative sentences starting with 'Please' change to 'You are requested to...' in the passive voice." },
+
+            // Direct/Indirect Speech (46-50)
+            { topic: "Direct & Indirect Speech", q: "Convert to Indirect Speech:<br>He said, 'I am busy.'", options: ["He said that he is busy.", "He said that I was busy.", "He said that he was busy.", "He told that he was busy."], a: 2, exp: "Present tense changes to corresponding past tense. 'am' becomes 'was', and the pronoun 'I' changes to 'he'." },
+            { topic: "Direct & Indirect Speech", q: "Convert to Indirect Speech:<br>She said to me, 'Where are you going?'", options: ["She asked me where I was going.", "She asked me where was I going.", "She asked me that where I was going.", "She told me where I am going."], a: 0, exp: "In interrogative sentences, the question word remains, but the sentence structure becomes assertive (Subject + Verb: I was going)." },
+            { topic: "Direct & Indirect Speech", q: "Convert to Indirect Speech:<br>The teacher said, 'Don't shout.'", options: ["The teacher said not to shout.", "The teacher ordered not to shout.", "The teacher asked to not shout.", "The teacher advised to don't shout."], a: 1, exp: "Imperative negative sentences use 'not to + V1'. 'Said' changes to a reporting verb like 'ordered' or 'advised'." },
+            { topic: "Direct & Indirect Speech", q: "Convert to Indirect Speech:<br>He said, 'Alas! I am ruined.'", options: ["He exclaimed with joy that he was ruined.", "He said alas he is ruined.", "He exclaimed with sorrow that he was ruined.", "He told with sorrow that he is ruined."], a: 2, exp: "'Alas' indicates grief. The exclamatory sentence changes to an assertive one using 'exclaimed with sorrow'." },
+            { topic: "Direct & Indirect Speech", q: "Convert to Indirect Speech:<br>He said, 'Honesty is the best policy.'", options: ["He said that honesty was the best policy.", "He said that honesty is the best policy.", "He told that honesty was the best policy.", "He asked if honesty is the best policy."], a: 1, exp: "Universal truths, facts, and proverbs do not change their tense in indirect speech." }
+        ];
+
+        // State Variables
+        let currentIdx = 0;
+        let score = 0;
+        let answerLocked = false;
+
+        // DOM Elements
+        const topicBadge = document.getElementById('topic-badge');
+        const qText = document.getElementById('question-text');
+        const qNumber = document.getElementById('q-number');
+        const optionsGrid = document.getElementById('options-grid');
+        const feedbackPanel = document.getElementById('feedback-panel');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreDisplay = document.getElementById('current-score');
+        const quizArea = document.getElementById('quiz-area');
+
+        function loadQuestion() {
+            answerLocked = false;
+            nextBtn.classList.add('hidden');
+            feedbackPanel.classList.add('hidden');
+            
+            // Re-trigger fade-in animation
+            quizArea.classList.remove('fade-enter');
+            void quizArea.offsetWidth; // Reflow
+            quizArea.classList.add('fade-enter');
+
+            const qData = grammarData[currentIdx];
+            
+            // Update UI
+            topicBadge.innerText = qData.topic;
+            qText.innerHTML = qData.q;
+            qNumber.innerText = currentIdx + 1;
+            progressBar.style.width = `${(currentIdx / grammarData.length) * 100}%`;
+            
+            // Generate Options
+            optionsGrid.innerHTML = '';
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full p-4 rounded-2xl border-2 border-gray-200 bg-white text-left font-bold text-gray-700 flex items-center gap-4 group";
+                btn.innerHTML = `
+                    <span class="w-10 h-10 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center text-sm font-black group-hover:bg-orange-100 group-hover:text-orange-600 transition-colors shrink-0">
+                        ${String.fromCharCode(65 + idx)}
+                    </span>
+                    <span class="text-base sm:text-lg">${opt}</span>
+                `;
+                btn.onclick = () => selectOption(idx, btn);
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            if (answerLocked) return;
+            answerLocked = true;
+
+            const qData = grammarData[currentIdx];
+            const correctIndex = qData.a;
+            const allBtns = optionsGrid.querySelectorAll('button');
+
+            // Apply classes to all buttons
+            allBtns.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.add('opacity-70', 'cursor-not-allowed');
+                
+                // Highlight the correct answer no matter what
+                if (idx === correctIndex) {
+                    btn.classList.remove('opacity-70', 'border-gray-200');
+                    btn.classList.add('correct-ans', 'opacity-100', 'shadow-md');
+                    btn.querySelector('span').classList.add('bg-green-200', 'text-green-800');
+                    btn.querySelector('span').classList.remove('bg-gray-100', 'text-gray-500');
+                }
+            });
+
+            feedbackPanel.classList.remove('hidden');
+
+            if (selectedIndex === correctIndex) {
+                score++;
+                scoreDisplay.innerText = score;
+                feedbackPanel.className = 'w-full sm:w-2/3 p-4 rounded-xl text-sm font-semibold border bg-green-50 text-green-800 border-green-200 fade-enter';
+                feedbackPanel.innerHTML = `
+                    <div class="flex items-start gap-2">
+                        <span class="text-xl leading-none">✅</span>
+                        <div>
+                            <span class="block font-extrabold mb-1">Correct!</span>
+                            <span class="font-medium text-green-700 leading-snug">${qData.exp}</span>
+                        </div>
+                    </div>`;
+            } else {
+                // Highlight the wrong choice
+                selectedBtn.classList.remove('opacity-70', 'border-gray-200');
+                selectedBtn.classList.add('wrong-ans', 'opacity-100');
+                selectedBtn.querySelector('span').classList.add('bg-red-200', 'text-red-800');
+                
+                feedbackPanel.className = 'w-full sm:w-2/3 p-4 rounded-xl text-sm font-semibold border bg-red-50 text-red-800 border-red-200 fade-enter';
+                feedbackPanel.innerHTML = `
+                    <div class="flex items-start gap-2">
+                        <span class="text-xl leading-none">❌</span>
+                        <div>
+                            <span class="block font-extrabold mb-1">Incorrect.</span>
+                            <span class="font-medium text-red-700 leading-snug">${qData.exp}</span>
+                        </div>
+                    </div>`;
+            }
+
+            nextBtn.classList.remove('hidden');
+            if (currentIdx === grammarData.length - 1) {
+                nextBtn.innerHTML = `View Final Score <span class="ml-2">🏅</span>`;
+            }
+        }
+
+        nextBtn.onclick = () => {
+            if (currentIdx < grammarData.length - 1) {
+                currentIdx++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            quizArea.classList.add('hidden');
+            document.querySelector('header').classList.add('hidden');
+            nextBtn.parentElement.classList.add('hidden');
+            
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.classList.remove('hidden');
+            
+            document.getElementById('final-score').innerText = score;
+            
+            const accuracy = Math.round((score / grammarData.length) * 100);
+            
+            // Simple counter animation for accuracy
+            let currentAcc = 0;
+            const interval = setInterval(() => {
+                if (currentAcc >= accuracy) {
+                    clearInterval(interval);
+                    document.getElementById('final-accuracy').innerText = `${accuracy}%`;
+                } else {
+                    currentAcc += (accuracy > 50 ? 2 : 1);
+                    document.getElementById('final-accuracy').innerText = `${Math.min(currentAcc, accuracy)}%`;
+                }
+            }, 25);
+        }
+
+        // Initialize Application
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>
