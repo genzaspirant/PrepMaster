@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Masterclass - Hard Level (Set 4)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #881337 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .quiz-card {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(225, 29, 72, 0.3);
+        }
+        .option-btn {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center left;
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            border-color: #e11d48;
+            background-color: rgba(225, 29, 72, 0.1);
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.2);
+        }
+        .correct-ans {
+            background-color: rgba(16, 185, 129, 0.1) !important;
+            border-color: #10b981 !important;
+            color: #34d399 !important;
+        }
+        .wrong-ans {
+            background-color: rgba(244, 63, 94, 0.1) !important;
+            border-color: #f43f5e !important;
+            color: #fb7185 !important;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-card w-full max-w-4xl p-6 sm:p-10 relative overflow-hidden flex flex-col min-h-[650px]">
+        
+        <!-- Progress Bar -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-slate-800">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-rose-500 to-red-600 transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+
+        <header class="flex justify-between items-center mb-8 mt-2 border-b border-slate-700 pb-6">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-rose-400 to-red-500 tracking-tight">English Master Set 4</h1>
+                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Hard Level - 50 MCQs</p>
+            </div>
+            <div class="bg-slate-800 px-5 py-3 rounded-2xl border border-slate-700 text-right shadow-sm">
+                <div class="text-[10px] text-rose-400 font-bold uppercase tracking-widest mb-1">Question</div>
+                <div class="text-2xl font-black text-rose-500 leading-none"><span id="q-number">1</span><span class="text-lg text-slate-500">/50</span></div>
+                <div class="text-xs font-bold text-slate-400 mt-2">Score: <span id="current-score" class="text-white">0</span></div>
+            </div>
+        </header>
+
+        <div id="quiz-area" class="fade-in flex-grow flex flex-col">
+            <div class="mb-6">
+                <span id="topic-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-rose-500/20 text-rose-400 mb-4 shadow-sm border border-rose-500/30">Topic</span>
+                <h2 id="question-text" class="text-xl sm:text-2xl font-bold text-slate-100 leading-snug">Loading question...</h2>
+            </div>
+
+            <div id="options-grid" class="space-y-3 flex-grow custom-scroll overflow-y-auto pr-2 pb-2">
+                <!-- Buttons rendered via JS -->
+            </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4 min-h-[85px]">
+            <div id="feedback-panel" class="w-full sm:w-2/3 hidden p-4 rounded-xl text-sm font-semibold border leading-relaxed"></div>
+            
+            <button id="next-btn" class="hidden w-full sm:w-1/3 px-8 py-4 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-rose-600/30 active:scale-95 whitespace-nowrap text-lg">
+                Next <span class="ml-2">→</span>
+            </button>
+        </div>
+
+        <div id="result-screen" class="hidden text-center py-10 fade-in flex-grow flex flex-col justify-center items-center">
+            <div class="w-24 h-24 bg-gradient-to-tr from-rose-500 to-red-600 rounded-full flex items-center justify-center mb-6 shadow-inner border-4 border-slate-800">
+                <span class="text-5xl">🔥</span>
+            </div>
+            
+            <h2 class="text-4xl font-extrabold text-white mb-3 tracking-tight">Set 4 Conquered!</h2>
+            <p class="text-slate-400 mb-10 text-lg font-medium">You survived the hardest English concepts for SSC CGL.</p>
+            
+            <div class="grid grid-cols-2 gap-6 w-full max-w-md mb-10">
+                <div class="bg-slate-800 p-6 border border-slate-700 rounded-3xl shadow-sm text-center">
+                    <span class="block text-xs text-slate-400 font-bold uppercase tracking-widest mb-2">Final Score</span>
+                    <span class="text-4xl font-black text-white"><span id="final-score">0</span><span class="text-xl text-slate-500">/50</span></span>
+                </div>
+                <div class="bg-rose-950 p-6 rounded-3xl shadow-xl border border-rose-900 text-center relative overflow-hidden">
+                    <span class="relative block text-xs text-rose-300 font-bold uppercase tracking-widest mb-2">Accuracy</span>
+                    <span id="final-accuracy" class="relative text-4xl font-black text-rose-500">0%</span>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="px-10 py-4 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-bold rounded-xl transition-all shadow-[0_10px_20px_-10px_rgba(225,29,72,0.5)] active:scale-95 text-lg">
+                Retake Hard Level
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const englishData = [
+            // Advanced Error Spotting (1-10)
+            { topic: "Error Spotting (Inversion)", q: "Identify the incorrect segment:<br>No sooner he had arrived at the station than the train left.", options: ["No sooner", "he had arrived", "at the station", "than the train left"], a: 1, exp: "When a sentence starts with 'No sooner', it must be followed by an inverted word order (Auxiliary verb + Subject). It should be 'No sooner had he arrived'." },
+            { topic: "Error Spotting (Modifiers)", q: "Identify the incorrect segment:<br>Being a rainy day, I decided to stay indoors and read a book.", options: ["Being a rainy day", "I decided", "to stay indoors", "and read a book"], a: 0, exp: "Dangling modifier. 'Being a rainy day' implies the subject 'I' was a rainy day. It should be 'It being a rainy day, I decided...'." },
+            { topic: "Error Spotting (Subjunctive)", q: "Identify the incorrect segment:<br>The doctor recommended that he takes a few days off from work.", options: ["The doctor recommended", "that he takes", "a few days off", "from work"], a: 1, exp: "Verbs like 'recommend', 'suggest', and 'demand' are followed by the subjunctive mood, which uses the base form of the verb without 's'. It should be 'that he take'." },
+            { topic: "Error Spotting (Conditionals)", q: "Identify the incorrect segment:<br>Had I known about the emergency, I would have help you immediately.", options: ["Had I known", "about the emergency", "I would have help", "you immediately"], a: 2, exp: "Third conditional structure requires 'would have + Past Participle (V3)'. It should be 'would have helped'." },
+            { topic: "Error Spotting (Pronouns)", q: "Identify the incorrect segment:<br>Between you and I, he is not the right person for this job.", options: ["Between you and I", "he is not", "the right person", "for this job"], a: 0, exp: "Prepositions like 'between' take objective case pronouns. It should be 'Between you and me'." },
+            { topic: "Error Spotting (Tenses)", q: "Identify the incorrect segment:<br>By the time she reaches the theater, the movie will already start.", options: ["By the time", "she reaches the theater", "the movie will", "already start"], a: 3, exp: "Action completed before a point in the future requires Future Perfect tense. It should be 'will have already started'." },
+            { topic: "Error Spotting (Nouns)", q: "Identify the incorrect segment:<br>The committee has issued their final report on the matter.", options: ["The committee", "has issued", "their final report", "on the matter"], a: 2, exp: "Since 'committee' is acting as a single unit (indicated by the singular verb 'has'), the pronoun must also be singular. It should be 'its final report'." },
+            { topic: "Error Spotting (Conjunctions)", q: "Identify the incorrect segment:<br>Although he was exhausted, but he continued to work on the project.", options: ["Although he", "was exhausted", "but he continued", "to work on the project"], a: 2, exp: "The conjunction 'although' is followed by 'yet' or a comma, never by 'but'. 'but' should be removed." },
+            { topic: "Error Spotting (Subject-Verb)", q: "Identify the incorrect segment:<br>Many a student have passed this difficult examination with flying colors.", options: ["Many a student", "have passed", "this difficult examination", "with flying colors"], a: 1, exp: "The phrase 'Many a' is always followed by a singular noun and a singular verb. It should be 'has passed'." },
+            { topic: "Error Spotting (Prepositions)", q: "Identify the incorrect segment:<br>The accused was blind with the left eye.", options: ["The accused", "was", "blind with", "the left eye"], a: 2, exp: "The correct preposition for physical blindness in one eye is 'in'. It should be 'blind in the left eye'. (Blind 'to' means ignoring faults)." },
+
+            // Advanced Fill in the Blanks (11-15)
+            { topic: "Fill in the Blanks", q: "The findings of the recent investigation _______ the theory that the disease is airborne.", options: ["bear with", "bear out", "bear up", "bear down"], a: 1, exp: "'Bear out' means to confirm or support the truth of something." },
+            { topic: "Fill in the Blanks", q: "Despite being warned repeatedly, he persisted _______ ignoring the safety protocols.", options: ["on", "with", "in", "for"], a: 2, exp: "The verb 'persist' is strictly followed by the preposition 'in'." },
+            { topic: "Fill in the Blanks", q: "The orator's speech was replete _______ historical anecdotes.", options: ["by", "of", "with", "from"], a: 2, exp: "The adjective 'replete' (meaning filled or well-supplied) is followed by 'with'." },
+            { topic: "Fill in the Blanks", q: "The sudden demise of the chairman has _______ a crisis in the company.", options: ["brought up", "brought out", "brought about", "brought forward"], a: 2, exp: "'Bring about' means to cause something to happen." },
+            { topic: "Fill in the Blanks", q: "We must _______ the lost time by working late tonight.", options: ["make up", "make up for", "make out", "make off with"], a: 1, exp: "'Make up for' means to compensate for something lost, missed, or deficient." },
+
+            // Hard Synonyms (16-20)
+            { topic: "Synonyms", q: "Select the SYNONYM of: FASTIDIOUS", options: ["Careless", "Meticulous", "Slovenly", "Indifferent"], a: 1, exp: "Fastidious means very attentive to and concerned about accuracy and detail (Meticulous)." },
+            { topic: "Synonyms", q: "Select the SYNONYM of: MELLIFLUOUS", options: ["Cacophonous", "Harsh", "Dulcet", "Strident"], a: 2, exp: "Mellifluous means (of a voice or words) sweet or musical; pleasant to hear (Dulcet)." },
+            { topic: "Synonyms", q: "Select the SYNONYM of: OBDURATE", options: ["Compliant", "Stubborn", "Flexible", "Docile"], a: 1, exp: "Obdurate means stubbornly refusing to change one's opinion or course of action." },
+            { topic: "Synonyms", q: "Select the SYNONYM of: LUGUBRIOUS", options: ["Cheerful", "Mournful", "Optimistic", "Vivacious"], a: 1, exp: "Lugubrious means looking or sounding sad and dismal (Mournful)." },
+            { topic: "Synonyms", q: "Select the SYNONYM of: ESOTERIC", options: ["Obvious", "Familiar", "Abstruse", "Common"], a: 2, exp: "Esoteric means intended for or likely to be understood by only a small number of people with a specialized knowledge; obscure (Abstruse)." },
+
+            // Hard Antonyms (21-25)
+            { topic: "Antonyms", q: "Select the ANTONYM of: ALACRITY", options: ["Briskness", "Eagerness", "Lethargy", "Promptness"], a: 2, exp: "Alacrity means brisk and cheerful readiness. Lethargy (sluggishness) is the exact opposite." },
+            { topic: "Antonyms", q: "Select the ANTONYM of: ENERVATE", options: ["Exhaust", "Invigorate", "Debilitate", "Weaken"], a: 1, exp: "Enervate means to cause someone to feel drained of energy or vitality. Invigorate (give strength/energy) is the antonym." },
+            { topic: "Antonyms", q: "Select the ANTONYM of: OBSEQUIOUS", options: ["Servile", "Sycophantic", "Domineering", "Submissive"], a: 2, exp: "Obsequious means obedient or attentive to an excessive or servile degree. Domineering (asserting one's will over others) is the antonym." },
+            { topic: "Antonyms", q: "Select the ANTONYM of: GARRULOUS", options: ["Talkative", "Loquacious", "Taciturn", "Voluble"], a: 2, exp: "Garrulous means excessively talkative, especially on trivial matters. Taciturn (reserved or uncommunicative in speech) is the opposite." },
+            { topic: "Antonyms", q: "Select the ANTONYM of: SAGACIOUS", options: ["Wise", "Profound", "Fatuous", "Astute"], a: 2, exp: "Sagacious means having or showing keen mental discernment and good judgment; wise. Fatuous (silly and pointless) is the antonym." },
+
+            // Hard Idioms & Phrases (26-30)
+            { topic: "Idioms & Phrases", q: "Meaning of the idiom: 'To wrangle over an ass's shadow'", options: ["To fight over a donkey", "To quarrel over trifles", "To hunt for a ghost", "To waste money"], a: 1, exp: "This idiom means to argue or quarrel over petty, insignificant, or trivial matters." },
+            { topic: "Idioms & Phrases", q: "Meaning of the idiom: 'Hobson's choice'", options: ["A difficult choice", "No choice at all", "A wide variety of choices", "A choice between two evils"], a: 1, exp: "'Hobson's choice' means a situation in which you must accept what is offered or get nothing at all (no real choice)." },
+            { topic: "Idioms & Phrases", q: "Meaning of the idiom: 'To set the Thames on fire'", options: ["To commit arson", "To do a heroic or remarkable deed", "To cause a disaster", "To burn bridges"], a: 1, exp: "Usually used in the negative ('he will never set the Thames on fire'), it means to achieve something amazing or make a brilliant success." },
+            { topic: "Idioms & Phrases", q: "Meaning of the idiom: 'A damp squib'", options: ["A wet firecracker", "A disappointing result", "A sudden downpour", "An unexpected victory"], a: 1, exp: "A 'damp squib' is a situation or event which is much less impressive than expected." },
+            { topic: "Idioms & Phrases", q: "Meaning of the idiom: 'To play fast and loose'", options: ["To run quickly", "To be reliable", "To act recklessly or unreliably", "To cheat in a game"], a: 2, exp: "To 'play fast and loose' means to act irresponsibly, inconsistently, or deceitfully." },
+
+            // Advanced One Word Substitution (31-35)
+            { topic: "One Word Substitution", q: "A person who hates mankind:", options: ["Philanthropist", "Misogynist", "Misanthrope", "Ascetic"], a: 2, exp: "A 'Misanthrope' is a person who dislikes humankind and avoids human society. (Misogynist hates women)." },
+            { topic: "One Word Substitution", q: "A strict disciplinarian, especially in the armed forces:", options: ["Martinet", "Tyrant", "Dictator", "Autocrat"], a: 0, exp: "A 'Martinet' is a strict disciplinarian who demands absolute adherence to rules." },
+            { topic: "One Word Substitution", q: "One who destroys images or attacks popular beliefs:", options: ["Iconoclast", "Heretic", "Atheist", "Pagan"], a: 0, exp: "An 'Iconoclast' is a person who attacks cherished beliefs, traditional institutions, or religious images." },
+            { topic: "One Word Substitution", q: "A person who can speak many languages:", options: ["Linguist", "Bilingual", "Polyglot", "Grammarian"], a: 2, exp: "A 'Polyglot' is a person who knows and is able to use several languages." },
+            { topic: "One Word Substitution", q: "One who walks in their sleep:", options: ["Somniloquist", "Somnambulist", "Insomniac", "Ambulant"], a: 1, exp: "A 'Somnambulist' is a sleepwalker. (A Somniloquist talks in their sleep)." },
+
+            // Advanced Sentence Improvement (36-40)
+            { topic: "Sentence Improvement", q: "Improve the sentence:<br>Scarcely had the minister started his speech *then the crowd started protesting*.", options: ["when the crowd started protesting", "than the crowd started protesting", "before the crowd started protesting", "No improvement"], a: 0, exp: "The correlative conjunction pair is 'Scarcely ... when', not 'then' or 'than'." },
+            { topic: "Sentence Improvement", q: "Improve the sentence:<br>I asked him *where did he live*.", options: ["where he lived", "where he does live", "where has he lived", "No improvement"], a: 0, exp: "In an indirect question, the clause should have an assertive structure (Subject + Verb), not an interrogative one (Auxiliary + Subject). 'where he lived' is correct." },
+            { topic: "Sentence Improvement", q: "Improve the sentence:<br>The judge asked the lawyer to *return back* the documents.", options: ["return", "bring back", "give back", "No improvement"], a: 0, exp: "'Return' means to give/come back. Using 'back' with 'return' is a redundant error." },
+            { topic: "Sentence Improvement", q: "Improve the sentence:<br>The two brothers shared the property *amongst one another*.", options: ["between each other", "among each other", "between themselves", "No improvement"], a: 2, exp: "'Between' is used for two entities. 'Themselves' is the correct reflexive pronoun. 'Among' is for more than two." },
+            { topic: "Sentence Improvement", q: "Improve the sentence:<br>He is the man *who I know you can trust* completely.", options: ["whom I know you can trust", "which I know you can trust", "whose I know you can trust", "No improvement"], a: 0, exp: "The pronoun is the object of the verb 'trust'. Therefore, the objective case 'whom' must be used." },
+
+            // Complex Active / Passive Voice (41-45)
+            { topic: "Active/Passive Voice", q: "Convert to Passive Voice:<br>It is time to ring the bell.", options: ["It is time for the bell to ring.", "It is time for the bell to be rung.", "The bell is time to be rung.", "It is time that the bell is rung."], a: 1, exp: "Sentences starting with 'It is time to + V1' change to 'It is time + for + object + to be + V3'." },
+            { topic: "Active/Passive Voice", q: "Convert to Passive Voice:<br>They made him the King.", options: ["The King was made by him.", "He was made the King by them.", "He is made the King by them.", "The King has been made by them."], a: 1, exp: "When a verb has an object (him) and an object complement (the King), the object becomes the subject of the passive sentence. Simple past 'made' -> 'was made'." },
+            { topic: "Active/Passive Voice", q: "Convert to Passive Voice:<br>One must keep one's promises.", options: ["Promises must be kept.", "Promises must be kept by one.", "One's promises must be kept.", "Promises are to be kept."], a: 0, exp: "When the subject is an indefinite pronoun like 'One', 'Someone', or 'People', it is omitted in the passive voice." },
+            { topic: "Active/Passive Voice", q: "Convert to Passive Voice:<br>Roses smell sweet.", options: ["Roses are sweet when they are smelt.", "Roses are smelt sweet.", "Sweet is smelt by roses.", "Roses are sweet when they smell."], a: 0, exp: "For verbs of perception describing a state, the passive structure is: Subject + verb + adjective + when + pronoun + helping verb + V3." },
+            { topic: "Active/Passive Voice", q: "Convert to Passive Voice:<br>He ought to have done this work.", options: ["This work ought to be done by him.", "This work ought to have been done by him.", "This work ought have been done by him.", "This work ought to had been done by him."], a: 1, exp: "Modal perfects ('ought to have + V3') change to 'ought to have been + V3' in the passive voice." },
+
+            // Complex Direct / Indirect Speech (46-50)
+            { topic: "Direct/Indirect Speech", q: "Convert to Indirect Speech:<br>He said, 'Alas! Our foes are too strong.'", options: ["He exclaimed with sorrow that their foes were too strong.", "He exclaimed with joy that their foes were too strong.", "He said alas that their foes are too strong.", "He exclaimed with sorrow that our foes were too strong."], a: 0, exp: "Exclamatory sentences with 'Alas' change to 'exclaimed with sorrow'. Pronoun 'Our' changes to 'their', and 'are' changes to 'were'." },
+            { topic: "Direct/Indirect Speech", q: "Convert to Indirect Speech:<br>The commander said to the soldiers, 'March forward and attack the enemy!'", options: ["The commander told the soldiers to march forward and attack the enemy.", "The commander ordered the soldiers to march forward and attack the enemy.", "The commander asked the soldiers to march forward and attack the enemy.", "The commander requested the soldiers to march forward and attack the enemy."], a: 1, exp: "Imperative sentences indicating a command use the reporting verb 'ordered' or 'commanded', followed by 'to + V1'." },
+            { topic: "Direct/Indirect Speech", q: "Convert to Indirect Speech:<br>She said, 'Let us go out for a walk.'", options: ["She said that let us go out for a walk.", "She suggested that they should go out for a walk.", "She ordered to go out for a walk.", "She advised that we will go out for a walk."], a: 1, exp: "Sentences starting with 'Let us' expressing a proposal or suggestion use reporting verbs like 'suggested' or 'proposed' + that + they/we should + V1." },
+            { topic: "Direct/Indirect Speech", q: "Convert to Indirect Speech:<br>He said to her, 'Did you complete the assignment?'", options: ["He asked her that if she completed the assignment.", "He asked her whether she had completed the assignment.", "He asked her if she has completed the assignment.", "He asked her did she complete the assignment."], a: 1, exp: "Yes/No questions use 'if' or 'whether'. Simple Past ('Did you complete') changes to Past Perfect ('had completed'). 'that' is never used with 'if'." },
+            { topic: "Direct/Indirect Speech", q: "Convert to Indirect Speech:<br>Socrates said, 'Virtue is its own reward.'", options: ["Socrates said that virtue was its own reward.", "Socrates said that virtue is its own reward.", "Socrates told that virtue is its own reward.", "Socrates asked if virtue is its own reward."], a: 1, exp: "Universal truths, philosophical maxims, and proverbs do not change their tense in indirect speech." }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let answerLocked = false;
+
+        const topicBadge = document.getElementById('topic-badge');
+        const qText = document.getElementById('question-text');
+        const qNumber = document.getElementById('q-number');
+        const optionsGrid = document.getElementById('options-grid');
+        const feedbackPanel = document.getElementById('feedback-panel');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreDisplay = document.getElementById('current-score');
+        const quizArea = document.getElementById('quiz-area');
+
+        function loadQuestion() {
+            answerLocked = false;
+            nextBtn.classList.add('hidden');
+            feedbackPanel.classList.add('hidden');
+            
+            // Re-trigger animation
+            quizArea.classList.remove('fade-in');
+            void quizArea.offsetWidth;
+            quizArea.classList.add('fade-in');
+
+            const qData = englishData[currentIdx];
+            
+            topicBadge.innerText = qData.topic;
+            qText.innerHTML = qData.q;
+            qNumber.innerText = currentIdx + 1;
+            progressBar.style.width = `${(currentIdx / englishData.length) * 100}%`;
+            
+            optionsGrid.innerHTML = '';
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full p-4 rounded-2xl border border-slate-600 bg-slate-800/50 text-left font-semibold text-slate-200 flex items-center gap-4 group";
+                btn.innerHTML = `
+                    <span class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 text-slate-400 flex items-center justify-center text-sm font-black group-hover:bg-rose-900 group-hover:text-rose-400 transition-colors shrink-0 shadow-sm">
+                        ${String.fromCharCode(65 + idx)}
+                    </span>
+                    <span class="text-base sm:text-lg">${opt}</span>
+                `;
+                btn.onclick = () => selectOption(idx, btn);
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            if (answerLocked) return;
+            answerLocked = true;
+
+            const qData = englishData[currentIdx];
+            const correctIndex = qData.a;
+            const allBtns = optionsGrid.querySelectorAll('button');
+
+            allBtns.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                
+                if (idx === correctIndex) {
+                    btn.classList.remove('opacity-50', 'border-slate-600', 'bg-slate-800/50');
+                    btn.classList.add('correct-ans', 'opacity-100', 'shadow-md');
+                    btn.querySelector('span').classList.add('bg-emerald-900', 'text-emerald-400', 'border-emerald-700');
+                    btn.querySelector('span').classList.remove('bg-slate-900', 'text-slate-400');
+                }
+            });
+
+            feedbackPanel.classList.remove('hidden');
+
+            if (selectedIndex === correctIndex) {
+                score++;
+                scoreDisplay.innerText = score;
+                feedbackPanel.className = 'w-full sm:w-2/3 p-4 rounded-xl text-sm font-semibold border bg-emerald-950/50 text-emerald-400 border-emerald-800 fade-in';
+                feedbackPanel.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl leading-none mt-1">✓</span>
+                        <div>
+                            <span class="block font-black mb-1 text-emerald-300 tracking-wide uppercase text-xs">Correct</span>
+                            <span class="font-medium text-emerald-100/80 leading-snug">${qData.exp}</span>
+                        </div>
+                    </div>`;
+            } else {
+                selectedBtn.classList.remove('opacity-50', 'border-slate-600', 'bg-slate-800/50');
+                selectedBtn.classList.add('wrong-ans', 'opacity-100', 'shadow-md');
+                selectedBtn.querySelector('span').classList.add('bg-rose-900', 'text-rose-400', 'border-rose-700');
+                
+                feedbackPanel.className = 'w-full sm:w-2/3 p-4 rounded-xl text-sm font-semibold border bg-rose-950/50 text-rose-400 border-rose-900 fade-in';
+                feedbackPanel.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl leading-none mt-1">✗</span>
+                        <div>
+                            <span class="block font-black mb-1 text-rose-300 tracking-wide uppercase text-xs">Incorrect</span>
+                            <span class="font-medium text-rose-100/80 leading-snug">${qData.exp}</span>
+                        </div>
+                    </div>`;
+            }
+
+            nextBtn.classList.remove('hidden');
+            if (currentIdx === englishData.length - 1) {
+                nextBtn.innerHTML = `View Results <span class="ml-2">🏆</span>`;
+            }
+        }
+
+        nextBtn.onclick = () => {
+            if (currentIdx < englishData.length - 1) {
+                currentIdx++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            quizArea.classList.add('hidden');
+            document.querySelector('header').classList.add('hidden');
+            nextBtn.parentElement.classList.add('hidden');
+            
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.classList.remove('hidden');
+            
+            document.getElementById('final-score').innerText = score;
+            
+            const accuracy = Math.round((score / englishData.length) * 100);
+            
+            let currentAcc = 0;
+            const interval = setInterval(() => {
+                if (currentAcc >= accuracy) {
+                    clearInterval(interval);
+                    document.getElementById('final-accuracy').innerText = `${accuracy}%`;
+                } else {
+                    currentAcc += (accuracy > 50 ? 2 : 1);
+                    document.getElementById('final-accuracy').innerText = `${Math.min(currentAcc, accuracy)}%`;
+                }
+            }, 25);
+        }
+
+        // Initialize App
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>

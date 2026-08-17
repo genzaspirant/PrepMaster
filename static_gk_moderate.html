@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static GK Masterclass - Moderate Level</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #bae6fd 100%);
+            min-height: 100vh;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        .option-btn {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center left;
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+        .correct-ans {
+            background-color: #ecfdf5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+        .wrong-ans {
+            background-color: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-card w-full max-w-4xl p-6 sm:p-10 relative overflow-hidden flex flex-col min-h-[650px]">
+        
+        <!-- Progress Bar -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-indigo-100">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+
+        <header class="flex justify-between items-center mb-8 mt-2 border-b border-slate-100 pb-6">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-700 tracking-tight">Static GK Masterclass</h1>
+                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Moderate Level - 50 MCQs</p>
+            </div>
+            <div class="bg-indigo-50 px-5 py-3 rounded-2xl border border-indigo-100 text-right shadow-sm">
+                <div class="text-[10px] text-indigo-500 font-bold uppercase tracking-widest mb-1">Question</div>
+                <div class="text-2xl font-black text-indigo-700 leading-none"><span id="q-number">1</span><span class="text-lg text-indigo-300">/50</span></div>
+                <div class="text-xs font-bold text-slate-500 mt-2">Score: <span id="current-score" class="text-slate-800">0</span></div>
+            </div>
+        </header>
+
+        <div id="quiz-area" class="fade-in flex-grow flex flex-col">
+            <div class="mb-6">
+                <span id="topic-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-blue-100 text-blue-700 mb-4 shadow-sm">Topic</span>
+                <h2 id="question-text" class="text-xl sm:text-2xl font-bold text-slate-800 leading-snug">Loading question...</h2>
+            </div>
+
+            <div id="options-grid" class="space-y-3 flex-grow custom-scroll overflow-y-auto pr-2 pb-2">
+                <!-- Buttons rendered via JS -->
+            </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 min-h-[85px]">
+            <div id="feedback-panel" class="w-full sm:w-2/3 hidden p-4 rounded-xl text-sm font-semibold border leading-relaxed"></div>
+            
+            <button id="next-btn" class="hidden w-full sm:w-1/3 px-8 py-4 bg-slate-900 hover:bg-indigo-600 text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 whitespace-nowrap text-lg">
+                Next <span class="ml-2">→</span>
+            </button>
+        </div>
+
+        <div id="result-screen" class="hidden text-center py-10 fade-in flex-grow flex flex-col justify-center items-center">
+            <div class="w-24 h-24 bg-gradient-to-tr from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mb-6 shadow-inner border-4 border-white">
+                <span class="text-5xl">🌍</span>
+            </div>
+            
+            <h2 class="text-4xl font-extrabold text-slate-800 mb-3 tracking-tight">Quiz Completed!</h2>
+            <p class="text-slate-500 mb-10 text-lg font-medium">You have successfully evaluated your Static GK knowledge.</p>
+            
+            <div class="grid grid-cols-2 gap-6 w-full max-w-md mb-10">
+                <div class="bg-white p-6 border border-slate-100 rounded-3xl shadow-sm text-center">
+                    <span class="block text-xs text-slate-400 font-bold uppercase tracking-widest mb-2">Final Score</span>
+                    <span class="text-4xl font-black text-slate-800"><span id="final-score">0</span><span class="text-xl text-slate-400">/50</span></span>
+                </div>
+                <div class="bg-slate-900 p-6 rounded-3xl shadow-xl text-center relative overflow-hidden">
+                    <span class="relative block text-xs text-slate-400 font-bold uppercase tracking-widest mb-2">Accuracy</span>
+                    <span id="final-accuracy" class="relative text-4xl font-black text-blue-400">0%</span>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl transition-all shadow-[0_10px_20px_-10px_rgba(79,70,229,0.5)] active:scale-95 text-lg">
+                Retake Quiz
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const gkData = [
+            { topic: "National Parks", q: "Bandhavgarh National Park, famous for its large population of Royal Bengal Tigers, is located in which state?", options: ["Rajasthan", "Madhya Pradesh", "Uttarakhand", "Assam"], a: 1, exp: "Bandhavgarh National Park is situated in the Umaria district of Madhya Pradesh." },
+            { topic: "Geography", q: "Which is the highest waterfall in India (in terms of total height)?", options: ["Jog Falls", "Dudhsagar Falls", "Kunchikal Falls", "Nohkalikai Falls"], a: 2, exp: "Kunchikal Falls in Shimoga district of Karnataka is the highest waterfall in India with a height of 455 meters." },
+            { topic: "International Organizations", q: "Where is the headquarters of the United Nations Environment Programme (UNEP) located?", options: ["Geneva, Switzerland", "Nairobi, Kenya", "Paris, France", "New York, USA"], a: 1, exp: "UNEP was founded in 1972 and its headquarters is located in Nairobi, Kenya." },
+            { topic: "Books & Authors", q: "Who is the author of the Man Booker Prize-winning novel 'The God of Small Things'?", options: ["Arundhati Roy", "Salman Rushdie", "Kiran Desai", "Aravind Adiga"], a: 0, exp: "Arundhati Roy won the Booker Prize in 1997 for her debut novel 'The God of Small Things'." },
+            { topic: "Books & Authors", q: "The book 'Ignited Minds: Unleashing the Power Within India' was written by?", options: ["Amartya Sen", "Shashi Tharoor", "A.P.J. Abdul Kalam", "Chetan Bhagat"], a: 2, exp: "It was written by former President of India, Dr. A.P.J. Abdul Kalam, in 2002." },
+            { topic: "International Organizations", q: "The headquarters of the World Health Organization (WHO) is situated in?", options: ["Washington D.C.", "Geneva", "Vienna", "Rome"], a: 1, exp: "WHO was established on April 7, 1948, and is headquartered in Geneva, Switzerland." },
+            { topic: "International Organizations", q: "The South Asian Association for Regional Cooperation (SAARC) was founded in 1985 in which city?", options: ["New Delhi", "Kathmandu", "Colombo", "Dhaka"], a: 3, exp: "SAARC was founded in Dhaka on December 8, 1985. However, its secretariat is based in Kathmandu, Nepal." },
+            { topic: "Awards & Honours", q: "Who was the first Indian to receive the Ramon Magsaysay Award?", options: ["Mother Teresa", "Vinoba Bhave", "Verghese Kurien", "Jayaprakash Narayan"], a: 1, exp: "Acharya Vinoba Bhave was the first Indian to win the Ramon Magsaysay Award in 1958 for Community Leadership." },
+            { topic: "Awards & Honours", q: "Which is the highest award given in India for lifetime achievement in cinema?", options: ["National Film Award", "Filmfare Award", "Dadasaheb Phalke Award", "Padma Vibhushan"], a: 2, exp: "The Dadasaheb Phalke Award is India's highest award in the field of cinema, presented annually at the National Film Awards ceremony." },
+            { topic: "Art & Culture", q: "'Rauf' is a famous folk dance associated with which Indian State/Union Territory?", options: ["Punjab", "Jammu and Kashmir", "Himachal Pradesh", "Haryana"], a: 1, exp: "Rauf is a traditional and highly rhythmic folk dance of Jammu and Kashmir, mainly performed by women during spring." },
+            { topic: "Art & Culture", q: "'Madhubani' painting, a popular folk art form, originates from which state?", options: ["Bihar", "Rajasthan", "Odisha", "West Bengal"], a: 0, exp: "Madhubani art (or Mithila painting) is a style of Indian painting practiced in the Mithila region of Bihar." },
+            { topic: "Science & Discoveries", q: "Who discovered the neutron in 1932?", options: ["J.J. Thomson", "Ernest Rutherford", "James Chadwick", "Niels Bohr"], a: 2, exp: "James Chadwick, an English physicist, was awarded the 1935 Nobel Prize in Physics for his discovery of the neutron." },
+            { topic: "Science", q: "The scientific study of birds is known as:", options: ["Entomology", "Ornithology", "Ichthyology", "Mycology"], a: 1, exp: "Ornithology is a branch of zoology that concerns the study of birds. (Entomology = insects, Ichthyology = fishes, Mycology = fungi)." },
+            { topic: "Sports", q: "The term 'Butterfly Stroke' is associated with which sport?", options: ["Boxing", "Swimming", "Wrestling", "Gymnastics"], a: 1, exp: "The butterfly stroke is a swimming stroke swum on the chest, with both arms moving symmetrically." },
+            { topic: "Sports", q: "The 'Thomas Cup' is associated with which of the following sports?", options: ["Table Tennis", "Badminton", "Lawn Tennis", "Golf"], a: 1, exp: "The Thomas Cup, sometimes called the World Men's Team Championships, is an international badminton competition." },
+            { topic: "Firsts in India", q: "Who was the first woman Chief Minister of an Indian state?", options: ["Indira Gandhi", "Sarojini Naidu", "Sucheta Kripalani", "Nandini Satpathy"], a: 2, exp: "Sucheta Kripalani became the Chief Minister of Uttar Pradesh in 1963, making her India's first woman Chief Minister." },
+            { topic: "Firsts in India", q: "What was the name of India's first artificial satellite launched in 1975?", options: ["Bhaskara", "Rohini", "Aryabhata", "Apple"], a: 2, exp: "Aryabhata was India's first satellite, named after the famous Indian astronomer. It was launched by the Soviet Union on April 19, 1975." },
+            { topic: "Important Days", q: "World Environment Day is observed globally on:", options: ["April 22", "June 5", "September 16", "March 22"], a: 1, exp: "World Environment Day is celebrated on June 5 every year to raise global awareness to take positive environmental action." },
+            { topic: "Important Days", q: "National Science Day in India is celebrated on February 28 to commemorate:", options: ["The birth of C.V. Raman", "The launch of Aryabhata", "The discovery of the Raman Effect", "The founding of ISRO"], a: 2, exp: "It commemorates the discovery of the 'Raman Effect' by Indian physicist Sir C.V. Raman on February 28, 1928." },
+            { topic: "World Geography", q: "What is the official currency of Japan?", options: ["Yuan", "Won", "Yen", "Kyat"], a: 2, exp: "The Yen is the official currency of Japan. (Yuan is China, Won is Korea, Kyat is Myanmar)." },
+            { topic: "World Polity", q: "The national legislature (Parliament) of Israel is known as the:", options: ["Diet", "Duma", "Knesset", "Majlis"], a: 2, exp: "The Knesset is the unicameral national legislature of Israel. (Diet is Japan, Duma is Russia)." },
+            { topic: "Geography", q: "The McMahon Line forms the boundary between India and:", options: ["Pakistan", "China", "Nepal", "Bangladesh"], a: 1, exp: "The McMahon Line is the effective boundary between China and India, negotiated in the Simla Accord of 1914." },
+            { topic: "Awards & Honours", q: "Which is the highest peacetime gallantry award in India?", options: ["Param Vir Chakra", "Maha Vir Chakra", "Ashoka Chakra", "Kirti Chakra"], a: 2, exp: "The Ashoka Chakra is India's highest peacetime military decoration awarded for valor, courageous action, or self-sacrifice away from the battlefield." },
+            { topic: "Personalities", q: "Who among the following is widely known as the 'Birdman of India'?", options: ["Homi J. Bhabha", "Salim Ali", "Rajendra Singh", "Jadav Payeng"], a: 1, exp: "Dr. Salim Ali was an Indian ornithologist and naturalist, often referred to as the 'Birdman of India'." },
+            { topic: "Geography", q: "Which state in India has the longest mainland coastline?", options: ["Andhra Pradesh", "Tamil Nadu", "Maharashtra", "Gujarat"], a: 3, exp: "Gujarat has the longest mainland coastline in India, extending over 1,600 kilometers." },
+            { topic: "Cities", q: "Which Indian city is famously known as the 'City of Lakes'?", options: ["Bhopal", "Udaipur", "Nainital", "Srinagar"], a: 1, exp: "Udaipur, located in Rajasthan, is famously known as the 'City of Lakes' due to its sophisticated lake system." },
+            { topic: "Art & Culture", q: "'Kuchipudi' is a classical dance form that originated in which Indian state?", options: ["Kerala", "Tamil Nadu", "Andhra Pradesh", "Karnataka"], a: 2, exp: "Kuchipudi is one of the eight major Indian classical dances and it originated in a village named Kuchipudi in the Indian state of Andhra Pradesh." },
+            { topic: "International Organizations", q: "Where is the headquarters of the International Monetary Fund (IMF) located?", options: ["New York", "Geneva", "London", "Washington D.C."], a: 3, exp: "The IMF, consisting of 190 member countries, has its headquarters situated in Washington, D.C., USA." },
+            { topic: "Sports", q: "Who was the first Indian to win an individual gold medal at the Olympic Games?", options: ["K.D. Jadhav", "Leander Paes", "Abhinav Bindra", "Neeraj Chopra"], a: 2, exp: "Abhinav Bindra won the gold medal in the 10m Air Rifle event at the 2008 Beijing Olympics, becoming the first Indian to win an individual gold." },
+            { topic: "Books & Authors", q: "The famous novel 'A Suitable Boy' was written by:", options: ["Vikram Seth", "Amitav Ghosh", "Jhumpa Lahiri", "Khushwant Singh"], a: 0, exp: "Published in 1993, 'A Suitable Boy' is a highly acclaimed, voluminous novel written by Vikram Seth." },
+            { topic: "World Geography", q: "What is the capital city of Australia?", options: ["Sydney", "Melbourne", "Canberra", "Perth"], a: 2, exp: "Canberra is the capital city of Australia. It was chosen as a compromise between rivals Sydney and Melbourne." },
+            { topic: "World Geography", q: "Which is the largest non-polar desert in the world?", options: ["Gobi Desert", "Kalahari Desert", "Sahara Desert", "Thar Desert"], a: 2, exp: "The Sahara Desert in North Africa is the largest hot (non-polar) desert in the world." },
+            { topic: "Art & Culture", q: "The famous 'Bihu' festival is traditionally celebrated in which state?", options: ["Odisha", "Assam", "West Bengal", "Tripura"], a: 1, exp: "Bihu is a set of three important non-religious festivals celebrated in the Indian state of Assam." },
+            { topic: "Environment", q: "Which animal was declared as the National Heritage Animal of India in 2010?", options: ["Tiger", "Lion", "Elephant", "Rhinoceros"], a: 2, exp: "The Elephant was declared the National Heritage Animal of India to ramp up measures for its protection." },
+            { topic: "Institutions", q: "Where is the headquarters of the Indian Space Research Organisation (ISRO)?", options: ["Hyderabad", "Thiruvananthapuram", "Bengaluru", "Chennai"], a: 2, exp: "ISRO, formed in 1969, has its headquarters located in Bengaluru, Karnataka." },
+            { topic: "Books & Authors", q: "'Playing It My Way' is the autobiography of which Indian sports personality?", options: ["M.S. Dhoni", "Sunil Gavaskar", "Kapil Dev", "Sachin Tendulkar"], a: 3, exp: "It is the autobiography of former Indian cricketer Sachin Tendulkar, co-authored by Boria Majumdar." },
+            { topic: "Personalities", q: "Who among the following is known as the 'Iron Man of India'?", options: ["Bal Gangadhar Tilak", "Sardar Vallabhbhai Patel", "Subhas Chandra Bose", "Lala Lajpat Rai"], a: 1, exp: "Sardar Vallabhbhai Patel is known as the Iron Man of India for his uncompromising commitment to national integration." },
+            { topic: "Polity", q: "What is the minimum age prescribed by the Constitution to become the President of India?", options: ["25 years", "30 years", "35 years", "40 years"], a: 2, exp: "Article 58 of the Constitution states that a candidate must have completed 35 years of age to be eligible for election as President." },
+            { topic: "Science", q: "What is the common chemical name of 'Laughing Gas'?", options: ["Nitric Oxide", "Nitrous Oxide", "Nitrogen Dioxide", "Ammonium Nitrate"], a: 1, exp: "Nitrous Oxide (N2O) is commonly known as laughing gas due to its euphoric effects upon inhaling." },
+            { topic: "Personalities", q: "Who is universally recognized as the 'Father of the Indian Constitution'?", options: ["Jawaharlal Nehru", "B.R. Ambedkar", "Rajendra Prasad", "Mahatma Gandhi"], a: 1, exp: "Dr. B.R. Ambedkar was the Chairman of the Drafting Committee and is recognized as the chief architect of the Indian Constitution." },
+            { topic: "Art & Culture", q: "'Sattriya' is a classical dance form introduced by the Vaishnava saint Mahapurush Sankaradeva in:", options: ["Assam", "Manipur", "Odisha", "Meghalaya"], a: 0, exp: "Sattriya is a classical dance-drama performance art with origins in the Krishna-centered Vaishnavism monasteries of Assam." },
+            { topic: "Monuments", q: "The 'Gateway of India' is located in which city?", options: ["New Delhi", "Mumbai", "Kolkata", "Chennai"], a: 1, exp: "The Gateway of India is an arch-monument built in the early 20th century in the city of Mumbai, Maharashtra." },
+            { topic: "Economy / Agriculture", q: "The 'Yellow Revolution' in India is primarily associated with the production of:", options: ["Poultry", "Oilseeds", "Pulses", "Sunflowers"], a: 1, exp: "The Yellow Revolution, launched in 1986-1987, was aimed to increase the production of edible oilseeds like mustard and sesame." },
+            { topic: "Firsts in India", q: "Who was the first Indian woman to successfully scale Mount Everest?", options: ["Santosh Yadav", "Arunima Sinha", "Bachendri Pal", "Premlata Agarwal"], a: 2, exp: "In 1984, Bachendri Pal became the first Indian woman to reach the summit of Mount Everest." },
+            { topic: "Geography", q: "The boundary demarcation line between India and Pakistan is known as the:", options: ["Durand Line", "McMahon Line", "Radcliffe Line", "Maginot Line"], a: 2, exp: "The Radcliffe Line became the border between India and Pakistan upon the Partition of India on 17 August 1947." },
+            { topic: "History", q: "Who founded the socio-religious reform movement 'Brahmo Samaj' in 1828?", options: ["Swami Vivekananda", "Raja Ram Mohan Roy", "Dayananda Saraswati", "Ishwar Chandra Vidyasagar"], a: 1, exp: "Raja Ram Mohan Roy founded the Brahmo Sabha (later Brahmo Samaj) in 1828, which sought to reform Hindu society." },
+            { topic: "World Geography", q: "What is the official currency of the Russian Federation?", options: ["Peso", "Krone", "Ruble", "Lev"], a: 2, exp: "The Russian Ruble (or rouble) is the currency of the Russian Federation." },
+            { topic: "Science", q: "Which of the following instruments is used to measure atmospheric pressure?", options: ["Hygrometer", "Lactometer", "Barometer", "Anemometer"], a: 2, exp: "A barometer is a scientific instrument used to measure atmospheric pressure. (Hygrometer measures humidity)." },
+            { topic: "Books & Authors", q: "The ancient Indian collection of interrelated animal fables 'Panchatantra' is attributed to:", options: ["Kalidasa", "Vishnu Sharma", "Tulsidas", "Ved Vyas"], a: 1, exp: "The Panchatantra is an ancient Indian collection of fables originally written in Sanskrit, attributed to the scholar Vishnu Sharma." },
+            { topic: "International Organizations", q: "Where is the headquarters of UNESCO (United Nations Educational, Scientific and Cultural Organization) located?", options: ["Geneva", "London", "Paris", "New York"], a: 2, exp: "UNESCO is a specialized agency of the United Nations aimed at promoting world peace, with its headquarters in Paris, France." }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let answerLocked = false;
+
+        const topicBadge = document.getElementById('topic-badge');
+        const qText = document.getElementById('question-text');
+        const qNumber = document.getElementById('q-number');
+        const optionsGrid = document.getElementById('options-grid');
+        const feedbackPanel = document.getElementById('feedback-panel');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreDisplay = document.getElementById('current-score');
+        const quizArea = document.getElementById('quiz-area');
+
+        function loadQuestion() {
+            answerLocked = false;
+            nextBtn.classList.add('hidden');
+            feedbackPanel.classList.add('hidden');
+            
+            // Re-trigger animation
+            quizArea.classList.remove('fade-in');
+            void quizArea.offsetWidth;
+            quizArea.classList.add('fade-in');
+
+            const qData = gkData[currentIdx];
+            
+            topicBadge.innerText = qData.topic;
+            qText.innerHTML = qData.q;
+            qNumber.innerText = currentIdx + 1;
+            progressBar.style.width = `${(currentIdx / gkData.length) * 100}%`;
+            
+            optionsGrid.innerHTML = '';
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full p-4 rounded-2xl border-2 border-slate-200 bg-white text-left font-bold text-slate-700 flex items-center gap-4 group";
+                btn.innerHTML = `
+                    <span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-sm font-black group-hover:bg-blue-100 group-hover:text-blue-700 transition-colors shrink-0 shadow-sm border border-slate-200 group-hover:border-blue-200">
+                        ${String.fromCharCode(65 + idx)}
+                    </span>
+                    <span class="text-base sm:text-lg">${opt}</span>
+                `;
+                btn.onclick = () => selectOption(idx, btn);
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            if (answerLocked) return;
+            answerLocked = true;
+
+            const qData = gkData[currentIdx];
+            const correctIndex = qData.a;
+            const allBtns = optionsGrid.querySelectorAll('button');
+
+            allBtns.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.add('opacity-70', 'cursor-not-allowed');
+                
+                if (idx === correctIndex) {
+                    btn.classList.remove('opacity-70', 'border-slate-200');
+                    btn.classList.add('correct-ans', 'opacity-100', 'shadow-md');
+                    btn.querySelector('span').classList.add('bg-emerald-200', 'text-emerald-800', 'border-emerald-300');
+                    btn.querySelector('span').classList.remove('bg-slate-100', 'text-slate-500');
+                }
+            });
+
+            feedbackPanel.classList.remove('hidden');
+
+            if (selectedIndex === correctIndex) {
+                score++;
+                scoreDisplay.innerText = score;
+                feedbackPanel.className = 'w-full sm:w-2/3 p-4 rounded-xl text-sm font-semibold border bg-emerald-50 text-emerald-800 border-emerald-200 fade-in';
+                feedbackPanel.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl leading-none mt-1">✨</span>
+                        <div>
+                            <span class="block font-black mb-1 text-emerald-900 tracking-wide uppercase text-xs">Correct</span>
+                            <span class="font-medium text-emerald-800 leading-snug">${qData.exp}</span>
+                        </div>
+                    </div>`;
+            } else {
+                selectedBtn.classList.remove('opacity-70', 'border-slate-200');
+                selectedBtn.classList.add('wrong-ans', 'opacity-100', 'shadow-md');
+                selectedBtn.querySelector('span').classList.add('bg-red-200', 'text-red-800', 'border-red-300');
+                
+                feedbackPanel.className = 'w-full sm:w-2/3 p-4 rounded-xl text-sm font-semibold border bg-rose-50 text-rose-800 border-rose-200 fade-in';
+                feedbackPanel.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl leading-none mt-1">💡</span>
+                        <div>
+                            <span class="block font-black mb-1 text-rose-900 tracking-wide uppercase text-xs">Incorrect</span>
+                            <span class="font-medium text-rose-800 leading-snug">${qData.exp}</span>
+                        </div>
+                    </div>`;
+            }
+
+            nextBtn.classList.remove('hidden');
+            if (currentIdx === gkData.length - 1) {
+                nextBtn.innerHTML = `View Results <span class="ml-2">🏆</span>`;
+            }
+        }
+
+        nextBtn.onclick = () => {
+            if (currentIdx < gkData.length - 1) {
+                currentIdx++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            quizArea.classList.add('hidden');
+            document.querySelector('header').classList.add('hidden');
+            nextBtn.parentElement.classList.add('hidden');
+            
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.classList.remove('hidden');
+            
+            document.getElementById('final-score').innerText = score;
+            
+            const accuracy = Math.round((score / gkData.length) * 100);
+            
+            let currentAcc = 0;
+            const interval = setInterval(() => {
+                if (currentAcc >= accuracy) {
+                    clearInterval(interval);
+                    document.getElementById('final-accuracy').innerText = `${accuracy}%`;
+                } else {
+                    currentAcc += (accuracy > 50 ? 2 : 1);
+                    document.getElementById('final-accuracy').innerText = `${Math.min(currentAcc, accuracy)}%`;
+                }
+            }, 25);
+        }
+
+        // Initialize App
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static GK Masterclass - Hard Level (Set 2)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #332900 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .quiz-card {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .option-btn {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center left;
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            border-color: #f59e0b;
+            background-color: rgba(245, 158, 11, 0.1);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+        }
+        .correct-ans {
+            background-color: rgba(16, 185, 129, 0.1) !important;
+            border-color: #10b981 !important;
+            color: #34d399 !important;
+        }
+        .wrong-ans {
+            background-color: rgba(244, 63, 94, 0.1) !important;
+            border-color: #f43f5e !important;
+            color: #fb7185 !important;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-card w-full max-w-4xl p-6 sm:p-10 relative overflow-hidden flex flex-col min-h-[650px]">
+        
+        <!-- Progress Bar -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-slate-800">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+
+        <header class="flex justify-between items-center mb-8 mt-2 border-b border-slate-700 pb-6">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-yellow-500 tracking-tight">Static GK Set 2</h1>
+                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Hard Level - 50 MCQs</p>
+            </div>
+            <div class="bg-slate-800 px-5 py-3 rounded-2xl border border-slate-700 text-right shadow-sm">
+                <div class="text-[10px] text-amber-400 font-bold uppercase tracking-widest mb-1">Question</div>
+                <div class="text-2xl font-black text-amber-500 leading-none"><span id="q-number">1</span><span class="text-lg text-slate-500">/50</span></div>
+                <div class="text-xs font-bold text-slate-400 mt-2">Score: <span id="current-score" class="text-white">0</span></div>
+            </div>
+        </header>
+
+        <div id="quiz-area" class="fade-in flex-grow flex flex-col">
+            <div class="mb-6">
+                <span id="topic-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-amber-500/20 text-amber-400 mb-4 shadow-sm border border-amber-500/30">Topic</span>
+                <h2 id="question-text" class="text-xl sm:text-2xl font-bold text-slate-100 leading-snug">Loading question...</h2>
+            </div>
+
+            <div id="options-grid" class="space-y-3 flex-grow custom-scroll overflow-y-auto pr-2 pb-2">
+                <!-- Buttons rendered via JS -->
+            </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4 min-h-[85px]">
+            <div id="feedback-panel" class="w-full sm:w-2/3 hidden p-4 rounded-xl text-sm font-semibold border leading-relaxed"></div>
+            
+            <button id="next-btn" class="hidden w-full sm:w-1/3 px-8 py-4 bg-amber-600 hover:bg-amber-500 text-slate-900 font-bold rounded-xl transition-all shadow-lg shadow-amber-600/30 active:scale-95 whitespace-nowrap text-lg">
+                Next <span class="ml-2">→</span>
+            </button>
+        </div>
+
+        <div id="result-screen" class="hidden text-center py-10 fade-in flex-grow flex flex-col justify-center items-center">
+            <div class="w-24 h-24 bg-gradient-to-tr from-amber-500 to-yellow-400 rounded-full flex items-center justify-center mb-6 shadow-inner border-4 border-slate-800">
+                <span class="text-5xl">👑</span>
+            </div>
+            
+            <h2 class="text-4xl font-extrabold text-white mb-3 tracking-tight">Set 2 Conquered!</h2>
+            <p class="text-slate-400 mb-10 text-lg font-medium">You survived the toughest Static GK questions.</p>
+            
+            <div class="grid grid-cols-2 gap-6 w-full max-w-md mb-10">
+                <div class="bg-slate-800 p-6 border border-slate-700 rounded-3xl shadow-sm text-center">
+                    <span class="block text-xs text-slate-400 font-bold uppercase tracking-widest mb-2">Final Score</span>
+                    <span class="text-4xl font-black text-white"><span id="final-score">0</span><span class="text-xl text-slate-500">/50</span></span>
+                </div>
+                <div class="bg-amber-950 p-6 rounded-3xl shadow-xl border border-amber-900 text-center relative overflow-hidden">
+                    <span class="relative block text-xs text-amber-300 font-bold uppercase tracking-widest mb-2">Accuracy</span>
+                    <span id="final-accuracy" class="relative text-4xl font-black text-amber-500">0%</span>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="px-10 py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900 font-bold rounded-xl transition-all shadow-[0_10px_20px_-10px_rgba(245,158,11,0.5)] active:scale-95 text-lg">
+                Retake Hard Level
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const gkData = [
+            // History (1-10)
+            { topic: "History (Ancient)", q: "Who was the first scholar to decipher the Ashokan edicts written in the Brahmi script?", options: ["Alexander Cunningham", "James Prinsep", "Max Muller", "Mortimer Wheeler"], a: 1, exp: "James Prinsep, an English scholar and official of the East India Company, deciphered the Brahmi script in 1837." },
+            { topic: "History (Medieval)", q: "The 'Silver Tanka' and 'Copper Jital' were introduced by which Delhi Sultan?", options: ["Qutb-ud-din Aibak", "Iltutmish", "Alauddin Khalji", "Muhammad bin Tughlaq"], a: 1, exp: "Iltutmish introduced the two principal coins of the Delhi Sultanate: the silver Tanka and the copper Jital." },
+            { topic: "History (Modern)", q: "Under whose Viceroyalty was the Vernacular Press Act passed in 1878?", options: ["Lord Lytton", "Lord Ripon", "Lord Curzon", "Lord Dufferin"], a: 0, exp: "The Vernacular Press Act was passed in 1878 by Lord Lytton to curtail the freedom of the Indian-language press." },
+            { topic: "History (Modern)", q: "Who founded the 'Tattvabodhini Sabha' in 1839?", options: ["Raja Ram Mohan Roy", "Debendranath Tagore", "Keshab Chandra Sen", "Ishwar Chandra Vidyasagar"], a: 1, exp: "Debendranath Tagore founded the Tattvabodhini Sabha in 1839, which later merged with the Brahmo Samaj." },
+            { topic: "History (Ancient)", q: "The ancient port city of 'Lothal', famous for its artificial dockyard, is located by the banks of which river system?", options: ["Indus", "Saraswati", "Bhogava", "Luni"], a: 2, exp: "Lothal, a prominent Harappan site in Gujarat, is situated near the Bhogava river, a tributary of the Sabarmati." },
+            { topic: "History (Modern)", q: "The 'Operation Polo' was launched by the Indian Armed Forces in 1948 to annex which princely state?", options: ["Junagadh", "Jammu & Kashmir", "Hyderabad", "Travancore"], a: 2, exp: "Operation Polo was the code name for the police action against the Princely State of Hyderabad in September 1948." },
+            { topic: "History (Medieval)", q: "Who among the following was the author of 'Amuktamalyada'?", options: ["Krishnadevaraya", "Tenali Rama", "Allasani Peddana", "Vidyaranya"], a: 0, exp: "Krishnadevaraya, the legendary emperor of the Vijayanagara Empire, authored the Telugu epic poem 'Amuktamalyada'." },
+            { topic: "History (Modern)", q: "Which British officer was assassinated by Madan Lal Dhingra in London in 1909?", options: ["General Dyer", "Curzon Wyllie", "John Saunders", "Lord Hardinge"], a: 1, exp: "Madan Lal Dhingra, an Indian revolutionary, assassinated Sir William Hutt Curzon Wyllie in London in 1909." },
+            { topic: "History (Ancient)", q: "The third Buddhist Council was patronized by which ruler?", options: ["Ajatashatru", "Kalashoka", "Ashoka", "Kanishka"], a: 2, exp: "The Third Buddhist Council was convened in about 250 BCE at Pataliputra under the patronage of Emperor Ashoka." },
+            { topic: "History (Medieval)", q: "Who built the famous 'Alai Darwaza', a magnificent gateway in the Qutb complex?", options: ["Qutb-ud-din Aibak", "Iltutmish", "Alauddin Khalji", "Firoz Shah Tughlaq"], a: 2, exp: "The Alai Darwaza was built by Alauddin Khalji in 1311 CE. It is an important masterpiece of Indo-Islamic architecture." },
+
+            // Polity (11-20)
+            { topic: "Polity", q: "Which Constitutional Amendment Act restricted the size of the Council of Ministers to 15% of the total size of the legislative house?", options: ["86th Amendment", "89th Amendment", "91st Amendment", "97th Amendment"], a: 2, exp: "The 91st Amendment Act of 2003 limited the size of the Council of Ministers (including the PM/CM) to 15% of the total members of the Lok Sabha/State Assembly." },
+            { topic: "Polity", q: "Which committee recommended the establishment of the Central Vigilance Commission (CVC)?", options: ["Sarkaria Commission", "Kothari Commission", "Santhanam Committee", "Swaran Singh Committee"], a: 2, exp: "The CVC was set up in 1964 on the recommendations of the Committee on Prevention of Corruption, headed by K. Santhanam." },
+            { topic: "Polity", q: "Article 323A of the Indian Constitution deals with:", options: ["Election Commission", "Administrative Tribunals", "Finance Commission", "Special provisions for SC/STs"], a: 1, exp: "Article 323A was added by the 42nd Amendment and empowers the Parliament to set up Administrative Tribunals for resolving disputes." },
+            { topic: "Polity", q: "In the event of a vacancy in both the offices of the President and Vice-President, who discharges the functions of the President?", options: ["Prime Minister", "Speaker of Lok Sabha", "Chief Justice of India", "Attorney General"], a: 2, exp: "Under the President (Discharge of Functions) Act, 1969, the Chief Justice of India acts as the President in such a scenario." },
+            { topic: "Polity", q: "The concept of 'Public Interest Litigation' (PIL) originated in which country?", options: ["United Kingdom", "United States of America", "India", "Australia"], a: 1, exp: "The concept of PIL originated and developed in the USA in the 1960s before being adapted in India by Justice P.N. Bhagwati." },
+            { topic: "Polity", q: "Which Schedule of the Constitution distributes powers between the Union and the States?", options: ["Sixth Schedule", "Seventh Schedule", "Eighth Schedule", "Tenth Schedule"], a: 1, exp: "The Seventh Schedule contains three legislative lists: Union List, State List, and Concurrent List." },
+            { topic: "Polity", q: "Who decides whether a bill is a Money Bill or not?", options: ["President", "Prime Minister", "Speaker of the Lok Sabha", "Finance Minister"], a: 2, exp: "Under Article 110(3), if any question arises whether a Bill is a Money Bill or not, the decision of the Speaker of the Lok Sabha is final." },
+            { topic: "Polity", q: "Which part of the Constitution deals with the amendment of the Constitution?", options: ["Part XVIII", "Part XX", "Part XXI", "Part XXII"], a: 2, exp: "Part XX of the Constitution contains only one article, Article 368, which deals with the power of Parliament to amend the Constitution." },
+            { topic: "Polity", q: "The 'Basic Structure Doctrine' was propounded by the Supreme Court in which landmark judgment?", options: ["Golaknath Case", "Kesavananda Bharati Case", "Minerva Mills Case", "S.R. Bommai Case"], a: 1, exp: "The Kesavananda Bharati v. State of Kerala (1973) judgment established the Basic Structure Doctrine, preventing Parliament from altering fundamental constitutional features." },
+            { topic: "Polity", q: "How many subjects are enlisted in the Eleventh Schedule corresponding to the Panchayati Raj institutions?", options: ["18", "29", "32", "24"], a: 1, exp: "The 11th Schedule, added by the 73rd Amendment, contains 29 functional items placed within the purview of the Panchayats." },
+
+            // Geography (21-30)
+            { topic: "Geography (World)", q: "The Agulhas Current is a warm ocean current flowing in which ocean?", options: ["Atlantic Ocean", "Pacific Ocean", "Indian Ocean", "Arctic Ocean"], a: 2, exp: "The Agulhas Current is the western boundary current of the southwest Indian Ocean, flowing down the east coast of Africa." },
+            { topic: "Geography (World)", q: "The Strait of Hormuz connects the Persian Gulf with the:", options: ["Red Sea", "Gulf of Aden (Oman)", "Black Sea", "Mediterranean Sea"], a: 1, exp: "The Strait of Hormuz is a crucial choke point connecting the Persian Gulf to the Gulf of Oman (and the Arabian Sea)." },
+            { topic: "Geography (Physical)", q: "Which of the following clouds is predominantly associated with thunderstorms and heavy rainfall?", options: ["Cirrus", "Stratus", "Cumulonimbus", "Altocumulus"], a: 2, exp: "Cumulonimbus clouds are dense, towering vertical clouds associated with thunderstorms and atmospheric instability." },
+            { topic: "Geography (India)", q: "The 'Rohtang Pass', which connects the Kullu Valley with the Lahaul and Spiti Valleys, is located in:", options: ["Jammu & Kashmir", "Uttarakhand", "Himachal Pradesh", "Sikkim"], a: 2, exp: "Rohtang Pass is a high mountain pass on the eastern Pir Panjal Range of the Himalayas, located in Himachal Pradesh." },
+            { topic: "Geography (India)", q: "Which of the following rivers is NOT a tributary of the Godavari?", options: ["Pranhita", "Indravati", "Manjira", "Amravati"], a: 3, exp: "Amravati is a tributary of the Kaveri river. Pranhita, Indravati, and Manjira are major tributaries of the Godavari." },
+            { topic: "Geography (World)", q: "What is the highest mountain peak in Antarctica?", options: ["Mount Kosciuszko", "Mount Vinson", "Mount Elbrus", "Mount Aconcagua"], a: 1, exp: "Mount Vinson (or Vinson Massif) is the highest peak in Antarctica, with an elevation of 4,892 meters." },
+            { topic: "Geography (Physical)", q: "What is the term used for the point on the Earth's surface directly above the focus of an earthquake?", options: ["Hypocenter", "Epicenter", "Seismic point", "Fault line"], a: 1, exp: "The epicenter is the point on the Earth's surface vertically above the hypocenter (or focus) where a seismic rupture begins." },
+            { topic: "Geography (India)", q: "The 'Chilika Lake', the largest coastal lagoon in India, is located at the mouth of which river?", options: ["Mahanadi", "Godavari", "Daya", "Krishna"], a: 2, exp: "Chilika Lake in Odisha is located at the mouth of the Daya River, flowing into the Bay of Bengal." },
+            { topic: "Geography (World)", q: "The 'Great Victoria Desert' is located in which country?", options: ["South Africa", "Chile", "Australia", "Argentina"], a: 2, exp: "The Great Victoria Desert is the largest desert in Australia." },
+            { topic: "Geography (India)", q: "Which Indian state is the largest producer of Manganese ore?", options: ["Madhya Pradesh", "Odisha", "Maharashtra", "Karnataka"], a: 0, exp: "Madhya Pradesh is the leading manganese ore producing state in India, accounting for a significant share of total production." },
+
+            // Economy (31-38)
+            { topic: "Economy", q: "The 'Laffer Curve' demonstrates the relationship between:", options: ["Unemployment and Inflation", "Tax rates and Tax revenue", "Inequality and Income", "Economic growth and Environmental degradation"], a: 1, exp: "The Laffer Curve, developed by Arthur Laffer, illustrates a theoretical relationship between rates of taxation and the resulting levels of government revenue." },
+            { topic: "Economy", q: "What does the 'Gini Coefficient' measure in an economy?", options: ["Poverty line", "Income inequality", "Inflation rate", "Foreign exchange reserves"], a: 1, exp: "The Gini coefficient is a statistical measure of economic inequality in a population, measuring wealth or income distribution." },
+            { topic: "Economy", q: "The 'Kuznets Curve' suggests that as an economy develops, market forces first:", options: ["Decrease and then increase economic inequality", "Increase and then decrease economic inequality", "Have no effect on inequality", "Eliminate inequality entirely"], a: 1, exp: "The Kuznets curve hypothesizes that as an economy develops, market forces first increase economic inequality and then decrease it (an inverted U-shape)." },
+            { topic: "Economy", q: "Which committee recommended the merger of the Railway Budget with the General Budget?", options: ["Acworth Committee", "Bibek Debroy Committee", "Rangarajan Committee", "Kelkar Committee"], a: 1, exp: "The Bibek Debroy Committee recommended the merger of the Railway Budget with the General Budget, which was implemented in 2017." },
+            { topic: "Economy", q: "In banking terminology, what does 'NPA' stand for?", options: ["Net Performing Assets", "Non-Performing Assets", "New Public Accounts", "National Product Audit"], a: 1, exp: "NPA stands for Non-Performing Asset, a classification for loans or advances that are in default or in arrears." },
+            { topic: "Economy", q: "The term 'Stagflation' refers to a situation characterized by:", options: ["High inflation and high economic growth", "Low inflation and high unemployment", "High inflation and high unemployment", "Deflation and rapid economic growth"], a: 2, exp: "Stagflation is an economic cycle characterized by slow growth (stagnation) and a high unemployment rate accompanied by inflation." },
+            { topic: "Economy", q: "Which organization publishes the 'World Economic Outlook' report?", options: ["World Bank", "World Economic Forum", "International Monetary Fund (IMF)", "WTO"], a: 2, exp: "The World Economic Outlook is a survey conducted and published by the International Monetary Fund (IMF)." },
+            { topic: "Economy", q: "M3, a broad measure of money supply in India, is calculated as M1 plus:", options: ["Post office savings deposits", "Time deposits with the banking system", "Demand deposits", "Currency with the public"], a: 1, exp: "In India's monetary aggregates, M3 = M1 + Time deposits with the banking system." },
+
+            // Science (39-44)
+            { topic: "Science (Biology)", q: "The neurological disease 'Minamata' is caused by the severe poisoning of which heavy metal?", options: ["Lead", "Cadmium", "Arsenic", "Mercury"], a: 3, exp: "Minamata disease is a neurological syndrome caused by severe mercury poisoning, first discovered in Minamata city, Japan." },
+            { topic: "Science (Physics)", q: "The phenomenon of 'Total Internal Reflection' is the core principle behind the functioning of:", options: ["Microscopes", "Optical Fibers", "Lasers", "X-ray machines"], a: 1, exp: "Optical fibers transmit light signals over long distances using the principle of total internal reflection." },
+            { topic: "Science (Chemistry)", q: "What is the chemical name of the compound commonly known as 'Plaster of Paris'?", options: ["Calcium Carbonate", "Calcium Sulphate Hemihydrate", "Sodium Bicarbonate", "Calcium Hydroxide"], a: 1, exp: "Plaster of Paris is chemically Calcium Sulphate Hemihydrate (CaSO4·½H2O)." },
+            { topic: "Science (Biology)", q: "Which hormone is responsible for the regulation of the sleep-wake cycle in humans?", options: ["Serotonin", "Dopamine", "Melatonin", "Thyroxine"], a: 2, exp: "Melatonin, produced by the pineal gland, helps regulate the circadian rhythm (sleep-wake cycle)." },
+            { topic: "Science (Physics)", q: "What is the value of Escape Velocity for the Earth?", options: ["9.8 km/s", "11.2 km/s", "7.9 km/s", "12.4 km/s"], a: 1, exp: "The escape velocity from Earth is approximately 11.2 km/s (or 40,270 km/h)." },
+            { topic: "Science (Chemistry)", q: "The process of 'Galvanization' involves coating iron or steel with a protective layer of:", options: ["Copper", "Tin", "Zinc", "Nickel"], a: 2, exp: "Galvanization is the process of applying a protective zinc coating to steel or iron to prevent rusting." },
+
+            // Art & Culture / Misc (45-50)
+            { topic: "Art & Culture", q: "The traditional scroll painting 'Pattachitra' is a magnificent art form primarily belonging to:", options: ["Rajasthan", "Odisha", "Maharashtra", "Gujarat"], a: 1, exp: "Pattachitra is a traditional, cloth-based scroll painting originating from the state of Odisha." },
+            { topic: "Art & Culture", q: "The tribal festival 'Hornbill' is celebrated annually in which Northeastern state?", options: ["Meghalaya", "Nagaland", "Mizoram", "Arunachal Pradesh"], a: 1, exp: "The Hornbill Festival is a vibrant celebration held every year from 1 to 10 December in Nagaland." },
+            { topic: "Awards & Honours", q: "Who among the following was the first recipient of the Jnanpith Award (the highest literary award in India)?", options: ["G. Sankara Kurup", "Sumitranandan Pant", "Firaq Gorakhpuri", "Amrita Pritam"], a: 0, exp: "Malayalam writer G. Sankara Kurup was the first recipient of the Jnanpith Award in 1965 for his collection of poems 'Odakkuzhal'." },
+            { topic: "International Treaties", q: "The 'Montreal Protocol' is an international treaty designed to protect:", options: ["Wetlands", "Endangered Species", "The Ozone Layer", "Marine Biodiversity"], a: 2, exp: "The Montreal Protocol (1987) aims to protect the ozone layer by phasing out the production of numerous substances responsible for ozone depletion." },
+            { topic: "Sports", q: "In the game of Chess, what is the term used for a situation where the player whose turn it is to move is not in check but has no legal move?", options: ["Checkmate", "Stalemate", "Castling", "En Passant"], a: 1, exp: "A stalemate is a situation in chess where the player to move has no legal move and is not in check, resulting in a draw." },
+            { topic: "Indices & Reports", q: "Which organization publishes the 'Human Development Index' (HDI)?", options: ["World Bank", "World Economic Forum", "United Nations Development Programme (UNDP)", "UNESCO"], a: 2, exp: "The HDI is a statistic composite index published annually by the United Nations Development Programme (UNDP)." }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let answerLocked = false;
+
+        const topicBadge = document.getElementById('topic-badge');
+        const qText = document.getElementById('question-text');
+        const qNumber = document.getElementById('q-number');
+        const optionsGrid = document.getElementById('options-grid');
+        const feedbackPanel = document.getElementById('feedback-panel');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreDisplay = document.getElementById('current-score');
+        const quizArea = document.getElementById('quiz-area');
+
+        function loadQuestion() {
+            answerLocked = false;
+            nextBtn.classList.add('hidden');
+            feedbackPanel.classList.add('hidden');
+            
+            // Re-trigger animation
+            quizArea.classList.remove('fade-in');
+            void quizArea.offsetWidth;
+            quizArea.classList.add('fade-in');
+
+            const qData = gkData[currentIdx];
+            
+            topicBadge.innerText = qData.topic;
+            qText.innerHTML = qData.q;
+            qNumber.innerText = currentIdx + 1;
+            progressBar.style.width = `${(currentIdx / gkData.length) * 100}%`;
+            
+            optionsGrid.innerHTML = '';
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full p-4 rounded-2xl border border-slate-600 bg-slate-800/50 text-left font-semibold text-slate-200 flex items-center gap-4 group";
+                btn.innerHTML = `
+                    <span class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 text-slate-400 flex items-center justify-center text-sm font-black group-hover:bg-amber-900 group-hover:text-amber-400 transition-colors shrink-0 shadow-sm">
+                        ${String.fromCharCode(65 + idx)}
+                    </span>
+                    <span class="text-base sm:text-lg">${opt}</span>
+                `;
+                btn.onclick = () => selectOption(idx, btn);
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            if (answerLocked) return;
+            answerLocked = true;
+
+            const qData = gkData[currentIdx];
+            const correctIndex = qData.a;
+            const allBtns = optionsGrid.querySelectorAll('button');
+
+            allBtns.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                
+                if (idx === correctIndex) {
+                    btn.classList.remove('opacity-50', 'border-slate-600', 'bg-slate-800/50');
+                    btn.classList.add('correct-ans', 'opacity-100', 'shadow-md');
+                    btn.querySelector('span').classList.add('bg-emerald-900', 'text-emerald-400', 'border-emerald-700');
+                    btn.querySelector('span').classList.remove('bg-slate-900', 'text-slate-400');
+                }
+            });
+
+            feedbackPanel.classList.remove('hidden');
+
+            if (selectedIndex === correctIndex) {
+                score++;
+                scoreDisplay.innerText = score;
+                feedbackPanel.className = 'w-full sm:w-2/3 p-4 rounded-xl text-sm font-semibold border bg-emerald-950/50 text-emerald-400 border-emerald-800 fade-in';
+                feedbackPanel.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl leading-none mt-1">✓</span>
+                        <div>
+                            <span class="block font-black mb-1 text-emerald-300 tracking-wide uppercase text-xs">Correct</span>
+                            <span class="font-medium text-emerald-100/80 leading-snug">${qData.exp}</span>
+                        </div>
+                    </div>`;
+            } else {
+                selectedBtn.classList.remove('opacity-50', 'border-slate-600', 'bg-slate-800/50');
+                selectedBtn.classList.add('wrong-ans', 'opacity-100', 'shadow-md');
+                selectedBtn.querySelector('span').classList.add('bg-rose-900', 'text-rose-400', 'border-rose-700');
+                
+                feedbackPanel.className = 'w-full sm:w-2/3 p-4 rounded-xl text-sm font-semibold border bg-rose-950/50 text-rose-400 border-rose-900 fade-in';
+                feedbackPanel.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl leading-none mt-1">✗</span>
+                        <div>
+                            <span class="block font-black mb-1 text-rose-300 tracking-wide uppercase text-xs">Incorrect</span>
+                            <span class="font-medium text-rose-100/80 leading-snug">${qData.exp}</span>
+                        </div>
+                    </div>`;
+            }
+
+            nextBtn.classList.remove('hidden');
+            if (currentIdx === gkData.length - 1) {
+                nextBtn.innerHTML = `View Results <span class="ml-2">🏆</span>`;
+            }
+        }
+
+        nextBtn.onclick = () => {
+            if (currentIdx < gkData.length - 1) {
+                currentIdx++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function showResults() {
+            progressBar.style.width = '100%';
+            quizArea.classList.add('hidden');
+            document.querySelector('header').classList.add('hidden');
+            nextBtn.parentElement.classList.add('hidden');
+            
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.classList.remove('hidden');
+            
+            document.getElementById('final-score').innerText = score;
+            
+            const accuracy = Math.round((score / gkData.length) * 100);
+            
+            let currentAcc = 0;
+            const interval = setInterval(() => {
+                if (currentAcc >= accuracy) {
+                    clearInterval(interval);
+                    document.getElementById('final-accuracy').innerText = `${accuracy}%`;
+                } else {
+                    currentAcc += (accuracy > 50 ? 2 : 1);
+                    document.getElementById('final-accuracy').innerText = `${Math.min(currentAcc, accuracy)}%`;
+                }
+            }, 25);
+        }
+
+        // Initialize App
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>
