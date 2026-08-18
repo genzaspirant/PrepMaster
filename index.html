@@ -77,6 +77,11 @@
                     <span class="text-xs font-bold text-slate-600">All Systems Online</span>
                 </div>
             </div>
+			<!-- Visitor Counter UI -->
+<div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
+    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Visits</span>
+    <span id="visitor-count" class="text-sm font-black text-indigo-600 animate-pulse">Loading...</span>
+</div>
         </div>
     </header>
 
@@ -418,6 +423,27 @@
         <p class="text-slate-500 text-sm font-bold tracking-wide">PREPMASTER HUB &copy; 2026</p>
         <p class="text-slate-400 text-xs mt-1">Designed for SSC CGL Aspirants</p>
     </footer>
+
+<script>
+    // Define a unique namespace and key for your project
+    // This acts as your virtual 'hits.txt' file in the cloud
+    const namespace = 'prepmaster-cgl-hub'; 
+    const key = 'dashboard-visits';
+
+    // The '/up' endpoint automatically increments the count by 1 every time the page loads
+    fetch(`https://api.counterapi.dev/v1/${namespace}/${key}/up`)
+        .then(response => response.json())
+        .then(data => {
+            const counterElement = document.getElementById('visitor-count');
+            counterElement.innerText = data.count;
+            counterElement.classList.remove('animate-pulse'); // Stop the loading animation
+        })
+        .catch(error => {
+            console.error('Failed to fetch visitor count:', error);
+            document.getElementById('visitor-count').innerText = "Offline";
+            document.getElementById('visitor-count').classList.remove('animate-pulse');
+        });
+</script>
 
 </body>
 </html>
