@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Science - Hard Level</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body{font-family:sans-serif;background:linear-gradient(135deg,#0f172a,#881337);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;color:#f8fafc} .card{background:rgba(30,41,59,0.95);border-radius:24px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);border:1px solid rgba(225,29,72,0.3);max-width:800px;width:100%;padding:2rem} .opt-btn{background:rgba(15,23,42,0.6);border:2px solid #334155;color:#e2e8f0;transition:all 0.2s;border-radius:12px;padding:1rem;text-align:left;font-weight:600;width:100%;margin-bottom:0.75rem} .opt-btn:hover:not(:disabled){border-color:#e11d48;background:rgba(225,29,72,0.1)} .correct{background:rgba(16,185,129,0.2)!important;border-color:#10b981!important;color:#34d399} .wrong{background:rgba(244,63,94,0.2)!important;border-color:#f43f5e!important;color:#fb7185} .hidden{display:none}</style>
+</head>
+<body>
+    <div class="card" id="app">
+        <div class="flex justify-between items-center mb-6 border-b border-slate-700 pb-4">
+            <h1 class="text-2xl font-bold text-rose-500">Gen Science: Set 3 (Hard)</h1>
+            <div class="font-bold text-slate-400">Q: <span id="q-num" class="text-rose-400 text-xl">1</span>/50 | Score: <span id="score" class="text-white">0</span></div>
+        </div>
+        <div id="quiz-area">
+            <h2 id="question" class="text-xl font-bold mb-6 text-slate-100"></h2>
+            <div id="options"></div>
+            <div id="feedback" class="mt-4 p-4 rounded-xl hidden font-medium"></div>
+            <button id="next-btn" onclick="nextQ()" class="hidden mt-6 bg-rose-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-rose-500 w-full">Next Question</button>
+        </div>
+        <div id="result-area" class="hidden text-center py-10">
+            <h2 class="text-4xl font-bold text-rose-500 mb-4">Hard Level Conquered!</h2>
+            <p class="text-xl text-slate-300 mb-6">Final Score: <span id="final-score" class="font-black text-3xl text-white"></span> / 50</p>
+            <button onclick="location.reload()" class="bg-rose-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-rose-500">Retake Mission</button>
+        </div>
+    </div>
+    <script>
+        const qs=[
+            {q:"According to the modern periodic law, physical and chemical properties of elements are periodic functions of their:",o:["Atomic Mass","Atomic Number","Neutron Count","Density"],a:1,e:"Henry Moseley established that properties depend on Atomic Number, not mass."},
+            {q:"The hormone 'Oxytocin' is secreted by which gland?",o:["Pituitary gland","Pineal gland","Adrenal gland","Thyroid gland"],a:0,e:"Oxytocin is produced in the hypothalamus and secreted by the posterior pituitary gland."},
+            {q:"What is the principle behind the working of a washing machine's spin dryer?",o:["Centripetal force","Centrifugal force","Dialysis","Reverse Osmosis"],a:1,e:"Centrifugal force pushes the water outwards, separating it from the clothes."},
+            {q:"Which law states that 'at constant temperature, the volume of a given mass of a dry gas is inversely proportional to its pressure'?",o:["Charles's Law","Boyle's Law","Avogadro's Law","Gay-Lussac's Law"],a:1,e:"Boyle's Law is P1V1 = P2V2 at a constant temperature."},
+            {q:"In the process of Vulcanization, iron is coated with zinc. This is an example of:",o:["Sacrificial protection","Alloying","Electroplating","Anodizing"],a:0,e:"Zinc acts as a sacrificial anode, oxidizing in preference to the iron it protects."},
+            {q:"Which of the following cell organelles is responsible for cellular apoptosis (programmed cell death)?",o:["Lysosome","Golgi apparatus","Endoplasmic reticulum","Peroxisome"],a:0,e:"Lysosomes contain digestive enzymes and trigger cell death (suicide bags)."},
+            {q:"What is the SI unit of Magnetic Flux Density?",o:["Weber","Tesla","Gauss","Maxwell"],a:1,e:"Magnetic flux density is measured in Tesla (T) or Webers per square meter (Wb/m²)."},
+            {q:"What is the chemical name of 'Bleaching Powder'?",o:["Calcium Carbonate","Calcium Oxychloride","Sodium Bicarbonate","Calcium Hydroxide"],a:1,e:"Bleaching powder is Calcium hypochlorite or Calcium Oxychloride (CaOCl2)."},
+            {q:"Which equation represents Heisenberg's Uncertainty Principle?",o:["E = mc²","Δx · Δp ≥ h/4π","F = G(m1m2)/r²","λ = h/p"],a:1,e:"It states you cannot simultaneously know the exact position (x) and momentum (p) of a particle."},
+            {q:"What is the name of the fluid found in the joints that reduces friction?",o:["Amniotic fluid","Cerebrospinal fluid","Synovial fluid","Pleural fluid"],a:2,e:"Synovial fluid lubricates joints like the knee and elbow."},
+            {q:"The process of conversion of a solid directly into a gas without passing through the liquid state is called:",o:["Condensation","Sublimation","Deposition","Vaporization"],a:1,e:"Sublimation is a direct phase transition from solid to gas (e.g., dry ice)."},
+            {q:"Which part of the electromagnetic spectrum has the highest energy?",o:["Gamma rays","X-rays","Ultraviolet rays","Radio waves"],a:0,e:"Gamma rays have the shortest wavelength and the highest frequency/energy."},
+            {q:"In human genetics, what is the term for having three copies of chromosome 21?",o:["Turner syndrome","Klinefelter syndrome","Down syndrome","Edwards syndrome"],a:2,e:"Trisomy 21 causes Down syndrome."},
+            {q:"Which catalyst is used in the Haber process for the manufacture of Ammonia?",o:["Vanadium pentoxide","Finely divided iron","Platinum","Nickel"],a:1,e:"Iron serves as a catalyst, and Molybdenum is used as a promoter in the Haber process."},
+            {q:"What is the dimension formula for Force?",o:["[M L T-1]","[M L T-2]","[M L2 T-2]","[M L-1 T-2]"],a:1,e:"Force = mass x acceleration = kg * (m/s²) = [M L T-2]."},
+            {q:"Which organ in the human body produces urea from ammonia?",o:["Kidney","Spleen","Liver","Pancreas"],a:2,e:"The liver converts toxic ammonia to urea via the ornithine cycle."},
+            {q:"The phenomenon of 'Superconductivity' was discovered by:",o:["Albert Einstein","Heike Kamerlingh Onnes","Michael Faraday","Nikola Tesla"],a:1,e:"Onnes discovered superconductivity in mercury at 4.2 K in 1911."},
+            {q:"What is the hybridization of Carbon in a Methane (CH4) molecule?",o:["sp","sp2","sp3","sp3d"],a:2,e:"Carbon in methane forms four single sigma bonds, leading to sp3 hybridization."},
+            {q:"Which disease is caused by the deficiency of Vitamin B3 (Niacin)?",o:["Pellagra","Beri-Beri","Rickets","Kwashiorkor"],a:0,e:"Pellagra is characterized by diarrhea, dermatitis, and dementia (the 3 Ds)."},
+            {q:"Which part of the brain acts as a relay station for sensory and motor signals?",o:["Hypothalamus","Thalamus","Medulla oblongata","Pons"],a:1,e:"The thalamus relays motor and sensory signals to the cerebral cortex."},
+            {q:"In thermodynamics, an 'Isothermal process' is one in which:",o:["Volume remains constant","Pressure remains constant","Temperature remains constant","Entropy remains constant"],a:2,e:"Iso = equal, thermal = temperature. Temperature is constant."},
+            {q:"Which of the following is an ore of Thorium?",o:["Pitchblende","Monazite sand","Bauxite","Galena"],a:1,e:"Monazite sand, found extensively in Kerala, is a major source of Thorium."},
+            {q:"What is the function of 'Restriction Enzymes' in genetic engineering?",o:["Join DNA fragments","Cut DNA at specific sites","Copy DNA sequences","Unwind DNA double helix"],a:1,e:"Restriction endonucleases act as molecular scissors to cut DNA."},
+            {q:"Which physical quantity is conserved in Kepler's Second Law of Planetary Motion?",o:["Linear momentum","Kinetic energy","Angular momentum","Potential energy"],a:2,e:"Areal velocity is constant because angular momentum is conserved."},
+            {q:"The metal used to recover copper from a solution of copper sulphate is:",o:["Silver","Mercury","Iron","Gold"],a:2,e:"Iron is more reactive than copper and displaces it from its salt solution."},
+            {q:"What type of bond holds the two strands of DNA together?",o:["Covalent bonds","Hydrogen bonds","Ionic bonds","Van der Waals forces"],a:1,e:"Hydrogen bonds form between the complementary nitrogenous bases."},
+            {q:"What is the chemical composition of 'Quartz'?",o:["Silicon dioxide","Calcium silicate","Sodium chloride","Aluminum oxide"],a:0,e:"Quartz is a hard, crystalline mineral composed of silicon dioxide (SiO2)."},
+            {q:"In a nuclear reactor, heavy water acts as a:",o:["Fuel","Coolant","Moderator","Both Coolant and Moderator"],a:3,e:"Heavy water slows down fast neutrons (moderator) and carries away heat (coolant)."},
+            {q:"Which cranial nerve is responsible for the sense of smell?",o:["Optic nerve","Olfactory nerve","Vagus nerve","Trigeminal nerve"],a:1,e:"The Olfactory nerve (Cranial Nerve I) transmits sensory information regarding smell."},
+            {q:"The concept of 'Matter Waves' (wave-particle duality) was proposed by:",o:["Max Planck","Louis de Broglie","Niels Bohr","Werner Heisenberg"],a:1,e:"De Broglie proposed that all matter exhibits wave-like properties (λ = h/p)."},
+            {q:"The organic compound 'Isoprene' is the monomer for:",o:["Polythene","Teflon","Natural Rubber","PVC"],a:2,e:"Natural rubber is a polymer of isoprene (2-methyl-1,3-butadiene)."},
+            {q:"In which phase of Mitosis do the sister chromatids separate and move towards opposite poles?",o:["Prophase","Metaphase","Anaphase","Telophase"],a:2,e:"During anaphase, the centromeres split and chromatids are pulled apart."},
+            {q:"What is the SI unit of Inductance?",o:["Farad","Henry","Tesla","Weber"],a:1,e:"The Henry (H) is the unit of electrical inductance."},
+            {q:"Which class of organic compounds causes the fruity smell in artificial flavorings?",o:["Alcohols","Aldehydes","Esters","Ketones"],a:2,e:"Esters are responsible for the sweet, fruity odors found in many fruits and perfumes."},
+            {q:"The human stomach produces which enzyme to digest proteins?",o:["Amylase","Lipase","Pepsin","Trypsin"],a:2,e:"Pepsin is the chief digestive enzyme in the stomach that breaks down proteins."},
+            {q:"What is the value of the Universal Gravitational Constant (G)?",o:["6.674 × 10^-11 N⋅m²/kg²","9.81 m/s²","3 × 10^8 m/s","1.602 × 10^-19 C"],a:0,e:"G is the gravitational constant used in Newton's law of universal gravitation."},
+            {q:"Which test is used to confirm Typhoid fever?",o:["Widal test","ELISA test","Mantoux test","PCR test"],a:0,e:"The Widal test detects antibodies against Salmonella typhi."},
+            {q:"What happens to the boiling point of water when pressure is increased (like in a pressure cooker)?",o:["It decreases","It increases","It remains the same","It becomes 100°C precisely"],a:1,e:"Higher pressure forces liquid molecules closer, requiring more heat (higher boiling point) to vaporize."},
+            {q:"Which of the following pairs is a 'Buffer Solution'?",o:["HCl and NaCl","CH3COOH and CH3COONa","NaOH and NaCl","HNO3 and NH4NO3"],a:1,e:"A buffer consists of a weak acid (Acetic acid) and its conjugate base (Sodium acetate)."},
+            {q:"Which part of a flower develops into a fruit?",o:["Ovule","Stigma","Ovary","Anther"],a:2,e:"After fertilization, the ovary matures into a fruit while the ovules become seeds."},
+            {q:"The 'Compton Effect' is associated with which type of electromagnetic radiation?",o:["Microwaves","X-rays","Visible light","Radio waves"],a:1,e:"Compton scattering is the scattering of high-frequency photons (X-rays) by charged particles."},
+            {q:"Which metal ion is found at the center of the Chlorophyll molecule?",o:["Iron","Magnesium","Calcium","Zinc"],a:1,e:"A magnesium ion sits at the center of the porphyrin ring of chlorophyll."},
+            {q:"In the taxonomic classification system, what level comes directly below 'Phylum'?",o:["Class","Order","Family","Genus"],a:0,e:"The order is Kingdom > Phylum > Class > Order > Family > Genus > Species."},
+            {q:"The 'Right-Hand Thumb Rule' is used to find the direction of:",o:["Electric current","Magnetic field lines","Force on a conductor","Induced current"],a:1,e:"It indicates the direction of magnetic field lines around a straight current-carrying wire."},
+            {q:"Which gas is released when a metal reacts with a dilute acid?",o:["Oxygen","Carbon dioxide","Hydrogen","Nitrogen"],a:2,e:"Metal + Acid → Salt + Hydrogen Gas."},
+            {q:"Who proposed the 'Fluid Mosaic Model' of the cell membrane?",o:["Watson and Crick","Singer and Nicolson","Schleiden and Schwann","Robert Hooke"],a:1,e:"Singer and Nicolson proposed it in 1972, describing the membrane as a fluid lipid bilayer."},
+            {q:"What is the primary alloy metal added to steel to make it 'Stainless'?",o:["Copper","Chromium","Zinc","Carbon"],a:1,e:"Stainless steel requires a minimum of 10.5% chromium to prevent rust."},
+            {q:"What is the physical principle behind a 'Mirage'?",o:["Dispersion","Interference","Total Internal Reflection","Diffraction"],a:2,e:"A mirage is caused by total internal reflection of light in layers of air of different temperatures."},
+            {q:"The conversion of Pyruvate into Acetyl-CoA is a link reaction between:",o:["Glycolysis and Krebs cycle","Krebs cycle and ETC","Calvin cycle and Light reaction","Mitosis and Meiosis"],a:0,e:"It connects Glycolysis (in cytoplasm) to the Krebs Cycle (in mitochondria)."},
+            {q:"What is the unit of Solid Angle?",o:["Radian","Steradian","Degree","Candela"],a:1,e:"The Steradian (sr) is the SI derived unit of solid angle in 3D space."}
+        ];
+        let idx=0, score=0, locked=false;
+        function loadQ(){
+            locked=false; document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('q-num').innerText=idx+1;
+            document.getElementById('question').innerHTML=`${idx+1}. ${qs[idx].q}`;
+            let optsHTML='';
+            qs[idx].o.forEach((opt,i)=>{
+                optsHTML+=`<button class="opt-btn" onclick="checkAns(${i}, this)">${String.fromCharCode(65+i)}. ${opt}</button>`;
+            });
+            document.getElementById('options').innerHTML=optsHTML;
+        }
+        function checkAns(ans, btn){
+            if(locked) return; locked=true;
+            const correct = qs[idx].a;
+            const btns = document.querySelectorAll('.opt-btn');
+            btns.forEach((b,i)=>{
+                b.disabled=true;
+                if(i===correct) b.classList.add('correct');
+            });
+            let fb = document.getElementById('feedback');
+            fb.classList.remove('hidden','bg-emerald-900/50','text-emerald-400','bg-rose-900/50','text-rose-400');
+            if(ans===correct){
+                score++; document.getElementById('score').innerText=score;
+                fb.classList.add('bg-emerald-900/50','text-emerald-400');
+                fb.innerHTML=`<b>Correct!</b> ${qs[idx].e}`;
+            } else {
+                btn.classList.add('wrong');
+                fb.classList.add('bg-rose-900/50','text-rose-400');
+                fb.innerHTML=`<b>Incorrect.</b> ${qs[idx].e}`;
+            }
+            document.getElementById('next-btn').classList.remove('hidden');
+            if(idx===qs.length-1) document.getElementById('next-btn').innerText="Finish Mission";
+        }
+        function nextQ(){
+            if(idx<qs.length-1){ idx++; loadQ(); }
+            else {
+                document.getElementById('quiz-area').classList.add('hidden');
+                document.getElementById('result-area').classList.remove('hidden');
+                document.getElementById('final-score').innerText=score;
+            }
+        }
+        loadQ();
+    </script>
+</body>
+</html>

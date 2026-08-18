@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Science - Normal Level</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body{font-family:sans-serif;background:linear-gradient(135deg,#dcfce7,#ccfbf1);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;color:#0f172a} .card{background:rgba(255,255,255,0.95);border-radius:24px;box-shadow:0 20px 40px -10px rgba(16,185,129,0.2);max-width:800px;width:100%;padding:2rem} .opt-btn{border:2px solid #e2e8f0;transition:all 0.2s;border-radius:12px;padding:1rem;text-align:left;font-weight:600;width:100%;margin-bottom:0.75rem} .opt-btn:hover:not(:disabled){border-color:#10b981;background:#ecfdf5} .correct{background:#d1fae5!important;border-color:#10b981!important;color:#065f46} .wrong{background:#ffe4e6!important;border-color:#f43f5e!important;color:#9f1239} .hidden{display:none}</style>
+</head>
+<body>
+    <div class="card" id="app">
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+            <h1 class="text-2xl font-bold text-emerald-700">Gen Science: Set 1 (Normal)</h1>
+            <div class="font-bold text-slate-500">Q: <span id="q-num" class="text-emerald-600 text-xl">1</span>/50 | Score: <span id="score" class="text-emerald-600">0</span></div>
+        </div>
+        <div id="quiz-area">
+            <h2 id="question" class="text-xl font-bold mb-6 text-slate-800"></h2>
+            <div id="options"></div>
+            <div id="feedback" class="mt-4 p-4 rounded-xl hidden font-medium"></div>
+            <button id="next-btn" onclick="nextQ()" class="hidden mt-6 bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-emerald-700 w-full">Next Question</button>
+        </div>
+        <div id="result-area" class="hidden text-center py-10">
+            <h2 class="text-4xl font-bold text-emerald-700 mb-4">Quiz Completed!</h2>
+            <p class="text-xl mb-6">Final Score: <span id="final-score" class="font-black text-3xl"></span> / 50</p>
+            <button onclick="location.reload()" class="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700">Retake Quiz</button>
+        </div>
+    </div>
+    <script>
+        const qs=[
+            {q:"What is the SI unit of Electric Current?",o:["Volt","Ohm","Ampere","Watt"],a:2,e:"Ampere is the SI unit of electric current."},
+            {q:"Which gas is most abundant in the Earth's atmosphere?",o:["Oxygen","Nitrogen","Carbon Dioxide","Argon"],a:1,e:"Nitrogen makes up about 78% of the Earth's atmosphere."},
+            {q:"What is the chemical formula for water?",o:["H2O","CO2","O2","NaCl"],a:0,e:"Water is composed of two hydrogen atoms and one oxygen atom (H2O)."},
+            {q:"Which organelle is known as the powerhouse of the cell?",o:["Nucleus","Ribosome","Mitochondria","Chloroplast"],a:2,e:"Mitochondria generate most of the chemical energy needed to power the cell's biochemical reactions."},
+            {q:"What is the normal body temperature of a human being?",o:["37°C","98°C","32°C","40°C"],a:0,e:"Normal human body temperature is typically around 37°C (98.6°F)."},
+            {q:"Which planet is closest to the Sun?",o:["Venus","Earth","Mars","Mercury"],a:3,e:"Mercury is the closest planet to the Sun."},
+            {q:"What is the SI unit of Force?",o:["Joule","Newton","Pascal","Watt"],a:1,e:"The SI unit of force is the Newton (N)."},
+            {q:"How many bones are there in an adult human body?",o:["206","208","210","196"],a:0,e:"An adult human has 206 bones."},
+            {q:"Which vitamin is provided by sunlight?",o:["Vitamin A","Vitamin B","Vitamin C","Vitamin D"],a:3,e:"Vitamin D is synthesized by the body when skin is exposed to sunlight."},
+            {q:"What is the chemical name of common salt?",o:["Sodium Carbonate","Sodium Chloride","Calcium Carbonate","Potassium Chloride"],a:1,e:"Common salt is Sodium Chloride (NaCl)."},
+            {q:"Which gas do plants primarily absorb from the atmosphere during photosynthesis?",o:["Oxygen","Nitrogen","Carbon Dioxide","Hydrogen"],a:2,e:"Plants absorb Carbon Dioxide and release Oxygen during photosynthesis."},
+            {q:"What is the hardest naturally occurring substance on Earth?",o:["Gold","Iron","Diamond","Platinum"],a:2,e:"Diamond, a form of carbon, is the hardest known natural substance."},
+            {q:"Which is the longest bone in the human body?",o:["Femur","Tibia","Fibula","Humerus"],a:0,e:"The femur (thigh bone) is the longest and strongest bone."},
+            {q:"What is the main component of biogas?",o:["Ethane","Methane","Propane","Butane"],a:1,e:"Methane comprises about 50-75% of biogas."},
+            {q:"Which part of the plant conducts water from roots to leaves?",o:["Phloem","Xylem","Stomata","Epidermis"],a:1,e:"Xylem tissue transports water and dissolved minerals from the roots."},
+            {q:"Deficiency of Vitamin C causes which disease?",o:["Rickets","Scurvy","Beri-Beri","Night Blindness"],a:1,e:"Scurvy is caused by a severe deficiency of Vitamin C."},
+            {q:"What is the chemical symbol for Gold?",o:["Ag","Au","Pb","Fe"],a:1,e:"Au comes from the Latin word 'Aurum'."},
+            {q:"Which blood group is known as the universal donor?",o:["A+","B-","AB+","O-"],a:3,e:"O negative blood can be given to people of any blood type."},
+            {q:"What is the SI unit of Work?",o:["Joule","Newton","Pascal","Watt"],a:0,e:"The Joule is the SI unit of work and energy."},
+            {q:"Which organ purifies human blood?",o:["Heart","Liver","Kidney","Lungs"],a:2,e:"Kidneys filter waste products and excess fluid from the blood."},
+            {q:"The green pigment in leaves is called:",o:["Xanthophyll","Carotene","Chlorophyll","Anthocyanin"],a:2,e:"Chlorophyll gives plants their green color and absorbs light for photosynthesis."},
+            {q:"Who discovered Penicillin?",o:["Marie Curie","Alexander Fleming","Louis Pasteur","Isaac Newton"],a:1,e:"Alexander Fleming discovered Penicillin in 1928."},
+            {q:"What is the freezing point of water in Fahrenheit?",o:["0°F","32°F","100°F","212°F"],a:1,e:"Water freezes at 32°F (0°C)."},
+            {q:"Sound cannot travel through:",o:["Solids","Liquids","Gases","Vacuum"],a:3,e:"Sound requires a material medium to travel; it cannot travel in a vacuum."},
+            {q:"Which acid is found in lemons?",o:["Acetic Acid","Citric Acid","Lactic Acid","Tartaric Acid"],a:1,e:"Citric acid is found naturally in citrus fruits."},
+            {q:"What is the chemical name of baking soda?",o:["Sodium Bicarbonate","Sodium Carbonate","Calcium Hydroxide","Sodium Chloride"],a:0,e:"Baking soda is Sodium Bicarbonate (NaHCO3)."},
+            {q:"Which is the largest organ in the human body?",o:["Heart","Liver","Skin","Brain"],a:2,e:"The skin is the largest organ of the human body by surface area and weight."},
+            {q:"What is the main source of energy for the Earth?",o:["Moon","Fossil Fuels","Sun","Geothermal"],a:2,e:"The Sun is the primary source of energy for Earth's climate system and ecosystems."},
+            {q:"Which lens is thicker in the middle and thinner at the edges?",o:["Concave","Convex","Plano-concave","Cylindrical"],a:1,e:"A convex lens bulges outwards in the middle."},
+            {q:"What does DNA stand for?",o:["Deoxyribonucleic Acid","Dinucleic Acid","Deoxynitric Acid","Diribonucleic Acid"],a:0,e:"DNA is the molecule that carries genetic information."},
+            {q:"Which metal is liquid at room temperature?",o:["Iron","Zinc","Mercury","Silver"],a:2,e:"Mercury is the only metal that is liquid at standard conditions for temperature and pressure."},
+            {q:"The speed of light in a vacuum is approximately:",o:["300,000 km/s","150,000 km/s","30,000 km/s","3,000 km/s"],a:0,e:"Light travels at exactly 299,792 km per second in a vacuum."},
+            {q:"What part of the eye controls the amount of light entering it?",o:["Cornea","Retina","Pupil","Iris"],a:3,e:"The iris controls the diameter and size of the pupil, thus regulating the amount of light."},
+            {q:"Which of the following is a renewable source of energy?",o:["Coal","Petroleum","Solar Energy","Natural Gas"],a:2,e:"Solar energy is renewable because it is continuously replenished by the Sun."},
+            {q:"A group of cells performing a specific function is called:",o:["Organ","Tissue","Organism","System"],a:1,e:"Tissues are groups of cells that have a similar structure and act together."},
+            {q:"Which planet is known as the Blue Planet?",o:["Mars","Earth","Neptune","Uranus"],a:1,e:"Earth is called the Blue Planet because over 70% of its surface is covered by water."},
+            {q:"The process of turning liquid into vapor is called:",o:["Condensation","Evaporation","Sublimation","Precipitation"],a:1,e:"Evaporation is the phase transition from liquid to gas."},
+            {q:"Which animal is known as the Ship of the Desert?",o:["Horse","Elephant","Camel","Donkey"],a:2,e:"Camels are adapted to survive in harsh desert conditions."},
+            {q:"What is the pH value of pure water?",o:["5","6","7","8"],a:2,e:"Pure water is neutral with a pH of exactly 7."},
+            {q:"Which vitamin helps in the clotting of blood?",o:["Vitamin A","Vitamin B","Vitamin K","Vitamin E"],a:2,e:"Vitamin K is essential for blood coagulation (clotting)."},
+            {q:"What is the lightest element in the periodic table?",o:["Oxygen","Carbon","Helium","Hydrogen"],a:3,e:"Hydrogen has an atomic number of 1 and is the lightest element."},
+            {q:"Which instrument is used to measure body temperature?",o:["Barometer","Thermometer","Anemometer","Hygrometer"],a:1,e:"A thermometer measures temperature."},
+            {q:"The layer of atmosphere where weather occurs is:",o:["Stratosphere","Mesosphere","Troposphere","Thermosphere"],a:2,e:"Almost all weather phenomena occur in the troposphere, the lowest atmospheric layer."},
+            {q:"What type of energy is stored in a stretched rubber band?",o:["Kinetic","Potential","Thermal","Chemical"],a:1,e:"Elastic potential energy is stored as a result of deformation of an elastic object."},
+            {q:"Which is the smallest bone in the human body?",o:["Femur","Incus","Stapes","Malleus"],a:2,e:"The stapes (stirrup) in the middle ear is the smallest bone."},
+            {q:"An alloy of copper and tin is called:",o:["Brass","Bronze","Steel","Solder"],a:1,e:"Bronze is primarily an alloy of copper and tin."},
+            {q:"What gas is commonly used in electric bulbs?",o:["Oxygen","Hydrogen","Argon","Carbon Dioxide"],a:2,e:"Argon, an inert gas, is used to prevent the tungsten filament from burning away."},
+            {q:"Which part of the brain controls balance and posture?",o:["Cerebrum","Cerebellum","Medulla","Hypothalamus"],a:1,e:"The cerebellum coordinates voluntary movements such as posture, balance, and coordination."},
+            {q:"Which subatomic particle has a negative charge?",o:["Proton","Neutron","Electron","Nucleus"],a:2,e:"Electrons are negatively charged particles."},
+            {q:"What is the primary function of white blood cells?",o:["Carry oxygen","Fight infection","Clot blood","Provide energy"],a:1,e:"White blood cells (leukocytes) are part of the immune system and protect the body against infectious disease."}
+        ];
+        let idx=0, score=0, locked=false;
+        function loadQ(){
+            locked=false; document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('q-num').innerText=idx+1;
+            document.getElementById('question').innerHTML=`${idx+1}. ${qs[idx].q}`;
+            let optsHTML='';
+            qs[idx].o.forEach((opt,i)=>{
+                optsHTML+=`<button class="opt-btn" onclick="checkAns(${i}, this)">${String.fromCharCode(65+i)}. ${opt}</button>`;
+            });
+            document.getElementById('options').innerHTML=optsHTML;
+        }
+        function checkAns(ans, btn){
+            if(locked) return; locked=true;
+            const correct = qs[idx].a;
+            const btns = document.querySelectorAll('.opt-btn');
+            btns.forEach((b,i)=>{
+                b.disabled=true;
+                if(i===correct) b.classList.add('correct');
+            });
+            let fb = document.getElementById('feedback');
+            fb.classList.remove('hidden','bg-emerald-100','text-emerald-800','bg-rose-100','text-rose-800');
+            if(ans===correct){
+                score++; document.getElementById('score').innerText=score;
+                fb.classList.add('bg-emerald-100','text-emerald-800');
+                fb.innerHTML=`<b>Correct!</b> ${qs[idx].e}`;
+            } else {
+                btn.classList.add('wrong');
+                fb.classList.add('bg-rose-100','text-rose-800');
+                fb.innerHTML=`<b>Incorrect.</b> ${qs[idx].e}`;
+            }
+            document.getElementById('next-btn').classList.remove('hidden');
+            if(idx===qs.length-1) document.getElementById('next-btn').innerText="Finish Quiz";
+        }
+        function nextQ(){
+            if(idx<qs.length-1){ idx++; loadQ(); }
+            else {
+                document.getElementById('quiz-area').classList.add('hidden');
+                document.getElementById('result-area').classList.remove('hidden');
+                document.getElementById('final-score').innerText=score;
+            }
+        }
+        loadQ();
+    </script>
+</body>
+</html>
