@@ -55,8 +55,7 @@
             {q:"Sound travels fastest in:",o:["Air","Water","Steel","Vacuum"],a:2,e:"Sound waves travel fastest in solids like steel due to tight particle packing."},
             {q:"What is the unit of measure for the frequency of sound?",o:["Decibel","Hertz","Mach","Weber"],a:1,e:"Frequency is measured in Hertz (Hz)."},
             {q:"Insulin is produced in the:",o:["Liver","Kidney","Pancreas","Spleen"],a:2,e:"The beta cells in the Islets of Langerhans within the pancreas produce insulin."},
-            {q:"Which metal is extracted from the ore Cinnabar?",o:["Lead","Iron","Copper","Zinc"],a:0,e:"Cinnabar is the primary ore for Lead (PbS is Galena, Cinnabar is HgS - wait. Actually Cinnabar is Mercury ore. Galena is lead. Let me correct the answer: Cinnabar is Mercury. *Self correction in code: I will change the options to make Mercury the correct answer.*"],a:2,e:"Correction: Cinnabar (HgS) is the chief ore of Mercury."},
-            {q:"Which metal is extracted from the ore Cinnabar?",o:["Lead","Iron","Mercury","Zinc"],a:2,e:"Cinnabar (HgS) is the primary ore of Mercury."}, // Replaced question 29 properly.
+            {q:"Which metal is extracted from the ore Cinnabar?",o:["Lead","Iron","Mercury","Zinc"],a:2,e:"Cinnabar (HgS) is the primary ore of Mercury."}, 
             {q:"Who is known as the Father of Genetics?",o:["Charles Darwin","Gregor Mendel","Robert Hooke","Louis Pasteur"],a:1,e:"Gregor Mendel established the fundamental laws of inheritance."},
             {q:"Electric current is measured by an instrument called:",o:["Voltmeter","Ammeter","Galvanometer","Potentiometer"],a:1,e:"An ammeter is used to measure the current in a circuit."},
             {q:"What is the function of a pacemaker in the human body?",o:["Purify blood","Regulate heartbeat","Digest food","Filter urine"],a:1,e:"A pacemaker sends electrical impulses to help the heart maintain a regular rhythm."},
@@ -78,31 +77,41 @@
             {q:"Which phenomenon proves the transverse nature of light waves?",o:["Interference","Diffraction","Polarization","Refraction"],a:2,e:"Only transverse waves can be polarized; longitudinal waves (like sound) cannot."},
             {q:"What is the chemical formula of Heavy Water?",o:["H2O2","D2O","HDO","T2O"],a:1,e:"Heavy water is Deuterium Oxide (D2O)."}
         ];
-        // Ensure exact 50 length by removing the duplicated 29 if necessary, but length is 50.
+
         let idx=0, score=0, locked=false;
+
         function loadQ(){
-            locked=false; document.getElementById('next-btn').classList.add('hidden');
+            locked=false; 
+            document.getElementById('next-btn').classList.add('hidden');
             document.getElementById('feedback').classList.add('hidden');
             document.getElementById('q-num').innerText=idx+1;
             document.getElementById('question').innerHTML=`${idx+1}. ${qs[idx].q}`;
+            
             let optsHTML='';
             qs[idx].o.forEach((opt,i)=>{
                 optsHTML+=`<button class="opt-btn" onclick="checkAns(${i}, this)">${String.fromCharCode(65+i)}. ${opt}</button>`;
             });
             document.getElementById('options').innerHTML=optsHTML;
         }
+
         function checkAns(ans, btn){
-            if(locked) return; locked=true;
+            if(locked) return; 
+            locked=true;
+            
             const correct = qs[idx].a;
             const btns = document.querySelectorAll('.opt-btn');
+            
             btns.forEach((b,i)=>{
                 b.disabled=true;
                 if(i===correct) b.classList.add('correct');
             });
+            
             let fb = document.getElementById('feedback');
             fb.classList.remove('hidden','bg-indigo-100','text-indigo-800','bg-rose-100','text-rose-800');
+            
             if(ans===correct){
-                score++; document.getElementById('score').innerText=score;
+                score++; 
+                document.getElementById('score').innerText=score;
                 fb.classList.add('bg-indigo-100','text-indigo-800');
                 fb.innerHTML=`<b>Correct!</b> ${qs[idx].e}`;
             } else {
@@ -111,16 +120,24 @@
                 fb.innerHTML=`<b>Incorrect.</b> ${qs[idx].e}`;
             }
             document.getElementById('next-btn').classList.remove('hidden');
-            if(idx===qs.length-1) document.getElementById('next-btn').innerText="Finish Quiz";
+            
+            if(idx===qs.length-1) {
+                document.getElementById('next-btn').innerText="Finish Quiz";
+            }
         }
+
         function nextQ(){
-            if(idx<qs.length-1){ idx++; loadQ(); }
-            else {
+            if(idx<qs.length-1){ 
+                idx++; 
+                loadQ(); 
+            } else {
                 document.getElementById('quiz-area').classList.add('hidden');
                 document.getElementById('result-area').classList.remove('hidden');
                 document.getElementById('final-score').innerText=score;
             }
         }
+
+        // Initialize the first question
         loadQ();
     </script>
 </body>
