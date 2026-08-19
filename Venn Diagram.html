@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC CGL Venn Diagram Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Fuchsia / Purple Theme */
+            --bg-color: #faf5ff;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --primary: #a855f7;
+            --primary-hover: #9333ea;
+            --correct: #10b981;
+            --incorrect: #ef4444;
+            --border: #e9d5ff;
+            --exp-bg: #f3e8ff;
+            --exp-text: #581c87;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            max-width: 850px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.15);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: #f3f4f6;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Question */
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: #111827;
+        }
+        
+        .highlight {
+            color: var(--primary-hover);
+            font-weight: 700;
+            padding: 2px 6px;
+            background: var(--exp-bg);
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover:not(.disabled) {
+            background: #faf5ff;
+            border-color: #d8b4fe;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+        }
+
+        .option.correct {
+            background: #d1fae5;
+            border-color: var(--correct);
+            color: #065f46;
+        }
+
+        .option.incorrect {
+            background: #fee2e2;
+            border-color: var(--incorrect);
+            color: #991b1b;
+        }
+
+        /* Explanation Box */
+        .explanation-box {
+            background: var(--exp-bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .explanation-box.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            color: var(--primary-hover);
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .explanation-text {
+            color: var(--exp-text);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Controls */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s ease;
+            display: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .results-screen.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--exp-bg);
+            border: 6px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 auto 20px;
+        }
+
+        .results-message {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .results-subtext {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Quiz Screen -->
+        <div id="quiz-screen">
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="header">
+                <span id="question-tracker">Question 1 of 50</span>
+                <span id="score-tracker">Score: 0</span>
+            </div>
+
+            <div class="question-text" id="question-text">
+                Loading question...
+            </div>
+
+            <div class="options-grid" id="options-grid">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div class="explanation-box" id="explanation-box">
+                <div class="explanation-title">Logical Mapping:</div>
+                <div class="explanation-text" id="explanation-text"></div>
+            </div>
+
+            <button class="btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="results-screen">
+            <div class="score-circle" id="final-score">0/50</div>
+            <div class="results-message" id="results-message">Great effort!</div>
+            <div class="results-subtext" id="results-subtext">You have completed the Venn Diagram Quiz.</div>
+            <button class="btn show" onclick="restartQuiz()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Constants for standard descriptive Venn Diagram types
+        const O1 = "One circle inside another, third separate";
+        const O2 = "Two disjoint circles inside a third";
+        const O3 = "Three mutually intersecting circles";
+        const O4 = "Three completely disjoint circles";
+        const O5 = "Three concentric circles (One inside another)";
+        const O6 = "Two intersecting circles inside a third";
+        const O7 = "Two disjoint circles, third intersects both";
+        const O8 = "One inside another, third intersects both";
+
+        // Helper to format the prompt easily
+        function buildQ(entities, correctOpt, exp, wrongOpts) {
+            return {
+                q: `Which logical diagram configuration best represents the relationship between:<br><br><span class="highlight">${entities}</span> ?`,
+                options: [correctOpt, ...wrongOpts],
+                a: correctOpt,
+                exp: exp
+            };
+        }
+
+        // 50 SSC CGL Level Venn Diagram Logic Questions
+        const rawQuestions = [
+            buildQ("Judge, Thief, Criminal", O1, "A Thief is entirely a subset of Criminal. A Judge is completely separate from both.", [O2, O6, O7]),
+            buildQ("India, Haryana, World", O5, "Haryana is inside India, and India is entirely inside the World.", [O1, O2, O4]),
+            buildQ("Pigeon, Bird, Dog", O1, "A Pigeon is entirely a subset of Bird. A Dog belongs to a completely different class (Mammal), hence separate.", [O2, O3, O4]),
+            buildQ("Earth, Sea, Sun", O1, "The Sea is located entirely on Earth. The Sun is a separate celestial body.", [O2, O4, O7]),
+            buildQ("Hockey, Cricket, Games", O2, "Hockey and Cricket are two completely separate sports, but both are entirely categorized under Games.", [O6, O3, O1]),
+            buildQ("Iron, Lead, Nitrogen", O4, "Iron and Lead are metals, Nitrogen is a gas. All three are completely separate elements.", [O1, O2, O3]),
+            buildQ("Cabinet, Home Minister, Minister", O5, "A Home Minister is a type of Minister, and Ministers collectively make up the Cabinet.", [O2, O6, O1]),
+            buildQ("Bulb, Lamp, Light", O5, "A Bulb is contained inside a Lamp, and a Lamp is a source of Light (or contained in the category of Light).", [O1, O2, O3]),
+            buildQ("Lion, Dog, Snake", O4, "All three are completely different species/classes of animals with no intersection.", [O2, O1, O7]),
+            buildQ("Moon, Earth, Universe", O2, "The Moon and Earth are separate entities (disjoint), but both are entirely part of the Universe.", [O5, O1, O6]),
+            
+            buildQ("Hospital, Nurse, Patient", O2, "Nurses and Patients are two different groups of people (disjoint), but both are found inside a Hospital.", [O6, O1, O7]),
+            buildQ("Mercury, Zinc, Metal", O2, "Mercury and Zinc are two entirely different elements, but both belong to the category of Metal.", [O1, O3, O6]),
+            buildQ("Teacher, Writer, Musician", O3, "A person can be a Teacher, a Writer, and a Musician simultaneously. All three circles overlap.", [O2, O6, O7]),
+            buildQ("Boys, Students, Athletes", O3, "Some boys are students and athletes; some students are athletes. All three groups intersect each other.", [O6, O2, O8]),
+            buildQ("Mammal, Cow, Bat", O2, "A Cow and a Bat are completely different animals, but both are classified under Mammals.", [O1, O6, O7]),
+            buildQ("Polygon, Rectangle, Square", O5, "Every Square is a Rectangle, and every Rectangle is a Polygon. They form concentric circles.", [O2, O6, O1]),
+            buildQ("Bus, Car, Vehicle", O2, "Buses and Cars are two different modes of transport, but both fall entirely under Vehicles.", [O6, O1, O7]),
+            buildQ("Anxiety, Intelligence, Strength", O4, "These are three distinct human traits/states with no categorical overlap in a strict logical Venn diagram.", [O3, O2, O1]),
+            buildQ("House, Bedroom, Bathroom", O2, "A Bedroom and a Bathroom are separate rooms, but both are entirely contained within a House.", [O5, O6, O1]),
+            buildQ("Mustard, Barley, Potato", O4, "These are three completely different types of agricultural crops/plants.", [O2, O1, O7]),
+            
+            buildQ("Elephant, Carnivore, Tiger", O1, "A Tiger is entirely a Carnivore. An Elephant is a herbivore, so it is completely separate.", [O2, O7, O6]),
+            buildQ("Fishes, Snakes, Birds", O4, "These belong to three completely separate biological classes (Pisces, Reptilia, Aves).", [O2, O1, O3]),
+            buildQ("Profit, Dividend, Bonus", O2, "Dividend and Bonus are two separate ways profit is distributed, both are subsets of Profit.", [O6, O1, O7]),
+            buildQ("Women, Mothers, Widows", O6, "All Mothers and Widows are Women (contained inside Women). Some Mothers can be Widows, so they intersect inside the larger circle.", [O2, O8, O3]),
+            buildQ("Authors, Teachers, Men", O3, "A man can be an author, a teacher, or both. Authors and teachers can also be men. All three intersect.", [O6, O2, O8]),
+            buildQ("Sparrows, Birds, Mice", O1, "Sparrows are entirely Birds. Mice are mammals, so they are completely separate from the Bird circle.", [O2, O6, O7]),
+            buildQ("Mountains, Forests, Earth", O6, "Mountains and Forests intersect (forested mountains exist). Both are entirely located on Earth.", [O2, O7, O3]),
+            buildQ("Biology, Botany, Zoology", O2, "Botany and Zoology are two distinct branches, both contained entirely within Biology.", [O6, O1, O5]),
+            buildQ("Factory, Machinery, Product", O2, "Machinery and Products are distinctly different things, but both are found inside a Factory.", [O6, O1, O7]),
+            buildQ("Travel, Train, Bus", O2, "Trains and Buses are disjoint entities, but both are contained within the concept/category of Travel.", [O6, O1, O7]),
+            
+            buildQ("Languages, English, Hindi", O2, "English and Hindi are two entirely different languages, but both fall inside the category of Languages.", [O6, O1, O3]),
+            buildQ("Doctors, Lawyers, Professionals", O2, "Doctors and Lawyers are two completely different professions, but both are entirely subsets of Professionals.", [O6, O3, O1]),
+            buildQ("Animal, Leopard, Lion", O2, "Leopard and Lion are disjoint (different species), but both fall entirely inside the Animal category.", [O6, O1, O5]),
+            buildQ("Nitrogen, Ice, Air", O1, "Nitrogen is a major component of Air (contained inside it). Ice is completely separate.", [O2, O7, O6]),
+            buildQ("Singers, Boys, Dancers", O3, "Some boys are singers and dancers; some singers are dancers. All three intersect mutually.", [O6, O2, O8]),
+            buildQ("Clothes, Flowers, Bright things", O7, "Clothes and Flowers are disjoint objects. 'Bright things' intersects both, as some clothes are bright and some flowers are bright.", [O2, O6, O3]),
+            buildQ("Reptiles, Snakes, Lizards", O2, "Snakes and Lizards are disjoint species, but both belong entirely to the class of Reptiles.", [O6, O1, O5]),
+            buildQ("Human beings, Teachers, Graduates", O6, "Some Teachers are Graduates (intersection). Both Teachers and Graduates are entirely Human beings.", [O3, O2, O8]),
+            buildQ("Males, Fathers, Brothers", O6, "All Fathers and Brothers are Males (inside). Some Fathers are Brothers (intersection inside).", [O2, O8, O3]),
+            buildQ("Pets, Dogs, Cats", O7, "Dogs and Cats are distinct animals (disjoint). The 'Pets' category intersects both, as some dogs/cats are pets and some aren't.", [O2, O6, O8]),
+            
+            buildQ("Criminals, Murderers, Thieves", O6, "All Murderers and Thieves are Criminals (inside). Some Murderers can also be Thieves (intersection inside).", [O2, O8, O3]),
+            buildQ("Protons, Electrons, Atoms", O2, "Protons and Electrons are distinct subatomic particles (disjoint), both found entirely inside Atoms.", [O6, O1, O5]),
+            buildQ("Paper, Stationery, Ink", O2, "Paper and Ink are completely separate items, but both are classified entirely as Stationery.", [O6, O1, O7]),
+            buildQ("Dogs, Carnivores, Tigers", O2, "Dogs and Tigers are distinct species, but both belong to the Carnivores order.", [O6, O1, O7]),
+            buildQ("Atoms, Molecules, Electrons", O5, "Electrons are inside Atoms, and Atoms combine to form Molecules. (Concentric circles).", [O2, O6, O1]),
+            buildQ("Sun, Planets, Earth", O1, "Earth is entirely a Planet. The Sun is a star, completely separate from the Planets circle.", [O2, O6, O7]),
+            buildQ("Doctors, Human beings, Married people", O6, "Doctors and Married people intersect. Both categories are entirely Human beings.", [O3, O2, O8]),
+            buildQ("Politicians, Poets, Women", O3, "A woman can be a politician and a poet. They all mutually intersect each other.", [O6, O2, O8]),
+            buildQ("Apples, Mangoes, Fruits", O2, "Apples and Mangoes are two distinct entities, but both are completely inside the Fruits category.", [O6, O1, O5]),
+            buildQ("Students, First divisioners, Third divisioners", O2, "First and Third divisioners are disjoint groups. Both are entirely subsets of Students.", [O6, O1, O3])
+        ];
+
+        let quizData = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        // Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            // Shuffle questions and select all 50
+            quizData = shuffleArray(rawQuestions).slice(0, 50);
+            
+            document.getElementById('results-screen').classList.remove('show');
+            document.getElementById('quiz-screen').style.display = 'block';
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const currentQ = quizData[currentQuestionIndex];
+            
+            document.getElementById('question-tracker').innerText = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
+            document.getElementById('score-tracker').innerText = `Score: ${score}`;
+            
+            const progressPercent = ((currentQuestionIndex) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            document.getElementById('question-text').innerHTML = currentQ.q;
+
+            const optionsGrid = document.getElementById('options-grid');
+            optionsGrid.innerHTML = ''; 
+            
+            const shuffledOptions = shuffleArray(currentQ.options);
+            
+            shuffledOptions.forEach(opt => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.innerHTML = opt;
+                button.onclick = () => selectOption(button, opt, currentQ.a, currentQ.exp);
+                optionsGrid.appendChild(button);
+            });
+
+            document.getElementById('explanation-box').classList.remove('show');
+            document.getElementById('next-btn').classList.remove('show');
+        }
+
+        function selectOption(selectedBtn, selectedText, correctText, explanation) {
+            if (answered) return; 
+            answered = true;
+
+            const allOptions = document.querySelectorAll('.option');
+            
+            if (selectedText === correctText) {
+                selectedBtn.classList.add('correct');
+                score++;
+                document.getElementById('score-tracker').innerText = `Score: ${score}`;
+            } else {
+                selectedBtn.classList.add('incorrect');
+                allOptions.forEach(btn => {
+                    if (btn.innerHTML === correctText) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+
+            allOptions.forEach(btn => btn.classList.add('disabled'));
+
+            document.getElementById('explanation-text').innerHTML = explanation;
+            document.getElementById('explanation-box').classList.add('show');
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.innerText = (currentQuestionIndex === quizData.length - 1) ? "Finish Quiz" : "Next Question";
+            nextBtn.classList.add('show');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('progress-bar').style.width = `100%`;
+            document.getElementById('quiz-screen').style.display = 'none';
+            
+            const resultsScreen = document.getElementById('results-screen');
+            resultsScreen.classList.add('show');
+
+            document.getElementById('final-score').innerText = `${score}/${quizData.length}`;
+            
+            const messageEl = document.getElementById('results-message');
+            const percent = (score / quizData.length) * 100;
+            
+            if (percent >= 90) {
+                messageEl.innerText = "Stunning! Your categorical logic is flawless.";
+            } else if (percent >= 70) {
+                messageEl.innerText = "Great job! You mapped most of these subsets correctly.";
+            } else if (percent >= 50) {
+                messageEl.innerText = "Good effort. Pay close attention to subtle intersections (e.g. Pets vs Dogs).";
+            } else {
+                messageEl.innerText = "Keep practicing! Try drawing these circles out on paper to visualize the logic.";
+            }
+        }
+
+        // Start the quiz on load
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>

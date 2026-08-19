@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC CGL Clocks Reasoning Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Midnight Blue & Gold (Clockwork Theme) */
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #eab308; /* Amber / Gold */
+            --primary-hover: #ca8a04;
+            --correct: #10b981;
+            --incorrect: #ef4444;
+            --border: #334155;
+            --exp-bg: #334155;
+            --exp-border: #eab308;
+            --exp-text: #fef08a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            max-width: 780px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border);
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Question */
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            background: var(--bg-color);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: 0.3px;
+        }
+
+        .option:hover:not(.disabled) {
+            background: #1e293b;
+            border-color: var(--primary);
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+        }
+
+        .option.correct {
+            background: #064e3b;
+            border-color: var(--correct);
+            color: #34d399;
+        }
+
+        .option.incorrect {
+            background: #7f1d1d;
+            border-color: var(--incorrect);
+            color: #fca5a5;
+        }
+
+        /* Explanation Box */
+        .explanation-box {
+            background: var(--exp-bg);
+            border-left: 4px solid var(--exp-border);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .explanation-box.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .explanation-text {
+            color: var(--exp-text);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Controls */
+        .btn {
+            background: var(--primary);
+            color: #0f172a;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s ease;
+            display: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .results-screen.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--bg-color);
+            border: 6px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 auto 20px;
+        }
+
+        .results-message {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .results-subtext {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Quiz Screen -->
+        <div id="quiz-screen">
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="header">
+                <span id="question-tracker">Question 1 of 50</span>
+                <span id="score-tracker">Score: 0</span>
+            </div>
+
+            <div class="question-text" id="question-text">
+                Loading question...
+            </div>
+
+            <div class="options-grid" id="options-grid">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div class="explanation-box" id="explanation-box">
+                <div class="explanation-title">Logic / Explanation:</div>
+                <div class="explanation-text" id="explanation-text"></div>
+            </div>
+
+            <button class="btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="results-screen">
+            <div class="score-circle" id="final-score">0/50</div>
+            <div class="results-message" id="results-message">Great effort!</div>
+            <div class="results-subtext" id="results-subtext">You have completed the Clocks Reasoning Quiz.</div>
+            <button class="btn show" onclick="restartQuiz()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // 50 SSC CGL Level Clocks Questions
+        const rawQuestions = [
+            // Angles
+            { q: "What is the angle between the hour hand and the minute hand of a clock at 3:40?", options: ["120°", "125°", "130°", "135°"], a: "130°", exp: "Angle = |30H - 5.5M| = |30(3) - 5.5(40)| = |90 - 220| = 130°." },
+            { q: "What is the angle between the hour hand and the minute hand of a clock at 8:20?", options: ["130°", "140°", "120°", "110°"], a: "130°", exp: "Angle = |30(8) - 5.5(20)| = |240 - 110| = 130°." },
+            { q: "What is the angle between the hands of a clock at 10:25?", options: ["162.5°", "165°", "172.5°", "150°"], a: "162.5°", exp: "Angle = |30(10) - 5.5(25)| = |300 - 137.5| = 162.5°." },
+            { q: "What is the angle between the hands of a clock at 4:20?", options: ["0°", "10°", "15°", "20°"], a: "10°", exp: "Angle = |30(4) - 5.5(20)| = |120 - 110| = 10°." },
+            { q: "What is the angle between the hands of a clock at 9:30?", options: ["90°", "105°", "115°", "120°"], a: "105°", exp: "Angle = |30(9) - 5.5(30)| = |270 - 165| = 105°." },
+            { q: "What is the angle between the hands of a clock at 2:20?", options: ["45°", "50°", "55°", "60°"], a: "50°", exp: "Angle = |30(2) - 5.5(20)| = |60 - 110| = 50°." },
+            { q: "What is the angle between the hands of a clock at 5:15?", options: ["58.5°", "64°", "67.5°", "72.5°"], a: "67.5°", exp: "Angle = |30(5) - 5.5(15)| = |150 - 82.5| = 67.5°." },
+            { q: "What is the angle between the hands of a clock at 12:20?", options: ["110°", "120°", "100°", "130°"], a: "110°", exp: "Using 0 for 12: Angle = |30(0) - 5.5(20)| = |-110| = 110°." },
+            { q: "What is the angle between the hands of a clock at 6:45?", options: ["67.5°", "72.5°", "80°", "90°"], a: "67.5°", exp: "Angle = |30(6) - 5.5(45)| = |180 - 247.5| = 67.5°." },
+            { q: "What is the angle between the hands of a clock at 7:10?", options: ["145°", "150°", "155°", "160°"], a: "155°", exp: "Angle = |30(7) - 5.5(10)| = |210 - 55| = 155°." },
+            { q: "What is the angle between the hands of a clock at 11:20?", options: ["120°", "130°", "140°", "150°"], a: "140°", exp: "Angle = |30(11) - 5.5(20)| = |330 - 110| = 220°. The interior angle is 360° - 220° = 140°." },
+            { q: "What is the reflex angle between the hands of a clock at 10:25?", options: ["180.5°", "192.5°", "197.5°", "205°"], a: "197.5°", exp: "Angle = |30(10) - 5.5(25)| = 162.5°. Reflex angle = 360° - 162.5° = 197.5°." },
+            { q: "What is the angle between the hands of a clock at 8:40?", options: ["15°", "20°", "25°", "30°"], a: "20°", exp: "Angle = |30(8) - 5.5(40)| = |240 - 220| = 20°." },
+            { q: "What is the angle between the hands of a clock at 2:30?", options: ["90°", "105°", "110°", "115°"], a: "105°", exp: "Angle = |30(2) - 5.5(30)| = |60 - 165| = 105°." },
+            { q: "What is the angle between the hands of a clock at 7:35?", options: ["15°", "17.5°", "20°", "22.5°"], a: "17.5°", exp: "Angle = |30(7) - 5.5(35)| = |210 - 192.5| = 17.5°." },
+
+            // Coincide, Straight, Right Angles
+            { q: "At what time between 3 and 4 o'clock are the hands of a clock coincident?", options: ["16 4/11 min past 3", "15 5/11 min past 3", "18 2/11 min past 3", "17 3/11 min past 3"], a: "16 4/11 min past 3", exp: "Time = (60/11) × H. Time = (60/11) × 3 = 180/11 = 16 4/11 minutes past 3." },
+            { q: "At what time between 5 and 6 o'clock are the hands of a clock coincident?", options: ["26 2/11 min past 5", "27 3/11 min past 5", "28 4/11 min past 5", "25 5/11 min past 5"], a: "27 3/11 min past 5", exp: "Time = (60/11) × 5 = 300/11 = 27 3/11 minutes past 5." },
+            { q: "At what time between 9 and 10 o'clock are the hands of a clock coincident?", options: ["48 2/11 min past 9", "49 1/11 min past 9", "50 3/11 min past 9", "47 4/11 min past 9"], a: "49 1/11 min past 9", exp: "Time = (60/11) × 9 = 540/11 = 49 1/11 minutes past 9." },
+            { q: "At what time between 4 and 5 o'clock will the hands of a clock point in opposite directions?", options: ["54 6/11 min past 4", "53 5/11 min past 4", "50 4/11 min past 4", "55 5/11 min past 4"], a: "54 6/11 min past 4", exp: "Opposite means 180°. Time = 60/11 × (H ± 6). Since H < 6, use (H + 6). 60/11 × (4 + 6) = 600/11 = 54 6/11 minutes past 4." },
+            { q: "At what time between 8 and 9 o'clock will the hands of a clock point in opposite directions?", options: ["10 10/11 min past 8", "11 9/11 min past 8", "12 8/11 min past 8", "9 10/11 min past 8"], a: "10 10/11 min past 8", exp: "Since H > 6, use (H - 6). 60/11 × (8 - 6) = 120/11 = 10 10/11 minutes past 8." },
+            { q: "At what time between 2 and 3 o'clock will the hands of a clock point in opposite directions?", options: ["42 5/11 min past 2", "43 7/11 min past 2", "44 5/11 min past 2", "41 8/11 min past 2"], a: "43 7/11 min past 2", exp: "60/11 × (2 + 6) = 60/11 × 8 = 480/11 = 43 7/11 minutes past 2." },
+            { q: "At what time between 3 and 4 o'clock will the hands of a clock be in the same straight line but not together?", options: ["49 1/11 min past 3", "48 2/11 min past 3", "50 3/11 min past 3", "51 4/11 min past 3"], a: "49 1/11 min past 3", exp: "Straight line but not together = Opposite. 60/11 × (3 + 6) = 540/11 = 49 1/11 minutes past 3." },
+            { q: "At what time between 7 and 8 o'clock will the hands of a clock be in the same straight line but not together?", options: ["5 5/11 min past 7", "6 4/11 min past 7", "4 6/11 min past 7", "7 3/11 min past 7"], a: "5 5/11 min past 7", exp: "Opposite. H=7. 60/11 × (7 - 6) = 60/11 = 5 5/11 minutes past 7." },
+            { q: "At what time between 5:30 and 6:00 will the hands of a clock be at right angles?", options: ["43 7/11 min past 5", "42 5/11 min past 5", "44 5/11 min past 5", "45 2/11 min past 5"], a: "43 7/11 min past 5", exp: "Right angles happen at 60/11 × (H ± 3). For H=5: 60/11 × 2 = 120/11 = 10 10/11 (before 5:30). 60/11 × 8 = 480/11 = 43 7/11 (after 5:30)." },
+
+            // General Facts
+            { q: "How many times do the hands of a clock coincide in a day (24 hours)?", options: ["20", "22", "24", "44"], a: "22", exp: "The hands coincide 11 times in every 12 hours (they only coincide once between 11 and 1, exactly at 12). So, in 24 hours, they coincide 22 times." },
+            { q: "How many times are the hands of a clock in a straight line but opposite in direction in a day?", options: ["20", "22", "24", "44"], a: "22", exp: "They are opposite 11 times in 12 hours (only once between 5 and 7, exactly at 6). So, 22 times in 24 hours." },
+            { q: "How many times are the hands of a clock at right angles in a day?", options: ["22", "24", "44", "48"], a: "44", exp: "They form a right angle 22 times in 12 hours. Thus, in 24 hours, they form right angles 44 times." },
+            { q: "How many times do the hands of a clock point in opposite directions in 12 hours?", options: ["10", "11", "12", "22"], a: "11", exp: "In 12 hours, they point in opposite directions 11 times." },
+            { q: "How many times in a day are the hands of a clock in a straight line?", options: ["22", "24", "44", "48"], a: "44", exp: "Straight line includes both coincident (22 times) and opposite (22 times). Total = 44 times." },
+
+            // Rotations
+            { q: "An accurate clock shows 8 o'clock in the morning. Through how many degrees will the hour hand rotate when the clock shows 2 o'clock in the afternoon?", options: ["150°", "180°", "144°", "168°"], a: "180°", exp: "From 8 AM to 2 PM is 6 hours. The hour hand rotates 30° per hour. 6 × 30° = 180°." },
+            { q: "A clock is started at noon. By 10 minutes past 5, the hour hand has turned through:", options: ["145°", "150°", "155°", "160°"], a: "155°", exp: "Total time from 12 noon = 5 hours 10 mins. Hour hand moves 30°/hr and 0.5°/min. (5 × 30°) + (10 × 0.5°) = 150 + 5 = 155°." },
+            { q: "How many degrees does the minute hand move in 20 minutes?", options: ["100°", "110°", "120°", "130°"], a: "120°", exp: "The minute hand moves 6° per minute. 20 × 6° = 120°." },
+            { q: "A clock shows 12 o'clock. Find the angle the hour hand makes when it's 2:30.", options: ["60°", "65°", "70°", "75°"], a: "75°", exp: "Time elapsed = 2.5 hours. Hour hand speed = 30° per hour. 2.5 × 30 = 75°." },
+
+            // Mirror and Water Images
+            { q: "What is the mirror image of a clock showing 3:15?", options: ["8:45", "9:45", "8:15", "9:15"], a: "8:45", exp: "Mirror image formula: 11:60 - Given Time. 11:60 - 03:15 = 8:45." },
+            { q: "What is the mirror image of a clock showing 11:20?", options: ["12:40", "1:40", "11:40", "12:20"], a: "12:40", exp: "For times starting with 11 or 12, use 23:60. 23:60 - 11:20 = 12:40." },
+            { q: "What is the mirror image of a clock showing 7:25?", options: ["4:35", "5:35", "4:25", "5:25"], a: "4:35", exp: "11:60 - 07:25 = 4:35." },
+            { q: "What is the mirror image of a clock showing 12:10?", options: ["11:50", "1:50", "12:50", "11:10"], a: "11:50", exp: "23:60 - 12:10 = 11:50." },
+            { q: "What is the mirror image of 6:30?", options: ["5:30", "6:30", "7:30", "4:30"], a: "5:30", exp: "11:60 - 06:30 = 5:30." },
+            { q: "What is the water image of a clock showing 8:20?", options: ["10:10", "9:10", "10:40", "9:40"], a: "10:10", exp: "Water image formula: 18:30 (or 17:90) - Given Time. 18:30 - 08:20 = 10:10." },
+            { q: "What is the water image of a clock showing 5:45?", options: ["12:45", "1:45", "11:45", "12:15"], a: "12:45", exp: "Since minutes > 30, use 17:90. 17:90 - 05:45 = 12:45." },
+            { q: "What is the water image of a clock showing 10:15?", options: ["8:15", "7:15", "8:45", "7:45"], a: "8:15", exp: "18:30 - 10:15 = 8:15." },
+            { q: "What is the water image of a clock showing 9:30?", options: ["9:00", "8:00", "10:00", "9:30"], a: "9:00", exp: "18:30 - 09:30 = 9:00." },
+            { q: "What is the water image of a clock showing 1:30?", options: ["4:00", "5:00", "6:00", "7:00"], a: "5:00", exp: "18:30 - 01:30 = 17:00. In 12-hour format, 17:00 is 5:00." },
+
+            // Faulty Clocks
+            { q: "A clock gains 5 minutes every hour. If it is set right at 8 AM, what time will it show at 6 PM on the same day?", options: ["6:40 PM", "6:45 PM", "6:50 PM", "7:00 PM"], a: "6:50 PM", exp: "From 8 AM to 6 PM is 10 hours. Total gain = 10 × 5 = 50 minutes. The clock will show 6:50 PM." },
+            { q: "A watch which gains 5 seconds in 3 minutes was set right at 7 a.m. In the afternoon of the same day, when the watch indicated quarter past 4 o'clock, the true time is:", options: ["3:45 PM", "4:00 PM", "4:15 PM", "3:30 PM"], a: "4:00 PM", exp: "Gains 5 sec in 3 min = 100 sec in 60 min (1 hr) = 1/12 hour gained per hour. For every 1 true hour, faulty clock covers 13/12 hours. Faulty time elapsed (7am to 4:15pm) = 9.25 hours = 37/4 hrs. True time = (37/4) × (12/13) = 111/13. That's complex. Simpler calculation: True 9 hours = 9 hrs + 9*(100s) = 9 hrs 15 mins. True time is 4 PM." },
+            { q: "If a clock takes 7 seconds to strike 7, how long will it take to strike 10?", options: ["9 seconds", "10 seconds", "10.5 seconds", "11 seconds"], a: "10.5 seconds", exp: "7 strikes means 6 intervals between strikes. 6 intervals = 7 seconds -> 1 interval = 7/6 seconds. To strike 10, there are 9 intervals. Time = 9 × 7/6 = 63/6 = 10.5 seconds." },
+            { q: "How much does a watch lose per day, if its hands coincide every 64 minutes?", options: ["30 min", "32 8/11 min", "34 min", "36 5/11 min"], a: "32 8/11 min", exp: "True coincide time = 720/11 min = 65 5/11 min. Loss per coincide = 65 5/11 - 64 = 16/11 min. Number of coincides in 24h = (24×60)/64 = 45/2. Total loss = (16/11) × (45/2) = 360/11 = 32 8/11 minutes." },
+            { q: "A clock is set right at 5 a.m. The clock loses 16 minutes in 24 hours. What will be the true time when the clock indicates 10 p.m. on the 4th day?", options: ["11 PM", "10 PM", "9 PM", "Midnight"], a: "11 PM", exp: "Loses 16 min in 24 hrs -> 24 hrs True = 23 hrs 44 mins Faulty = 356/15 hrs Faulty. Time elapsed (5am 1st day to 10pm 4th day) = 89 hours Faulty. True Time = 89 × 24 / (356/15) = 90 hours. 5am + 90 hours = 11 PM." },
+
+            // Extra Mixed Practice
+            { q: "At what time between 1 and 2 o'clock are the hands of a clock coincident?", options: ["5 5/11 min past 1", "6 4/11 min past 1", "4 6/11 min past 1", "5 3/11 min past 1"], a: "5 5/11 min past 1", exp: "Time = (60/11) × 1 = 60/11 = 5 5/11 minutes past 1." },
+            { q: "At what time between 10 and 11 o'clock will the hands of a clock point in opposite directions?", options: ["21 9/11 min past 10", "20 8/11 min past 10", "22 5/11 min past 10", "21 7/11 min past 10"], a: "21 9/11 min past 10", exp: "Opposite. H=10. 60/11 × (10 - 6) = 60/11 × 4 = 240/11 = 21 9/11 minutes past 10." },
+            { q: "What is the angle between the hands of a clock at 1:10?", options: ["20°", "25°", "30°", "35°"], a: "25°", exp: "Angle = |30(1) - 5.5(10)| = |30 - 55| = 25°." },
+            { q: "What is the water image of a clock showing 3:15?", options: ["3:45", "4:15", "2:15", "3:15"], a: "3:15", exp: "18:30 - 03:15 = 15:15. In 12-hour format, 15:15 is 3:15. So, the water image looks identical (mathematically)." },
+            { q: "A clock takes 5 seconds to strike 5. How long will it take to strike 9?", options: ["8 seconds", "9 seconds", "10 seconds", "11 seconds"], a: "10 seconds", exp: "5 strikes = 4 intervals = 5s. 1 interval = 1.25s. 9 strikes = 8 intervals. 8 × 1.25s = 10 seconds." },
+            { q: "If the mirror image of a clock shows 4:10, what is the actual time?", options: ["7:50", "8:50", "7:10", "8:10"], a: "7:50", exp: "Actual Time = 11:60 - Mirror Image. 11:60 - 04:10 = 7:50." },
+            { q: "What is the angle between the hour hand and the minute hand of a clock at 5:40?", options: ["60°", "65°", "70°", "75°"], a: "70°", exp: "Angle = |30(5) - 5.5(40)| = |150 - 220| = 70°." }
+        ];
+
+        let quizData = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        // Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            // Limit to exactly 50 and shuffle
+            quizData = shuffleArray(rawQuestions).slice(0, 50);
+            
+            document.getElementById('results-screen').classList.remove('show');
+            document.getElementById('quiz-screen').style.display = 'block';
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const currentQ = quizData[currentQuestionIndex];
+            
+            document.getElementById('question-tracker').innerText = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
+            document.getElementById('score-tracker').innerText = `Score: ${score}`;
+            
+            const progressPercent = ((currentQuestionIndex) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            document.getElementById('question-text').innerHTML = currentQ.q;
+
+            const optionsGrid = document.getElementById('options-grid');
+            optionsGrid.innerHTML = ''; 
+            
+            const shuffledOptions = shuffleArray(currentQ.options);
+            
+            shuffledOptions.forEach(opt => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.innerHTML = opt;
+                button.onclick = () => selectOption(button, opt, currentQ.a, currentQ.exp);
+                optionsGrid.appendChild(button);
+            });
+
+            document.getElementById('explanation-box').classList.remove('show');
+            document.getElementById('next-btn').classList.remove('show');
+        }
+
+        function selectOption(selectedBtn, selectedText, correctText, explanation) {
+            if (answered) return; 
+            answered = true;
+
+            const allOptions = document.querySelectorAll('.option');
+            
+            if (selectedText === correctText) {
+                selectedBtn.classList.add('correct');
+                score++;
+                document.getElementById('score-tracker').innerText = `Score: ${score}`;
+            } else {
+                selectedBtn.classList.add('incorrect');
+                allOptions.forEach(btn => {
+                    if (btn.innerHTML === correctText) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+
+            allOptions.forEach(btn => btn.classList.add('disabled'));
+
+            document.getElementById('explanation-text').innerHTML = explanation;
+            document.getElementById('explanation-box').classList.add('show');
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.innerText = (currentQuestionIndex === quizData.length - 1) ? "Finish Quiz" : "Next Question";
+            nextBtn.classList.add('show');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('progress-bar').style.width = `100%`;
+            document.getElementById('quiz-screen').style.display = 'none';
+            
+            const resultsScreen = document.getElementById('results-screen');
+            resultsScreen.classList.add('show');
+
+            document.getElementById('final-score').innerText = `${score}/${quizData.length}`;
+            
+            const messageEl = document.getElementById('results-message');
+            const percent = (score / quizData.length) * 100;
+            
+            if (percent >= 90) {
+                messageEl.innerText = "Exceptional! You calculate clock mathematics flawlessly.";
+            } else if (percent >= 70) {
+                messageEl.innerText = "Great job! You have a solid grasp on formulas and angles.";
+            } else if (percent >= 50) {
+                messageEl.innerText = "Good effort, but review the fractional coincidence timings.";
+            } else {
+                messageEl.innerText = "Keep practicing! Memorize the core formulas for Angles and Mirror Images.";
+            }
+        }
+
+        // Start the quiz on load
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC CGL Logical Arrangement of Words Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Violet/Purple Theme */
+            --bg-color: #f5f3ff;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --correct: #10b981;
+            --incorrect: #ef4444;
+            --border: #ede9fe;
+            --exp-bg: #f5f3ff;
+            --exp-text: #4c1d95;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            max-width: 780px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.15);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border);
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Question */
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: #111827;
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            background: var(--card-bg);
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+        }
+
+        .option:hover:not(.disabled) {
+            background: #faf5ff;
+            border-color: #ddd6fe;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+        }
+
+        .option.correct {
+            background: #d1fae5;
+            border-color: var(--correct);
+            color: #065f46;
+        }
+
+        .option.incorrect {
+            background: #fee2e2;
+            border-color: var(--incorrect);
+            color: #991b1b;
+        }
+
+        /* Explanation Box */
+        .explanation-box {
+            background: var(--exp-bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .explanation-box.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            color: var(--exp-text);
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .explanation-text {
+            color: var(--exp-text);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Controls */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s ease;
+            display: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .results-screen.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--exp-bg);
+            border: 6px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 auto 20px;
+        }
+
+        .results-message {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .results-subtext {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (min-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Quiz Screen -->
+        <div id="quiz-screen">
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="header">
+                <span id="question-tracker">Question 1 of 50</span>
+                <span id="score-tracker">Score: 0</span>
+            </div>
+
+            <div class="question-text" id="question-text">
+                Loading question...
+            </div>
+
+            <div class="options-grid" id="options-grid">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div class="explanation-box" id="explanation-box">
+                <div class="explanation-title">Logic / Explanation:</div>
+                <div class="explanation-text" id="explanation-text"></div>
+            </div>
+
+            <button class="btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="results-screen">
+            <div class="score-circle" id="final-score">0/50</div>
+            <div class="results-message" id="results-message">Great effort!</div>
+            <div class="results-subtext" id="results-subtext">You have completed the Logical Arrangement Quiz.</div>
+            <button class="btn show" onclick="restartQuiz()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // 50 SSC CGL Level Logical Arrangement of Words Questions
+        const rawQuestions = [
+            { q: "Arrange the following words in a meaningful sequence:\n1. Key  2. Door  3. Lock  4. Room  5. Switch on", options: ["1, 3, 2, 4, 5", "1, 2, 3, 5, 4", "4, 2, 1, 5, 3", "1, 3, 2, 5, 4"], a: "1, 3, 2, 4, 5", exp: "Logical sequence of actions: Take the Key (1), open the Lock (3), push the Door (2), enter the Room (4), Switch on the light (5)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Word  2. Paragraph  3. Sentence  4. Letters  5. Phrase", options: ["4, 1, 5, 3, 2", "4, 1, 3, 5, 2", "4, 2, 5, 1, 3", "4, 1, 5, 2, 3"], a: "4, 1, 5, 3, 2", exp: "Letters form a Word, Words form a Phrase, Phrases form a Sentence, Sentences form a Paragraph." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Police  2. Punishment  3. Crime  4. Judge  5. Judgement", options: ["3, 1, 4, 5, 2", "3, 1, 2, 4, 5", "1, 3, 4, 5, 2", "3, 4, 1, 5, 2"], a: "3, 1, 4, 5, 2", exp: "Crime occurs (3), Police arrests (1), taken to Judge (4), Judge gives Judgement (5), resulting in Punishment (2)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Poverty  2. Population  3. Death  4. Unemployment  5. Disease", options: ["2, 4, 1, 5, 3", "2, 1, 4, 5, 3", "1, 2, 4, 5, 3", "2, 4, 1, 3, 5"], a: "2, 4, 1, 5, 3", exp: "Increase in Population (2) leads to Unemployment (4), which causes Poverty (1), leading to Disease (5), and ultimately Death (3)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Elephant  2. Cat  3. Mosquito  4. Tiger  5. Whale", options: ["3, 2, 4, 1, 5", "3, 2, 1, 4, 5", "3, 4, 2, 1, 5", "2, 3, 4, 1, 5"], a: "3, 2, 4, 1, 5", exp: "Arrangement by increasing order of size: Mosquito (3), Cat (2), Tiger (4), Elephant (1), Whale (5)." },
+            { q: "Arrange the following words in dictionary order:\n1. Epitome  2. Episode  3. Epigene  4. Epitome (Wait, Epitome twice? Let's use Epilogue) 1. Epidemic 2. Epilogue 3. Episode 4. Epigene 5. Epitome", options: ["1, 4, 2, 3, 5", "1, 4, 2, 5, 3", "1, 2, 4, 3, 5", "4, 1, 2, 3, 5"], a: "1, 4, 2, 3, 5", exp: "Dictionary order: Epi(d)emic, Epi(g)ene, Epi(l)ogue, Epi(s)ode, Epi(t)ome." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Birth  2. Death  3. Funeral  4. Marriage  5. Education", options: ["1, 5, 4, 2, 3", "1, 5, 4, 3, 2", "1, 4, 5, 2, 3", "1, 5, 2, 4, 3"], a: "1, 5, 4, 2, 3", exp: "Chronological order of a human life: Birth (1) -> Education (5) -> Marriage (4) -> Death (2) -> Funeral (3)." },
+            { q: "Arrange the following words in dictionary order:\n1. Scenical  2. Scenery  3. Scent  4. Science  5. Scoop", options: ["2, 1, 3, 4, 5", "1, 2, 3, 4, 5", "2, 1, 4, 3, 5", "2, 3, 1, 4, 5"], a: "2, 1, 3, 4, 5", exp: "Alphabetical order: Scen(e)ry, Scen(i)cal, Scent, Science, Scoop." },
+            { q: "Arrange the following in a logical sequence:\n1. Country  2. Furniture  3. Forest  4. Wood  5. Trees", options: ["1, 3, 5, 4, 2", "1, 3, 4, 5, 2", "3, 1, 5, 4, 2", "1, 5, 3, 4, 2"], a: "1, 3, 5, 4, 2", exp: "A Country (1) has a Forest (3), which has Trees (5), which give Wood (4), from which Furniture (2) is made." },
+            { q: "Arrange the following in a logical sequence:\n1. Butterfly  2. Cocoon  3. Egg  4. Worm", options: ["3, 4, 2, 1", "3, 2, 4, 1", "3, 4, 1, 2", "1, 4, 3, 2"], a: "3, 4, 2, 1", exp: "Life cycle of a butterfly: Egg (3) -> Worm/Caterpillar (4) -> Cocoon/Pupa (2) -> Butterfly (1)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Yarn  2. Plant  3. Saree  4. Cotton  5. Cloth", options: ["2, 4, 1, 5, 3", "2, 4, 5, 1, 3", "2, 1, 4, 5, 3", "4, 2, 1, 5, 3"], a: "2, 4, 1, 5, 3", exp: "Plant (2) produces Cotton (4), which is spun into Yarn (1), woven into Cloth (5), and tailored into a Saree (3)." },
+            { q: "Arrange the following words in dictionary order:\n1. Inhabit  2. Ingenious  3. Inherit  4. Influence  5. Infatuation", options: ["5, 4, 2, 1, 3", "5, 4, 1, 2, 3", "4, 5, 2, 1, 3", "5, 4, 2, 3, 1"], a: "5, 4, 2, 1, 3", exp: "Alphabetical order: Infa(tuation), Infl(uence), Inge(nious), Inha(bit), Inhe(rit)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Seed  2. Plant  3. Fruit  4. Food  5. Dough  6. Bread", options: ["1, 2, 3, 4, 5, 6", "1, 2, 4, 5, 6, 3", "1, 2, 3, 5, 6, 4", "1, 2, 3, 5, 4, 6"], a: "1, 2, 3, 5, 6, 4", exp: "Wait, the standard sequence is: Seed (1) -> Plant (2) -> Grain/Fruit (3) -> Dough (5) -> Bread (6) -> Food (4)." }, // Slightly tricky standard question
+            { q: "Arrange the following words in dictionary order:\n1. Master  2. Marvel  3. Market  4. Marker  5. Margin", options: ["5, 4, 3, 2, 1", "5, 4, 2, 3, 1", "4, 5, 3, 2, 1", "5, 3, 4, 2, 1"], a: "5, 4, 3, 2, 1", exp: "Alphabetical order: Marg(in), Mark(er), Mark(et), Marv(el), Mast(er)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. District  2. Village  3. State  4. Town  5. Country", options: ["2, 4, 1, 3, 5", "2, 1, 4, 3, 5", "2, 4, 3, 1, 5", "4, 2, 1, 3, 5"], a: "2, 4, 1, 3, 5", exp: "Ascending order of geographical area: Village (2), Town (4), District (1), State (3), Country (5)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Doctor  2. Fever  3. Prescribe  4. Diagnose  5. Medicine", options: ["2, 1, 4, 3, 5", "2, 1, 3, 4, 5", "1, 2, 4, 3, 5", "2, 4, 1, 3, 5"], a: "2, 1, 4, 3, 5", exp: "You get a Fever (2), go to the Doctor (1), who will Diagnose (4), then Prescribe (3) the Medicine (5)." },
+            { q: "Arrange the following words in dictionary order:\n1. Wrangle  2. Wrangler  3. Wrap  4. Wrapper  5. Wrath", options: ["1, 2, 3, 4, 5", "1, 2, 4, 3, 5", "2, 1, 3, 4, 5", "1, 2, 3, 5, 4"], a: "1, 2, 3, 4, 5", exp: "They are already in dictionary order: Wrangle, Wrangler, Wrap, Wrapper, Wrath." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Infant  2. Old  3. Adult  4. Adolescent  5. Child", options: ["1, 5, 4, 3, 2", "1, 5, 3, 4, 2", "5, 1, 4, 3, 2", "1, 4, 5, 3, 2"], a: "1, 5, 4, 3, 2", exp: "Stages of human growth: Infant (1), Child (5), Adolescent (4), Adult (3), Old (2)." },
+            { q: "Arrange the following words in dictionary order:\n1. Preach  2. Praise  3. Precinct  4. Precept  5. Precede", options: ["2, 1, 5, 4, 3", "2, 1, 5, 3, 4", "1, 2, 5, 4, 3", "2, 5, 1, 4, 3"], a: "2, 1, 5, 4, 3", exp: "Order: Praise (2), Preach (1), Precede (5), Precept (4), Precinct (3)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Milky Way  2. Sun  3. Moon  4. Earth  5. Universe", options: ["3, 4, 2, 1, 5", "3, 2, 4, 1, 5", "4, 3, 2, 1, 5", "3, 4, 1, 2, 5"], a: "3, 4, 2, 1, 5", exp: "In order of increasing size/system inclusion: Moon (3), Earth (4), Sun (2), Milky Way (1), Universe (5)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Rain  2. Monsoon  3. Rescue  4. Flood  5. Shelter", options: ["2, 1, 4, 3, 5", "2, 1, 3, 4, 5", "1, 2, 4, 3, 5", "2, 4, 1, 3, 5"], a: "2, 1, 4, 3, 5", exp: "Monsoon (2) brings Rain (1), which causes a Flood (4), leading to Rescue operations (3) and moving to a Shelter (5)." },
+            { q: "Arrange the following words in dictionary order:\n1. Boundary  2. Boulder  3. Board  4. Boast  5. Boss", options: ["3, 4, 5, 2, 1", "4, 3, 5, 2, 1", "3, 4, 5, 1, 2", "4, 3, 2, 5, 1"], a: "3, 4, 5, 2, 1", exp: "Alphabetical order: Boa(r)d, Boa(s)t, Bos(s), Bou(l)der, Bou(n)dary." },
+            { q: "Arrange the following in a logical sequence:\n1. Gold  2. Iron  3. Sand  4. Platinum  5. Diamond", options: ["3, 2, 1, 5, 4", "3, 2, 1, 4, 5", "2, 3, 1, 5, 4", "3, 1, 2, 5, 4"], a: "3, 2, 1, 5, 4", exp: "Arranged by increasing order of general value/cost: Sand (3), Iron (2), Gold (1), Diamond (5), Platinum (4). (Note: Diamond and Platinum ranks can vary by context, but 3,2,1,5,4 is the standard SSC answer)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Table  2. Tree  3. Wood  4. Seed  5. Plant", options: ["4, 5, 2, 3, 1", "4, 5, 3, 2, 1", "5, 4, 2, 3, 1", "4, 2, 5, 3, 1"], a: "4, 5, 2, 3, 1", exp: "A Seed (4) grows into a Plant (5), which becomes a Tree (2), which provides Wood (3), which is made into a Table (1)." },
+            { q: "Arrange the following words in dictionary order:\n1. Select  2. Seldom  3. Send  4. Selfish  5. Seller", options: ["2, 1, 4, 5, 3", "2, 1, 5, 4, 3", "1, 2, 4, 5, 3", "2, 1, 4, 3, 5"], a: "2, 1, 4, 5, 3", exp: "Alphabetical order: Sel(d)om, Sel(e)ct, Sel(f)ish, Sel(l)er, Se(n)d." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Presentation  2. Recommendation  3. Arrival  4. Discussion  5. Introduction", options: ["3, 5, 1, 4, 2", "3, 5, 4, 1, 2", "5, 3, 1, 4, 2", "3, 1, 5, 4, 2"], a: "3, 5, 1, 4, 2", exp: "Sequence of a meeting: Arrival (3), Introduction (5), Presentation (1), Discussion (4), Recommendation (2)." },
+            { q: "Arrange the following words in dictionary order:\n1. Wound  2. Writer  3. Whiter  4. Worst  5. Worked", options: ["3, 5, 4, 1, 2", "3, 4, 5, 1, 2", "5, 4, 3, 1, 2", "3, 5, 1, 4, 2"], a: "3, 5, 4, 1, 2", exp: "Alphabetical order: Whiter (3), Worked (5), Worst (4), Wound (1), Writer (2)." },
+            { q: "Arrange the following in a logical sequence:\n1. Frog  2. Eagle  3. Grasshopper  4. Snake  5. Grass", options: ["5, 3, 1, 4, 2", "5, 3, 4, 1, 2", "5, 1, 3, 4, 2", "5, 4, 3, 1, 2"], a: "5, 3, 1, 4, 2", exp: "Food chain order: Grass (5) is eaten by Grasshopper (3), eaten by Frog (1), eaten by Snake (4), eaten by Eagle (2)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Mother  2. Child  3. Milk  4. Crying  5. Smiling", options: ["2, 4, 1, 3, 5", "2, 4, 3, 1, 5", "1, 2, 4, 3, 5", "2, 1, 4, 3, 5"], a: "2, 4, 1, 3, 5", exp: "The Child (2) is Crying (4), so the Mother (1) gives Milk (3), resulting in Smiling (5)." },
+            { q: "Arrange the following words in dictionary order:\n1. Manifest  2. Meticulous  3. Meridian  4. Merchant", options: ["1, 4, 3, 2", "1, 3, 4, 2", "4, 3, 1, 2", "1, 4, 2, 3"], a: "1, 4, 3, 2", exp: "Alphabetical order: Manifest (1), Merchant (4), Meridian (3), Meticulous (2)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Reading  2. Composing  3. Writing  4. Printing", options: ["3, 2, 4, 1", "2, 3, 4, 1", "3, 4, 2, 1", "2, 4, 3, 1"], a: "3, 2, 4, 1", exp: "Logical process of a book: Writing (3), Composing (2), Printing (4), Reading (1)." },
+            { q: "Arrange the following words in dictionary order:\n1. Guarantee  2. Group  3. Grotesque  4. Guard  5. Groan", options: ["5, 3, 2, 1, 4", "5, 2, 3, 1, 4", "5, 3, 2, 4, 1", "3, 5, 2, 1, 4"], a: "5, 3, 2, 1, 4", exp: "Alphabetical order: Gro(a)n, Gro(t)esque, Gro(u)p, Gua(r)antee, Gua(r)d." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Exhaust  2. Night  3. Day  4. Sleep  5. Work", options: ["3, 5, 1, 2, 4", "3, 1, 5, 2, 4", "3, 5, 2, 1, 4", "3, 5, 1, 4, 2"], a: "3, 5, 1, 2, 4", exp: "Day (3) begins, you Work (5), which leads to Exhaustion (1). Then Night (2) comes, and you Sleep (4)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Probation  2. Interview  3. Selection  4. Appointment  5. Advertisement  6. Application", options: ["5, 6, 2, 3, 4, 1", "5, 6, 3, 2, 4, 1", "5, 6, 4, 2, 3, 1", "6, 5, 2, 3, 4, 1"], a: "5, 6, 2, 3, 4, 1", exp: "Job process: Advertisement (5), Application (6), Interview (2), Selection (3), Appointment (4), Probation (1)." },
+            { q: "Arrange the following words in dictionary order:\n1. Obscure  2. Objective  3. Objection  4. Obligation  5. Oblivion", options: ["3, 2, 4, 5, 1", "3, 2, 5, 4, 1", "2, 3, 4, 5, 1", "3, 4, 2, 5, 1"], a: "3, 2, 4, 5, 1", exp: "Alphabetical order: Objec(t)ion, Objec(t)ive, Obli(g)ation, Obli(v)ion, Obs(c)ure." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Study  2. Job  3. Examination  4. Earn  5. Apply", options: ["1, 3, 5, 2, 4", "1, 5, 3, 2, 4", "1, 3, 2, 5, 4", "1, 3, 5, 4, 2"], a: "1, 3, 5, 2, 4", exp: "You Study (1), pass the Examination (3), Apply for a job (5), get the Job (2), and then Earn (4)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Caste  2. Family  3. Newly-wed Couple  4. Clan  5. Species", options: ["3, 2, 1, 4, 5", "3, 2, 4, 1, 5", "2, 3, 1, 4, 5", "3, 1, 2, 4, 5"], a: "3, 2, 4, 1, 5", exp: "Ascending order of grouping: Newly-wed Couple (3) forms a Family (2), families form a Clan (4), clans form a Caste (1), which is part of a Species (5)." },
+            { q: "Arrange the following words in dictionary order:\n1. Repoint  2. Reptile  3. Repent  4. Repute  5. Report", options: ["3, 1, 5, 2, 4", "3, 5, 1, 2, 4", "1, 3, 5, 2, 4", "3, 1, 2, 5, 4"], a: "3, 1, 5, 2, 4", exp: "Alphabetical order: Rep(e)nt, Rep(o)int, Rep(o)rt, Rep(t)ile, Rep(u)te." },
+            { q: "Arrange the following in a logical sequence:\n1. Rainbow  2. Rain  3. Sun  4. Happy  5. Child", options: ["2, 3, 1, 5, 4", "2, 1, 3, 5, 4", "3, 2, 1, 5, 4", "2, 3, 5, 1, 4"], a: "2, 3, 1, 5, 4", exp: "Rain (2) stops, Sun (3) comes out, Rainbow (1) appears, Child (5) sees it and becomes Happy (4)." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Puberty  2. Adulthood  3. Childhood  4. Infancy  5. Senescence", options: ["4, 3, 1, 2, 5", "4, 1, 3, 2, 5", "4, 3, 2, 1, 5", "4, 3, 1, 5, 2"], a: "4, 3, 1, 2, 5", exp: "Human growth stages: Infancy (4), Childhood (3), Puberty (1), Adulthood (2), Senescence (5 - old age)." },
+            { q: "Arrange the following words in dictionary order:\n1. Intrinsic  2. Intrude  3. Intricate  4. Introvert  5. Intrigue", options: ["3, 5, 1, 4, 2", "3, 1, 5, 4, 2", "5, 3, 1, 4, 2", "3, 5, 4, 1, 2"], a: "3, 5, 1, 4, 2", exp: "Alphabetical order: Intri(c)ate, Intri(g)ue, Intri(n)sic, Intro(v)ert, Intru(d)e." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Post-box  2. Letter  3. Envelope  4. Delivery  5. Clearance", options: ["2, 3, 1, 5, 4", "2, 3, 1, 4, 5", "3, 2, 1, 5, 4", "2, 1, 3, 5, 4"], a: "2, 3, 1, 5, 4", exp: "Write a Letter (2), put it in an Envelope (3), drop in Post-box (1), post office does Clearance (5), and then Delivery (4)." },
+            { q: "Arrange the following in a logical sequence:\n1. Windows  2. Walls  3. Floor  4. Foundation  5. Roof  6. Room", options: ["4, 2, 1, 5, 3, 6", "4, 1, 2, 5, 3, 6", "4, 2, 5, 1, 3, 6", "4, 3, 2, 1, 5, 6"], a: "4, 2, 1, 5, 3, 6", exp: "Construction order: Foundation (4), Walls (2), Windows (1), Roof (5), Floor (3), resulting in a Room (6)." },
+            { q: "Arrange the following words in dictionary order:\n1. Aqueous  2. Aquarium  3. Aquiline  4. Aquatic", options: ["2, 4, 1, 3", "2, 1, 4, 3", "4, 2, 1, 3", "2, 4, 3, 1"], a: "2, 4, 1, 3", exp: "Alphabetical order: Aqua(r)ium, Aqua(t)ic, Aque(o)us, Aqui(l)ine." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Site  2. Plan  3. Rent  4. Money  5. Building", options: ["4, 1, 2, 5, 3", "4, 2, 1, 5, 3", "1, 4, 2, 5, 3", "4, 1, 5, 2, 3"], a: "4, 1, 2, 5, 3", exp: "You need Money (4) to buy a Site (1), then make a Plan (2), construct a Building (5), and give it on Rent (3)." },
+            { q: "Arrange the following in a logical sequence:\n1. Protect  2. Pressure  3. Relief  4. Rain  5. Flood", options: ["2, 4, 5, 1, 3", "2, 5, 4, 1, 3", "2, 4, 1, 5, 3", "4, 2, 5, 1, 3"], a: "2, 4, 5, 1, 3", exp: "Low Pressure (2) causes Rain (4), leading to Flood (5). People Protect (1) themselves, and the government provides Relief (3)." },
+            { q: "Arrange the following words in dictionary order:\n1. Fraudulent  2. Fraught  3. Fraternity  4. Franchise  5. Frantic", options: ["4, 5, 3, 1, 2", "4, 3, 5, 1, 2", "4, 5, 1, 3, 2", "3, 4, 5, 1, 2"], a: "4, 5, 3, 1, 2", exp: "Alphabetical order: Fran(c)hise, Fran(t)ic, Frat(e)rnity, Frau(d)ulent, Frau(g)ht." },
+            { q: "Arrange the following words in a meaningful sequence:\n1. Yarn  2. Weaving  3. Cotton  4. Fertilizer  5. Cloth  6. Seed", options: ["6, 4, 3, 1, 2, 5", "6, 4, 1, 3, 2, 5", "6, 3, 4, 1, 2, 5", "4, 6, 3, 1, 2, 5"], a: "6, 4, 3, 1, 2, 5", exp: "Sow Seed (6), add Fertilizer (4), harvest Cotton (3), spin to Yarn (1), then Weaving (2) creates Cloth (5)." },
+            { q: "Arrange the following in a logical sequence:\n1. Atomic Age  2. Metallic Age  3. Stone Age  4. Alloy Age", options: ["3, 2, 4, 1", "3, 4, 2, 1", "2, 3, 4, 1", "3, 2, 1, 4"], a: "3, 2, 4, 1", exp: "Chronological human eras: Stone Age (3), Metallic Age (2), Alloy Age (4), Atomic Age (1)." },
+            { q: "Arrange the following words in dictionary order:\n1. Sympathy  2. Symphony  3. Symposium  4. Symptom  5. Synergy", options: ["1, 2, 3, 4, 5", "1, 3, 2, 4, 5", "1, 2, 4, 3, 5", "2, 1, 3, 4, 5"], a: "1, 2, 3, 4, 5", exp: "Already in alphabetical order: Symp(a)thy, Symph(o)ny, Sympo(s)ium, Sympt(o)m, Syne(r)gy." }
+        ];
+
+        let quizData = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        // Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            // Limit to exactly 50 and shuffle
+            quizData = shuffleArray(rawQuestions).slice(0, 50);
+            
+            document.getElementById('results-screen').classList.remove('show');
+            document.getElementById('quiz-screen').style.display = 'block';
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const currentQ = quizData[currentQuestionIndex];
+            
+            document.getElementById('question-tracker').innerText = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
+            document.getElementById('score-tracker').innerText = `Score: ${score}`;
+            
+            const progressPercent = ((currentQuestionIndex) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            document.getElementById('question-text').innerText = currentQ.q;
+
+            const optionsGrid = document.getElementById('options-grid');
+            optionsGrid.innerHTML = ''; 
+            
+            const shuffledOptions = shuffleArray(currentQ.options);
+            
+            shuffledOptions.forEach(opt => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.innerText = opt;
+                button.onclick = () => selectOption(button, opt, currentQ.a, currentQ.exp);
+                optionsGrid.appendChild(button);
+            });
+
+            document.getElementById('explanation-box').classList.remove('show');
+            document.getElementById('next-btn').classList.remove('show');
+        }
+
+        function selectOption(selectedBtn, selectedText, correctText, explanation) {
+            if (answered) return; 
+            answered = true;
+
+            const allOptions = document.querySelectorAll('.option');
+            
+            if (selectedText === correctText) {
+                selectedBtn.classList.add('correct');
+                score++;
+                document.getElementById('score-tracker').innerText = `Score: ${score}`;
+            } else {
+                selectedBtn.classList.add('incorrect');
+                allOptions.forEach(btn => {
+                    if (btn.innerText === correctText) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+
+            allOptions.forEach(btn => btn.classList.add('disabled'));
+
+            document.getElementById('explanation-text').innerText = explanation;
+            document.getElementById('explanation-box').classList.add('show');
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.innerText = (currentQuestionIndex === quizData.length - 1) ? "Finish Quiz" : "Next Question";
+            nextBtn.classList.add('show');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('progress-bar').style.width = `100%`;
+            document.getElementById('quiz-screen').style.display = 'none';
+            
+            const resultsScreen = document.getElementById('results-screen');
+            resultsScreen.classList.add('show');
+
+            document.getElementById('final-score').innerText = `${score}/${quizData.length}`;
+            
+            const messageEl = document.getElementById('results-message');
+            const percent = (score / quizData.length) * 100;
+            
+            if (percent >= 90) {
+                messageEl.innerText = "Fantastic! Your logical ordering skills are exceptional.";
+            } else if (percent >= 70) {
+                messageEl.innerText = "Great job! You have a solid grasp on logical sequences.";
+            } else if (percent >= 50) {
+                messageEl.innerText = "Good effort, but take a moment longer to analyze alphabetical sorting.";
+            } else {
+                messageEl.innerText = "Keep practicing! Carefully map out real-life processes and dictionary rules.";
+            }
+        }
+
+        // Start the quiz on load
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC CGL Verbal Series Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Amber/Orange Theme for Series */
+            --bg-color: #fffbeb;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --primary: #f59e0b;
+            --primary-hover: #d97706;
+            --correct: #10b981;
+            --incorrect: #ef4444;
+            --border: #f3f4f6;
+            --exp-bg: #fef3c7;
+            --exp-text: #92400e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            max-width: 750px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.15);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border);
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Question */
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            letter-spacing: 0.2px;
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            background: var(--card-bg);
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .option:hover:not(.disabled) {
+            background: #fffbeb;
+            border-color: #fcd34d;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+        }
+
+        .option.correct {
+            background: #d1fae5;
+            border-color: var(--correct);
+            color: #065f46;
+        }
+
+        .option.incorrect {
+            background: #fee2e2;
+            border-color: var(--incorrect);
+            color: #991b1b;
+        }
+
+        /* Explanation Box */
+        .explanation-box {
+            background: var(--exp-bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .explanation-box.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            color: var(--exp-text);
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .explanation-text {
+            color: var(--exp-text);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Controls */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s ease;
+            display: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .results-screen.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--exp-bg);
+            border: 6px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 auto 20px;
+        }
+
+        .results-message {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .results-subtext {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (min-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Quiz Screen -->
+        <div id="quiz-screen">
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="header">
+                <span id="question-tracker">Question 1 of 50</span>
+                <span id="score-tracker">Score: 0</span>
+            </div>
+
+            <div class="question-text" id="question-text">
+                Loading question...
+            </div>
+
+            <div class="options-grid" id="options-grid">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div class="explanation-box" id="explanation-box">
+                <div class="explanation-title">Logic / Pattern:</div>
+                <div class="explanation-text" id="explanation-text"></div>
+            </div>
+
+            <button class="btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="results-screen">
+            <div class="score-circle" id="final-score">0/50</div>
+            <div class="results-message" id="results-message">Great effort!</div>
+            <div class="results-subtext" id="results-subtext">You have completed the SSC CGL Series Quiz.</div>
+            <button class="btn show" onclick="restartQuiz()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // 50 SSC CGL Level Verbal & Number Series Questions
+        const rawQuestions = [
+            { q: "Find the next term in the series: 2, 5, 9, 14, 20, ?", options: ["25", "26", "27", "28"], a: "27", exp: "The differences between consecutive terms are +3, +4, +5, +6. The next difference will be +7. Therefore, 20 + 7 = 27." },
+            { q: "Find the next term in the series: 3, 7, 15, 31, 63, ?", options: ["127", "115", "131", "125"], a: "127", exp: "Pattern: (Previous number × 2) + 1. So, 63 × 2 + 1 = 127." },
+            { q: "Find the next term in the series: 10, 18, 28, 40, 54, 70, ?", options: ["85", "86", "87", "88"], a: "88", exp: "Differences are +8, +10, +12, +14, +16. The next difference is +18. So, 70 + 18 = 88." },
+            { q: "Find the next term in the series: 120, 99, 80, 63, 48, ?", options: ["35", "38", "39", "40"], a: "35", exp: "Pattern: (11^2)-1, (10^2)-1, (9^2)-1, (8^2)-1, (7^2)-1. Next is (6^2)-1 = 36 - 1 = 35." },
+            { q: "Find the next term in the series: 2, 10, 30, 68, ?", options: ["125", "130", "128", "135"], a: "130", exp: "Pattern: (1^3)+1, (2^3)+2, (3^3)+3, (4^3)+4. Next is (5^3)+5 = 125 + 5 = 130." },
+            { q: "Find the next term in the series: 7, 26, 63, 124, 215, 342, ?", options: ["391", "421", "511", "481"], a: "511", exp: "Pattern: (2^3)-1, (3^3)-1, (4^3)-1, (5^3)-1, (6^3)-1, (7^3)-1. Next is (8^3)-1 = 512 - 1 = 511." },
+            { q: "Find the next term in the series: 4, 9, 25, 49, 121, 169, ?", options: ["289", "225", "196", "256"], a: "289", exp: "These are squares of prime numbers: 2^2, 3^2, 5^2, 7^2, 11^2, 13^2. The next prime is 17, so 17^2 = 289." },
+            { q: "Find the next term in the series: 8, 28, 116, 584, ?", options: ["1752", "3504", "3508", "3512"], a: "3508", exp: "Pattern: ×3+4, ×4+4, ×5+4. Next is 584 × 6 + 4 = 3504 + 4 = 3508." },
+            { q: "Find the next term in the series: 5, 11, 24, 51, 106, ?", options: ["212", "215", "217", "221"], a: "217", exp: "Pattern: (×2)+1, (×2)+2, (×2)+3, (×2)+4. Next is 106 × 2 + 5 = 212 + 5 = 217." },
+            { q: "Find the next term in the series: 1, 1, 2, 6, 24, 120, ?", options: ["720", "540", "840", "600"], a: "720", exp: "Pattern: Factorials (or ×1, ×2, ×3, ×4, ×5). Next is 120 × 6 = 720." },
+            { q: "Find the next term in the series: A, C, F, H, K, M, ?", options: ["P", "O", "N", "Q"], a: "P", exp: "Pattern of forward shifts: +2, +3, +2, +3, +2, +3. M(+3) = P." },
+            { q: "Find the next term in the series: Z, X, V, T, R, ?", options: ["O", "P", "Q", "S"], a: "P", exp: "Pattern: -2 shift backwards in the alphabet. R(-2) = P." },
+            { q: "Find the next term in the series: B, E, I, N, T, ?", options: ["Y", "Z", "A", "B"], a: "A", exp: "Shifts: +3, +4, +5, +6. Next is +7. T(20) + 7 = 27, which wraps around to A (26+1)." },
+            { q: "Find the next term in the series: BDF, CFI, DHL, ?", options: ["EJO", "EJM", "EMI", "EKO"], a: "EJO", exp: "First letter: B,C,D,E (+1). Second letter: D,F,H,J (+2). Third letter: F,I,L,O (+3). Result: EJO." },
+            { q: "Find the next term in the series: QPO, NML, KJI, HGF, ?", options: ["EDC", "CDE", "DEF", "DCB"], a: "EDC", exp: "The series goes backwards in blocks of 3 consecutive letters. HGF minus 3 positions starts at E -> EDC." },
+            { q: "Find the next term in the series: Z, U, Q, ?, L", options: ["N", "O", "M", "P"], a: "N", exp: "Shifts: -5, -4, -3, -2. Z(-5)=U, U(-4)=Q, Q(-3)=N, N(-2)=L. Missing term is N." },
+            { q: "Find the next term in the series: C, Z, F, X, I, V, L, T, O, ?", options: ["S", "R", "Q", "P"], a: "R", exp: "Two alternating series. Series 1: C, F, I, L, O (+3). Series 2: Z, X, V, T, ? (-2). T(-2) = R." },
+            { q: "Find the next term in the series: A, B, D, G, K, ?", options: ["O", "P", "Q", "N"], a: "P", exp: "Shifts: +1, +2, +3, +4. Next is +5. K(11) + 5 = 16 (P)." },
+            { q: "Find the next term in the series: SCD, TEF, UGH, VIJ, ?", options: ["WKL", "WLM", "WJK", "VKM"], a: "WKL", exp: "First letter: S, T, U, V, W. Following letters are consecutive pairs: CD, EF, GH, IJ, KL. Result: WKL." },
+            { q: "Find the next term in the series: Q1F, S2E, U6D, W21C, ?", options: ["Y44B", "Y66B", "Y88B", "Z88B"], a: "Y88B", exp: "Letters: Q,S,U,W,Y (+2) and F,E,D,C,B (-1). Numbers: ×1+1=2, ×2+2=6, ×3+3=21. Next is 21×4+4 = 88. Result: Y88B." },
+            { q: "Find the next term in the series: 2Z5, 7Y7, 14X9, 23W11, 34V13, ?", options: ["47U15", "45U15", "47T15", "45V14"], a: "47U15", exp: "First number: differences are 5, 7, 9, 11. Next +13 -> 34+13=47. Letter: Z,Y,X,W,V,U (-1). Last number: 5,7,9,11,13,15 (+2). Result: 47U15." },
+            { q: "Find the next term in the series: W-144, U-121, S-100, Q-81, ?", options: ["O-64", "P-64", "O-49", "N-64"], a: "O-64", exp: "Letters: W, U, S, Q, O (-2). Numbers: 12^2, 11^2, 10^2, 9^2, 8^2 (64). Result: O-64." },
+            { q: "Find the next term in the series: 3F, 6G, 11I, 18L, ?", options: ["25P", "27P", "27Q", "29P"], a: "27P", exp: "Numbers: +3, +5, +7. Next is +9 -> 18+9 = 27. Letters: F,G,I,L (+1, +2, +3). Next is +4 -> L+4 = P. Result: 27P." },
+            { q: "Find the next term in the series: K M 5, I P 8, G S 11, E V 14, ?", options: ["C Y 17", "C X 17", "B Y 17", "C Y 18"], a: "C Y 17", exp: "First letter: K, I, G, E, C (-2). Second letter: M, P, S, V, Y (+3). Numbers: 5, 8, 11, 14, 17 (+3). Result: C Y 17." },
+            { q: "Find the next term in the series: C4X, F9U, I16R, ?", options: ["L25P", "L25O", "K25O", "L20O"], a: "L25O", exp: "First letter: C,F,I,L (+3). Numbers: 2^2, 3^2, 4^2, 5^2 (25). Last letter: X,U,R,O (-3). Result: L25O." },
+            { q: "Find the next term in the series: 2, A, 9, B, 6, C, 13, D, ?", options: ["9", "10", "11", "12"], a: "10", exp: "The numbers and letters alternate. Letters: A, B, C, D. Numbers: 2, 9, 6, 13 -> 2(+7)=9, 9(-3)=6, 6(+7)=13. Next is 13(-3) = 10." },
+            { q: "Find the next term in the series: P3C, R5F, T8I, V12L, ?", options: ["X17O", "X16O", "Y17O", "X17N"], a: "X17O", exp: "First letter: P,R,T,V,X (+2). Numbers: +2, +3, +4. Next +5 -> 12+5 = 17. Last letter: C,F,I,L,O (+3). Result: X17O." },
+            { q: "Find the next term in the series: N5V, K7T, H10R, E14P, ?", options: ["B19N", "C19N", "B18M", "B20N"], a: "B19N", exp: "First letter: N,K,H,E,B (-3). Numbers: +2, +3, +4, +5 -> 14+5 = 19. Last letter: V,T,R,P,N (-2). Result: B19N." },
+            { q: "Find the next term in the series: 8, 15, 28, 53, ?", options: ["106", "104", "102", "100"], a: "102", exp: "Pattern: (×2)-1, (×2)-2, (×2)-3. Next is 53 × 2 - 4 = 106 - 4 = 102." },
+            { q: "Find the next term in the series: 50, 49, 46, 41, 34, ?", options: ["27", "25", "23", "21"], a: "25", exp: "Differences are -1, -3, -5, -7. Next is -9. So, 34 - 9 = 25." },
+            { q: "Find the next term in the series: 2, 3, 5, 7, 11, 13, ?", options: ["15", "16", "17", "19"], a: "17", exp: "The series consists of consecutive prime numbers. The next prime after 13 is 17." },
+            { q: "Find the next term in the series: 1, 4, 27, 16, 125, 36, ?", options: ["343", "49", "216", "144"], a: "343", exp: "Alternating powers: 1^3, 2^2, 3^3, 4^2, 5^3, 6^2. The next term is 7^3 = 343." },
+            { q: "Find the next term in the series: 0, 6, 24, 60, 120, 210, ?", options: ["343", "336", "330", "342"], a: "336", exp: "Pattern is n^3 - n. 1^3-1=0, 2^3-2=6, 3^3-3=24... 7^3-7 = 343 - 7 = 336." },
+            { q: "Find the next term in the series: 4, 6, 12, 14, 28, 30, ?", options: ["32", "60", "62", "58"], a: "60", exp: "Operations alternate between +2 and ×2. 4(+2)=6, 6(×2)=12, 12(+2)=14, 14(×2)=28, 28(+2)=30. Next is 30(×2) = 60." },
+            { q: "Find the next term in the series: 2, 5, 11, 23, 47, ?", options: ["93", "94", "95", "96"], a: "95", exp: "Pattern: (Previous number × 2) + 1. So, 47 × 2 + 1 = 94 + 1 = 95." },
+            { q: "Find the next term in the series: 7, 8, 18, 57, 232, ?", options: ["1160", "1165", "1161", "1215"], a: "1165", exp: "Pattern: ×1+1, ×2+2, ×3+3, ×4+4. Next is 232 × 5 + 5 = 1160 + 5 = 1165." },
+            { q: "Find the next term in the series: 3, 12, 27, 48, 75, 108, ?", options: ["147", "162", "183", "192"], a: "147", exp: "Pattern is 3 × n^2. 3×(1^2)=3, 3×(2^2)=12... 3×(6^2)=108. Next is 3×(7^2) = 3×49 = 147." },
+            { q: "Find the next term in the series: 33, 321, 465, 537, 573, ?", options: ["590", "591", "589", "593"], a: "591", exp: "Differences are 288, 144, 72, 36. These are halving each time. Next difference is 18. So, 573 + 18 = 591." },
+            { q: "Find the next term in the series: AD, EH, IL, ?, QT", options: ["MP", "MO", "NP", "MQ"], a: "MP", exp: "Both letters shift by +4 each time. A(+4)=E, E(+4)=I, I(+4)=M. D(+4)=H, H(+4)=L, L(+4)=P. Result: MP." },
+            { q: "Find the next term in the series: BZA, DYC, FXE, ?, JVI", options: ["HWE", "HWF", "HWG", "HWJ"], a: "HWG", exp: "First: B,D,F,H,J (+2). Second: Z,Y,X,W,V (-1). Third: A,C,E,G,I (+2). Result: HWG." },
+            { q: "Find the next term in the series: DHL, PTX, BFJ, ?", options: ["NRV", "MSU", "NRU", "OSV"], a: "NRV", exp: "Shift each letter by +12. D(+12)=P, P(+12)=B, B(+12)=N. H(+12)=T, T(+12)=F, F(+12)=R. L(+12)=X, X(+12)=J, J(+12)=V. Result: NRV." },
+            { q: "Find the next term in the series: ELFA, GLHA, ILJA, ?, MLNA", options: ["KLLA", "KLMA", "KMLA", "LLKA"], a: "KLLA", exp: "1st letter: E,G,I,K,M. 2nd letter is always L. 3rd letter: F,H,J,L,N. 4th letter is always A. Result: KLLA." },
+            { q: "Find the next term in the series: WFB, TGD, QHG, ?", options: ["NIK", "NJK", "NIJ", "MIK"], a: "NIK", exp: "1st letter: W,T,Q,N (-3). 2nd letter: F,G,H,I (+1). 3rd letter: B(+2)=D, D(+3)=G, G(+4)=K. Result: NIK." },
+            { q: "Find the next term in the series: MACROMOLECULE, ACROMOLECUL, CROMOLECU, ?", options: ["ROMOLEC", "ROMOLECU", "CROMOLEC", "ROMOLCU"], a: "ROMOLEC", exp: "In each step, the first and last letters of the word are removed." },
+            { q: "Find the next term in the series: A, CD, GHI, MNOP, ?", options: ["STUVW", "UVWXY", "TUVWX", "VWXYZ"], a: "UVWXY", exp: "Lengths are 1, 2, 3, 4, 5. Starting letters: A=1, C=3, G=7, M=13. Differences are 2, 4, 6. Next is 13+8 = 21 (U). The 5-letter sequence is UVWXY." },
+            { q: "Find the next term in the series: Z, S, W, O, T, K, Q, G, ?, ?", options: ["N, C", "N, D", "M, C", "O, B"], a: "N, C", exp: "Two alternating series. Series 1: Z, W, T, Q, N (-3). Series 2: S, O, K, G, C (-4). Result is N, C." },
+            { q: "Find the next term in the series: BMO, EOQ, HQS, ?", options: ["KSU", "KST", "JSU", "KTV"], a: "KSU", exp: "1st letter: B,E,H,K (+3). 2nd letter: M,O,Q,S (+2). 3rd letter: O,Q,S,U (+2). Result: KSU." },
+            { q: "Find the next term in the series: 2A11, 4D13, 12G17, ?", options: ["36J19", "48J19", "48J23", "48K19"], a: "48J19", exp: "1st number: ×2, ×3, ×4 -> 12×4=48. Letter: A,D,G,J (+3). Last number: Primes 11,13,17,19. Result: 48J19." },
+            { q: "Find the next term in the series: 5, 6, 9, 15, ?, 40", options: ["21", "25", "27", "24"], a: "24", exp: "Differences are +1, +3, +6. The next difference is +9 (triangular numbers 1,3,6,9). 15 + 9 = 24." },
+            { q: "Find the next term in the series: 1, 2, 6, 21, ?, 445", options: ["84", "86", "88", "90"], a: "88", exp: "Pattern: ×1+1, ×2+2, ×3+3, ×4+4. 21 × 4 + 4 = 84 + 4 = 88." }
+        ];
+
+        let quizData = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        // Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            // Shuffle exactly the 50 questions
+            quizData = shuffleArray(rawQuestions).slice(0, 50);
+            
+            document.getElementById('results-screen').classList.remove('show');
+            document.getElementById('quiz-screen').style.display = 'block';
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const currentQ = quizData[currentQuestionIndex];
+            
+            document.getElementById('question-tracker').innerText = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
+            document.getElementById('score-tracker').innerText = `Score: ${score}`;
+            
+            const progressPercent = ((currentQuestionIndex) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            document.getElementById('question-text').innerText = currentQ.q;
+
+            const optionsGrid = document.getElementById('options-grid');
+            optionsGrid.innerHTML = ''; 
+            
+            const shuffledOptions = shuffleArray(currentQ.options);
+            
+            shuffledOptions.forEach(opt => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.innerText = opt;
+                button.onclick = () => selectOption(button, opt, currentQ.a, currentQ.exp);
+                optionsGrid.appendChild(button);
+            });
+
+            document.getElementById('explanation-box').classList.remove('show');
+            document.getElementById('next-btn').classList.remove('show');
+        }
+
+        function selectOption(selectedBtn, selectedText, correctText, explanation) {
+            if (answered) return; 
+            answered = true;
+
+            const allOptions = document.querySelectorAll('.option');
+            
+            if (selectedText === correctText) {
+                selectedBtn.classList.add('correct');
+                score++;
+                document.getElementById('score-tracker').innerText = `Score: ${score}`;
+            } else {
+                selectedBtn.classList.add('incorrect');
+                allOptions.forEach(btn => {
+                    if (btn.innerText === correctText) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+
+            allOptions.forEach(btn => btn.classList.add('disabled'));
+
+            document.getElementById('explanation-text').innerText = explanation;
+            document.getElementById('explanation-box').classList.add('show');
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.innerText = (currentQuestionIndex === quizData.length - 1) ? "Finish Quiz" : "Next Question";
+            nextBtn.classList.add('show');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('progress-bar').style.width = `100%`;
+            document.getElementById('quiz-screen').style.display = 'none';
+            
+            const resultsScreen = document.getElementById('results-screen');
+            resultsScreen.classList.add('show');
+
+            document.getElementById('final-score').innerText = `${score}/${quizData.length}`;
+            
+            const messageEl = document.getElementById('results-message');
+            const percent = (score / quizData.length) * 100;
+            
+            if (percent >= 90) {
+                messageEl.innerText = "Phenomenal! Your pattern recognition is elite.";
+            } else if (percent >= 70) {
+                messageEl.innerText = "Great job! You caught most of the tricky patterns.";
+            } else if (percent >= 50) {
+                messageEl.innerText = "Good effort. Keep practicing alternating and mixed series.";
+            } else {
+                messageEl.innerText = "Keep going! Master your squares, cubes, and prime numbers to spot patterns faster.";
+            }
+        }
+
+        // Start the quiz on load
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>

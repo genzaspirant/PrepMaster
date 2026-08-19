@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC CGL Verbal Classification Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Indigo theme for Classification */
+            --bg-color: #f5f3ff;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --correct: #10b981;
+            --incorrect: #ef4444;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            max-width: 700px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.1);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border);
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Question */
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .question-subtext {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+        }
+
+        .option:hover:not(.disabled) {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+        }
+
+        .option.correct {
+            background: #ecfdf5;
+            border-color: var(--correct);
+            color: #065f46;
+        }
+
+        .option.incorrect {
+            background: #fef2f2;
+            border-color: var(--incorrect);
+            color: #991b1b;
+        }
+
+        /* Explanation Box */
+        .explanation-box {
+            background: #eef2ff;
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .explanation-box.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            color: #3730a3;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .explanation-text {
+            color: #312e81;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Controls */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s ease;
+            display: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .results-screen.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #eef2ff;
+            border: 6px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 auto 20px;
+        }
+
+        .results-message {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .results-subtext {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (min-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Quiz Screen -->
+        <div id="quiz-screen">
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="header">
+                <span id="question-tracker">Question 1 of 50</span>
+                <span id="score-tracker">Score: 0</span>
+            </div>
+
+            <div class="question-text" id="question-text">
+                Find the odd word out:
+            </div>
+            <div class="question-subtext">Select the option that does not belong to the group.</div>
+
+            <div class="options-grid" id="options-grid">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div class="explanation-box" id="explanation-box">
+                <div class="explanation-title">Explanation:</div>
+                <div class="explanation-text" id="explanation-text"></div>
+            </div>
+
+            <button class="btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="results-screen">
+            <div class="score-circle" id="final-score">0/50</div>
+            <div class="results-message" id="results-message">Great effort!</div>
+            <div class="results-subtext" id="results-subtext">You have completed the SSC CGL Classification Quiz.</div>
+            <button class="btn show" onclick="restartQuiz()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // 50 SSC CGL Level Verbal Classification (Odd One Out) Questions
+        const rawQuestions = [
+            { options: ["Brass", "Copper", "Zinc", "Iron"], a: "Brass", exp: "Brass is an alloy (mixture of copper and zinc), whereas Copper, Zinc, and Iron are pure elements/metals." },
+            { options: ["Tomato", "Carrot", "Potato", "Onion"], a: "Tomato", exp: "A tomato grows above the ground on vines/plants, whereas carrots, potatoes, and onions grow underground (roots/tubers)." },
+            { options: ["Flute", "Guitar", "Sitar", "Violin"], a: "Flute", exp: "A flute is a wind instrument. Guitar, Sitar, and Violin are all string instruments." },
+            { options: ["Earth", "Moon", "Venus", "Mars"], a: "Moon", exp: "The Moon is a natural satellite, whereas Earth, Venus, and Mars are planets in our solar system." },
+            { options: ["Yen", "Lira", "Ounce", "Dollar"], a: "Ounce", exp: "Ounce is a unit of weight. Yen, Lira, and Dollar are currencies of different countries." },
+            { options: ["Lion", "Tiger", "Fox", "Leopard"], a: "Fox", exp: "Lion, Tiger, and Leopard belong to the cat family (Felidae). A fox belongs to the dog family (Canidae)." },
+            { options: ["November", "April", "June", "August"], a: "August", exp: "August has 31 days, while November, April, and June all have exactly 30 days." },
+            { options: ["Geometry", "Algebra", "Trigonometry", "Mathematics"], a: "Mathematics", exp: "Mathematics is the broad subject field. Geometry, Algebra, and Trigonometry are specific branches of Mathematics." },
+            { options: ["Volume", "Size", "Large", "Shape"], a: "Large", exp: "Large is an adjective describing a dimension. Volume, Size, and Shape are nouns representing physical properties." },
+            { options: ["Kidney", "Heart", "Lungs", "Eye"], a: "Eye", exp: "The eye is an external sense organ, whereas the kidney, heart, and lungs are internal organs." },
+            { options: ["Square", "Circle", "Rectangle", "Triangle"], a: "Circle", exp: "A circle is bounded by a continuous curve. Squares, rectangles, and triangles are bounded by straight lines." },
+            { options: ["Whale", "Shark", "Dolphin", "Seal"], a: "Shark", exp: "A shark is a fish that breathes through gills. Whales, dolphins, and seals are aquatic mammals that breathe air using lungs." },
+            { options: ["Enormous", "Gigantic", "Tiny", "Huge"], a: "Tiny", exp: "Enormous, Gigantic, and Huge are synonyms meaning very large. Tiny means very small, making it the antonym and the odd one out." },
+            { options: ["Physics", "Chemistry", "Biology", "Geography"], a: "Geography", exp: "Physics, Chemistry, and Biology are branches of Natural Sciences. Geography belongs to Earth Sciences/Social Sciences." },
+            { options: ["Paris", "London", "Spain", "Rome"], a: "Spain", exp: "Spain is a country. Paris, London, and Rome are capital cities of countries." },
+            { options: ["Bicycle", "Motorcycle", "Car", "Bus"], a: "Bicycle", exp: "A bicycle is human-powered. Motorcycles, cars, and buses require an engine and fuel to run." },
+            { options: ["Cholera", "Tetanus", "Typhoid", "Measles"], a: "Measles", exp: "Measles is a viral disease. Cholera, Tetanus, and Typhoid are caused by bacteria." },
+            { options: ["Diamond", "Ruby", "Emerald", "Granite"], a: "Granite", exp: "Diamond, Ruby, and Emerald are precious gemstones. Granite is a common igneous rock." },
+            { options: ["Carpenter", "Tailor", "Barber", "Blacksmith"], a: "Barber", exp: "A barber provides a service (cutting hair). Carpenters, tailors, and blacksmiths manufacture or craft physical products from raw materials." },
+            { options: ["Meter", "Liter", "Kilogram", "Time"], a: "Time", exp: "Time is a physical quantity. Meter, Liter, and Kilogram are units used to measure physical quantities." },
+            { options: ["Mercury", "Gold", "Silver", "Copper"], a: "Mercury", exp: "Mercury is a liquid metal at room temperature. Gold, Silver, and Copper are solid metals." },
+            { options: ["New Delhi", "Beijing", "Tokyo", "New York"], a: "New York", exp: "New Delhi, Beijing, and Tokyo are capital cities. New York is a major city but not the capital of the USA (Washington D.C. is)." },
+            { options: ["Ostrich", "Penguin", "Kiwi", "Eagle"], a: "Eagle", exp: "An eagle is a flying bird. Ostriches, penguins, and kiwis are flightless birds." },
+            { options: ["Hindi", "Tamil", "Punjabi", "Urdu"], a: "Urdu", exp: "Hindi, Tamil, and Punjabi are traditionally written from left to right. Urdu is written from right to left." },
+            { options: ["Cabbage", "Spinach", "Lettuce", "Turnip"], a: "Turnip", exp: "Turnip is a root vegetable. Cabbage, Spinach, and Lettuce are leafy vegetables." },
+            { options: ["Rifle", "Sword", "Pistol", "Gun"], a: "Sword", exp: "A sword is a bladed melee weapon. Rifles, pistols, and guns are firearms." },
+            { options: ["Snake", "Lizard", "Turtle", "Frog"], a: "Frog", exp: "A frog is an amphibian. Snakes, lizards, and turtles are reptiles." },
+            { options: ["Lake", "River", "Sea", "Pond"], a: "River", exp: "A river consists of continuously flowing/moving water. Lakes, seas, and ponds contain mostly still or standing water." },
+            { options: ["Table", "Chair", "Bench", "Wood"], a: "Wood", exp: "Wood is the raw material. Tables, chairs, and benches are finished pieces of furniture made from wood." },
+            { options: ["Happy", "Joyful", "Sad", "Cheerful"], a: "Sad", exp: "Happy, Joyful, and Cheerful are positive emotions (synonyms). Sad is a negative emotion (antonym)." },
+            { options: ["Apple", "Mango", "Potato", "Orange"], a: "Potato", exp: "Potato is a vegetable that grows underground. Apple, Mango, and Orange are fruits." },
+            { options: ["Asia", "Argentina", "Africa", "Australia"], a: "Argentina", exp: "Argentina is a country in South America. Asia, Africa, and Australia are continents." },
+            { options: ["Curd", "Butter", "Oil", "Cheese"], a: "Oil", exp: "Curd, Butter, and Cheese are all dairy products derived from milk. Oil is extracted from seeds/plants or animal fat." },
+            { options: ["Sparrow", "Swan", "Parrot", "Pigeon"], a: "Swan", exp: "A swan is a water bird. Sparrows, parrots, and pigeons are terrestrial/tree-dwelling birds." },
+            { options: ["Brick", "Cement", "Sand", "Wall"], a: "Wall", exp: "Brick, cement, and sand are raw materials used in construction. A wall is the final constructed product." },
+            { options: ["Boat", "Ferry", "Submarine", "Ship"], a: "Submarine", exp: "A submarine travels underwater. Boats, ferries, and ships travel on the surface of the water." },
+            { options: ["Pen", "Pencil", "Chalk", "Book"], a: "Book", exp: "Pen, pencil, and chalk are tools used for writing. A book is what you read or write upon." },
+            { options: ["Nose", "Ear", "Eye", "Throat"], a: "Throat", exp: "Nose, ear, and eye are external sense organs. The throat is an internal part of the anatomy." },
+            { options: ["Aluminium", "Iron", "Carbon", "Copper"], a: "Carbon", exp: "Carbon is a non-metal element. Aluminium, Iron, and Copper are metals." },
+            { options: ["Kathak", "Bhangra", "Kuchipudi", "Bharatanatyam"], a: "Bhangra", exp: "Kathak, Kuchipudi, and Bharatanatyam are Indian classical dances. Bhangra is a folk dance from Punjab." },
+            { options: ["Rigveda", "Yajurveda", "Atharvaveda", "Ayurveda"], a: "Ayurveda", exp: "Rigveda, Yajurveda, and Atharvaveda are ancient Hindu religious texts (Vedas). Ayurveda is a traditional system of medicine." },
+            { options: ["Mahanadi", "Cauvery", "Narmada", "Krishna"], a: "Narmada", exp: "The Narmada river flows westward into the Arabian Sea. Mahanadi, Cauvery, and Krishna flow eastward into the Bay of Bengal." },
+            { options: ["Jute", "Cotton", "Wool", "Nylon"], a: "Nylon", exp: "Nylon is a synthetic, man-made fiber. Jute, cotton, and wool are natural fibers." },
+            { options: ["Radish", "Ginger", "Turmeric", "Cabbage"], a: "Cabbage", exp: "Cabbage is a leafy vegetable that grows above ground. Radish, ginger, and turmeric grow underground." },
+            { options: ["Pound", "Franc", "Yen", "Pint"], a: "Pint", exp: "A pint is a unit of volume/liquid measurement. Pound, Franc, and Yen are currencies." },
+            { options: ["Socrates", "Plato", "Aristotle", "Alexander"], a: "Alexander", exp: "Socrates, Plato, and Aristotle were famous ancient Greek philosophers. Alexander (the Great) was a king and military conqueror." },
+            { options: ["Chess", "Carrom", "Ludo", "Tennis"], a: "Tennis", exp: "Tennis is an outdoor sport played on a court. Chess, Carrom, and Ludo are indoor board games." },
+            { options: ["Thermometer", "Barometer", "Hygrometer", "Diameter"], a: "Diameter", exp: "Thermometer, Barometer, and Hygrometer are scientific measuring instruments. Diameter is a geometric property of a circle." },
+            { options: ["Jupiter", "Uranus", "Pluto", "Saturn"], a: "Pluto", exp: "Pluto is classified as a dwarf planet. Jupiter, Uranus, and Saturn are major planets in our solar system." },
+            { options: ["Baker", "Cobbler", "Mason", "Teacher"], a: "Teacher", exp: "A teacher imparts knowledge (service). Baker, Cobbler, and Mason are artisans/tradesmen who create physical goods (bread, shoes, structures)." }
+        ];
+
+        let quizData = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        // Utility function to shuffle an array (Fisher-Yates)
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initQuiz() {
+            // Reset state
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            // Shuffle questions
+            quizData = shuffleArray(rawQuestions);
+            
+            // Hide results, show quiz
+            document.getElementById('results-screen').classList.remove('show');
+            document.getElementById('quiz-screen').style.display = 'block';
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const currentQ = quizData[currentQuestionIndex];
+            
+            // Update UI Trackers
+            document.getElementById('question-tracker').innerText = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
+            document.getElementById('score-tracker').innerText = `Score: ${score}`;
+            
+            // Update Progress Bar
+            const progressPercent = ((currentQuestionIndex) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            // Shuffle and Render Options
+            const optionsGrid = document.getElementById('options-grid');
+            optionsGrid.innerHTML = ''; // Clear previous
+            
+            const shuffledOptions = shuffleArray(currentQ.options);
+            
+            shuffledOptions.forEach(opt => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.innerText = opt;
+                button.onclick = () => selectOption(button, opt, currentQ.a, currentQ.exp);
+                optionsGrid.appendChild(button);
+            });
+
+            // Reset Explanation and Next Button
+            const expBox = document.getElementById('explanation-box');
+            expBox.classList.remove('show');
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.classList.remove('show');
+        }
+
+        function selectOption(selectedBtn, selectedText, correctText, explanation) {
+            if (answered) return; // Prevent multiple clicks
+            answered = true;
+
+            const allOptions = document.querySelectorAll('.option');
+            
+            // Evaluate correctness
+            if (selectedText === correctText) {
+                selectedBtn.classList.add('correct');
+                score++;
+                document.getElementById('score-tracker').innerText = `Score: ${score}`;
+            } else {
+                selectedBtn.classList.add('incorrect');
+                // Highlight the correct one
+                allOptions.forEach(btn => {
+                    if (btn.innerText === correctText) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+
+            // Disable all options
+            allOptions.forEach(btn => {
+                btn.classList.add('disabled');
+            });
+
+            // Show Explanation
+            document.getElementById('explanation-text').innerText = explanation;
+            document.getElementById('explanation-box').classList.add('show');
+
+            // Show Next Button
+            const nextBtn = document.getElementById('next-btn');
+            if (currentQuestionIndex === quizData.length - 1) {
+                nextBtn.innerText = "Finish Quiz";
+            } else {
+                nextBtn.innerText = "Next Question";
+            }
+            nextBtn.classList.add('show');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            // Final update to progress bar
+            document.getElementById('progress-bar').style.width = `100%`;
+            
+            // Hide quiz, show results
+            document.getElementById('quiz-screen').style.display = 'none';
+            const resultsScreen = document.getElementById('results-screen');
+            resultsScreen.classList.add('show');
+
+            // Set results data
+            document.getElementById('final-score').innerText = `${score}/${quizData.length}`;
+            
+            const messageEl = document.getElementById('results-message');
+            const percent = (score / quizData.length) * 100;
+            
+            if (percent >= 90) {
+                messageEl.innerText = "Exceptional! Your logical grouping skills are top-notch.";
+            } else if (percent >= 70) {
+                messageEl.innerText = "Great job! You have a solid grasp of classification concepts.";
+            } else if (percent >= 50) {
+                messageEl.innerText = "Good effort, but pay closer attention to categories and properties.";
+            } else {
+                messageEl.innerText = "Keep practicing! Review basic science, geography, and vocabulary rules.";
+            }
+        }
+
+        function restartQuiz() {
+            initQuiz();
+        }
+
+        // Start the quiz on load
+        window.onload = initQuiz;
+
+    </script>
+</body>
+</html>

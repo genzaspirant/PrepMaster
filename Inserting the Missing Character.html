@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC CGL Missing Character Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Emerald/Green Theme */
+            --bg-color: #f0fdf4;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --correct: #059669;
+            --incorrect: #ef4444;
+            --border: #d1fae5;
+            --exp-bg: #ecfdf5;
+            --exp-text: #064e3b;
+            --matrix-bg: #f2fbf7;
+            --matrix-border: #6ee7b7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            max-width: 780px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.15);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Question & Matrix Grid */
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #111827;
+            text-align: center;
+        }
+        
+        .matrix-container {
+            display: inline-flex;
+            flex-direction: column;
+            background: var(--matrix-bg);
+            border: 2px solid var(--matrix-border);
+            border-radius: 10px;
+            padding: 20px 30px;
+            margin: 15px auto;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .matrix-row {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin-bottom: 12px;
+        }
+
+        .matrix-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .matrix-row span {
+            width: 35px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--exp-text);
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            background: var(--card-bg);
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+        }
+
+        .option:hover:not(.disabled) {
+            background: #f0fdf4;
+            border-color: #a7f3d0;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+        }
+
+        .option.correct {
+            background: #d1fae5;
+            border-color: var(--correct);
+            color: #065f46;
+        }
+
+        .option.incorrect {
+            background: #fee2e2;
+            border-color: var(--incorrect);
+            color: #991b1b;
+        }
+
+        /* Explanation Box */
+        .explanation-box {
+            background: var(--exp-bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .explanation-box.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            color: var(--exp-text);
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .explanation-text {
+            color: var(--exp-text);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Controls */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s ease;
+            display: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .results-screen.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--exp-bg);
+            border: 6px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 auto 20px;
+        }
+
+        .results-message {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .results-subtext {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            .matrix-row {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Quiz Screen -->
+        <div id="quiz-screen">
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="header">
+                <span id="question-tracker">Question 1 of 50</span>
+                <span id="score-tracker">Score: 0</span>
+            </div>
+
+            <div class="question-text" id="question-text">
+                Loading question...
+            </div>
+
+            <div class="options-grid" id="options-grid">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div class="explanation-box" id="explanation-box">
+                <div class="explanation-title">Logic / Explanation:</div>
+                <div class="explanation-text" id="explanation-text"></div>
+            </div>
+
+            <button class="btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="results-screen">
+            <div class="score-circle" id="final-score">0/50</div>
+            <div class="results-message" id="results-message">Great effort!</div>
+            <div class="results-subtext" id="results-subtext">You have completed the Missing Character Quiz.</div>
+            <button class="btn show" onclick="restartQuiz()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Helper function to render matrices beautifully
+        function renderMatrix(grid) {
+            let html = '<div class="matrix-container">';
+            grid.forEach(row => {
+                html += '<div class="matrix-row">';
+                row.forEach(val => {
+                    html += `<span>${val}</span>`;
+                });
+                html += '</div>';
+            });
+            html += '</div>';
+            return html;
+        }
+
+        const buildQ = (text, grid, options, answer, exp) => ({
+            q: `${text}<br>${renderMatrix(grid)}`,
+            options, a: answer, exp
+        });
+
+        const defaultPrompt = "Find the missing character in the given matrix:";
+
+        // 50 SSC CGL Level Matrix Logic Questions
+        const rawQuestions = [
+            // Row Logic: A * B = C
+            buildQ(defaultPrompt, [[5,4,20], [8,3,24], [9,"?",63]], ["6", "7", "8", "9"], "7", "In each row: First Number × Second Number = Third Number. Row 3: 9 × 7 = 63."),
+            buildQ(defaultPrompt, [[12,5,60], [14,"?",84], [15,6,90]], ["5", "6", "7", "8"], "6", "In each row: First Number × Second Number = Third Number. Row 2: 14 × 6 = 84."),
+            buildQ(defaultPrompt, [["?",8,96], [11,7,77], [13,9,117]], ["10", "11", "12", "14"], "12", "In each row: First Number × Second Number = Third Number. Row 1: 12 × 8 = 96."),
+            
+            // Col Logic: A^2 + B^2 = C
+            buildQ(defaultPrompt, [[2,3,4], [3,4,5], [13,25,"?"]], ["39", "40", "41", "42"], "41", "In each column: (First Number)² + (Second Number)² = Third Number. Col 3: 4² + 5² = 16 + 25 = 41."),
+            buildQ(defaultPrompt, [[1,5,6], [2,2,"?"], [5,29,85]], ["5", "6", "7", "8"], "7", "In each column: (First Number)² + (Second Number)² = Third Number. Col 3: 6² + 7² = 36 + 49 = 85."),
+            buildQ(defaultPrompt, [[4,7,2], [5,"?",3], [41,58,13]], ["2", "3", "4", "5"], "3", "In each column: (First Number)² + (Second Number)² = Third Number. Col 2: 7² + 3² = 49 + 9 = 58."),
+            
+            // Row Logic: (A + B) * 2 = C
+            buildQ(defaultPrompt, [[6,4,20], [7,5,24], [8,6,"?"]], ["26", "28", "30", "32"], "28", "In each row: (First Number + Second Number) × 2 = Third Number. Row 3: (8 + 6) × 2 = 28."),
+            buildQ(defaultPrompt, [[11,9,40], ["?",12,54], [14,15,58]], ["13", "14", "15", "16"], "15", "In each row: (First Number + Second Number) × 2 = Third Number. Row 2: (15 + 12) × 2 = 54."),
+            
+            // Row Logic: (A - B) * 3 = C
+            buildQ(defaultPrompt, [[15,9,18], [22,16,18], [31,"?",27]], ["20", "21", "22", "23"], "22", "In each row: (First Number - Second Number) × 3 = Third Number. Row 3: (31 - 22) × 3 = 27."),
+            buildQ(defaultPrompt, [[18,11,21], [35,25,30], [24,14,"?"]], ["28", "30", "32", "34"], "30", "In each row: (First Number - Second Number) × 3 = Third Number. Row 3: (24 - 14) × 3 = 30."),
+            
+            // Row Logic: A^2 - B = C
+            buildQ(defaultPrompt, [[5,4,21], [8,15,49], [9,"?",71]], ["8", "10", "12", "14"], "10", "In each row: (First Number)² - Second Number = Third Number. Row 3: 9² - 10 = 81 - 10 = 71."),
+            buildQ(defaultPrompt, [[7,12,37], [6,"?",26], [10,45,55]], ["9", "10", "11", "12"], "10", "In each row: (First Number)² - Second Number = Third Number. Row 2: 6² - 10 = 36 - 10 = 26."),
+            
+            // Col Logic: Constant Sum
+            buildQ(defaultPrompt, [[12,17,16], [18,14,13], [15,14,"?"]], ["15", "16", "17", "18"], "16", "The sum of all numbers in each column is exactly 45. Col 3: 16 + 13 + 16 = 45."),
+            buildQ(defaultPrompt, [[25,21,29], [22,"?",20], [28,27,26]], ["25", "26", "27", "28"], "27", "The sum of all numbers in each column is exactly 75. Col 2: 21 + 27 + 27 = 75."),
+            
+            // Row Logic: A * B + B = C
+            buildQ(defaultPrompt, [[5,4,24], [7,6,48], [9,8,"?"]], ["72", "80", "84", "90"], "80", "In each row: (First × Second) + Second = Third. Row 3: (9 × 8) + 8 = 72 + 8 = 80."),
+            buildQ(defaultPrompt, [[6,5,35], [8,7,63], [10,"?",99]], ["7", "8", "9", "11"], "9", "In each row: (First × Second) + Second = Third. Row 3: (10 × 9) + 9 = 99."),
+            
+            // Col Logic: (A + B) / 2 = C
+            buildQ(defaultPrompt, [[18,24,32], [26,"?",48], [22,30,40]], ["34", "36", "38", "40"], "36", "In each column: (Top Number + Middle Number) ÷ 2 = Bottom Number. Col 2: (24 + 36) ÷ 2 = 30."),
+            buildQ(defaultPrompt, [[14,42,68], [38,26,"?"], [26,34,50]], ["30", "32", "34", "36"], "32", "In each column: (Top + Middle) ÷ 2 = Bottom. Col 3: (68 + 32) ÷ 2 = 50."),
+            
+            // Row Logic: A * (A - B) = C
+            buildQ(defaultPrompt, [[8,5,24], [12,10,24], [15,"?",60]], ["10", "11", "12", "13"], "11", "In each row: First Number × (First - Second) = Third. Row 3: 15 × (15 - 11) = 15 × 4 = 60."),
+            buildQ(defaultPrompt, [[9,4,45], [7,2,35], ["?",6,40]], ["8", "9", "10", "12"], "10", "In each row: First Number × (First - Second) = Third. Row 3: 10 × (10 - 6) = 10 × 4 = 40."),
+            
+            // Col Logic: 2A + B = C
+            buildQ(defaultPrompt, [[7,9,11], [14,18,22], [28,36,"?"]], ["40", "42", "44", "46"], "44", "In each column: 2 × (Top Number) + Middle Number = Bottom Number. Col 3: (2 × 11) + 22 = 44."),
+            buildQ(defaultPrompt, [[5,8,12], [20,"?",18], [30,48,42]], ["30", "32", "34", "36"], "32", "In each column: 2 × (Top) + Middle = Bottom. Col 2: (2 × 8) + 32 = 48."),
+            
+            // Row Logic: A^3 + B = C
+            buildQ(defaultPrompt, [[3,5,32], [4,7,71], [5,"?",134]], ["7", "8", "9", "10"], "9", "In each row: (First Number)³ + Second Number = Third. Row 3: 5³ + 9 = 125 + 9 = 134."),
+            buildQ(defaultPrompt, [[2,12,20], ["?",15,79], [1,25,26]], ["3", "4", "5", "6"], "4", "In each row: (First Number)³ + Second Number = Third. Row 2: 4³ + 15 = 64 + 15 = 79."),
+            
+            // Row Logic: 2A + 3B = C
+            buildQ(defaultPrompt, [[5,4,22], [7,5,29], [9,6,"?"]], ["34", "35", "36", "38"], "36", "In each row: 2 × (First Number) + 3 × (Second Number) = Third. Row 3: (2 × 9) + (3 × 6) = 18 + 18 = 36."),
+            buildQ(defaultPrompt, [[8,2,22], [6,"?",21], [4,7,29]], ["2", "3", "4", "5"], "3", "In each row: 2 × (First Number) + 3 × (Second Number) = Third. Row 2: (2 × 6) + (3 × 3) = 12 + 9 = 21."),
+            
+            // Row Logic: sqrt(A) + sqrt(B) = C
+            buildQ(defaultPrompt, [[36,64,14], [81,25,14], [49,"?",16]], ["64", "81", "100", "121"], "81", "In each row: √First + √Second = Third. Row 3: √49 + √81 = 7 + 9 = 16."),
+            buildQ(defaultPrompt, [[16,9,7], [100,36,16], ["?",4,11]], ["49", "64", "81", "100"], "81", "In each row: √First + √Second = Third. Row 3: √81 + √4 = 9 + 2 = 11."),
+            
+            // Col Logic (4x3): A * B / C = D
+            buildQ(defaultPrompt, [[6,9,15], [8,12,10], [3,4,"?"], [16,27,30]], ["4", "5", "6", "8"], "5", "In each column: (Row 1 × Row 2) ÷ Row 3 = Row 4. Col 3: (15 × 10) ÷ 5 = 150 ÷ 5 = 30."),
+            buildQ(defaultPrompt, [[12,18,16], [5,6,9], [4,3,"?"], [15,36,24]], ["4", "5", "6", "8"], "6", "In each column: (Row 1 × Row 2) ÷ Row 3 = Row 4. Col 3: (16 × 9) ÷ 6 = 144 ÷ 6 = 24."),
+            
+            // Row Logic: Constant Sum
+            buildQ(defaultPrompt, [[23,27,30], [32,"?",20], [25,29,26]], ["26", "27", "28", "29"], "28", "The sum of all numbers in each row is exactly 80. Row 2: 32 + 28 + 20 = 80."),
+            
+            // Col Logic: A^2 - B^2 = C
+            buildQ(defaultPrompt, [[9,11,13], [5,8,12], [56,57,"?"]], ["21", "25", "27", "30"], "25", "In each column: (Top)² - (Middle)² = Bottom. Col 3: 13² - 12² = 169 - 144 = 25."),
+            buildQ(defaultPrompt, [[12,15,8], [7,"?",6], [95,161,28]], ["7", "8", "9", "10"], "8", "In each column: (Top)² - (Middle)² = Bottom. Col 2: 15² - 8² = 225 - 64 = 161."),
+            
+            // Row Logic: A * B = 10 * C
+            buildQ(defaultPrompt, [[15,4,6], [25,8,20], [35,6,"?"]], ["18", "20", "21", "24"], "21", "In each row: First × Second = 10 × Third. Row 3: 35 × 6 = 210, which is 10 × 21."),
+            buildQ(defaultPrompt, [["?",15,12], [16,25,40], [24,5,12]], ["6", "7", "8", "9"], "8", "In each row: First × Second = 10 × Third. Row 1: 8 × 15 = 120, which is 10 × 12."),
+            
+            // Col Logic: A + B = 3 * C
+            buildQ(defaultPrompt, [[18,24,30], [15,27,"?"], [11,17,25]], ["40", "42", "45", "48"], "45", "In each column: Top + Middle = 3 × Bottom. Col 3: 30 + 45 = 75, which is 3 × 25."),
+            buildQ(defaultPrompt, [[12,19,26], [24,11,"?"], [12,10,16]], ["20", "22", "24", "26"], "22", "In each column: Top + Middle = 3 × Bottom. Col 3: 26 + 22 = 48, which is 3 × 16."),
+            
+            // Row Logic: (A + B)^2 = C
+            buildQ(defaultPrompt, [[3,4,49], [5,2,49], [6,"?",100]], ["3", "4", "5", "6"], "4", "In each row: (First + Second)² = Third. Row 3: (6 + 4)² = 10² = 100."),
+            buildQ(defaultPrompt, [[1,7,64], ["?",5,121], [8,1,81]], ["4", "5", "6", "7"], "6", "In each row: (First + Second)² = Third. Row 2: (6 + 5)² = 11² = 121."),
+            
+            // Col Logic: 3A - B = C
+            buildQ(defaultPrompt, [[9,12,15], [8,14,20], [19,22,"?"]], ["23", "24", "25", "26"], "25", "In each column: 3 × (Top) - Middle = Bottom. Col 3: (3 × 15) - 20 = 45 - 20 = 25."),
+            buildQ(defaultPrompt, [[7,11,16], [5,9,"?"], [16,24,34]], ["12", "13", "14", "15"], "14", "In each column: 3 × (Top) - Middle = Bottom. Col 3: (3 × 16) - 14 = 48 - 14 = 34."),
+            
+            // Row Logic: A^2 + B^2 = C^2 (Pythagorean)
+            buildQ(defaultPrompt, [[3,4,5], [5,12,13], [8,"?",17]], ["14", "15", "16", "18"], "15", "These are Pythagorean triples: a² + b² = c². Row 3: 8² + 15² = 64 + 225 = 289 = 17²."),
+            buildQ(defaultPrompt, [[7,24,25], [9,40,41], [11,60,"?"]], ["59", "60", "61", "62"], "61", "These are Pythagorean triples: a² + b² = c². Row 3: 11² + 60² = 121 + 3600 = 3721 = 61²."),
+            
+            // Row Logic: (A * B) - (A + B) = C
+            buildQ(defaultPrompt, [[5,4,11], [6,5,19], [8,7,"?"]], ["39", "40", "41", "42"], "41", "In each row: Product of first two - Sum of first two = Third. Row 3: (8 × 7) - (8 + 7) = 56 - 15 = 41."),
+            buildQ(defaultPrompt, [[9,3,15], ["?",6,29], [7,4,17]], ["5", "6", "7", "8"], "7", "In each row: Product of first two - Sum of first two = Third. Row 2: (7 × 6) - (7 + 6) = 42 - 13 = 29."),
+            
+            // Col Logic: A^3 - B^2 = C
+            buildQ(defaultPrompt, [[3,4,5], [4,7,10], [11,15,"?"]], ["21", "23", "25", "27"], "25", "In each column: (Top)³ - (Middle)² = Bottom. Col 3: 5³ - 10² = 125 - 100 = 25."),
+            buildQ(defaultPrompt, [[5,6,2], [10,"?",2], [25,180,4]], ["5", "6", "7", "8"], "6", "In each column: (Top)³ - (Middle)² = Bottom. Col 2: 6³ - 6² = 216 - 36 = 180."),
+            
+            // Row Logic: Reverse digits of A+B = C
+            buildQ(defaultPrompt, [[14,15,92], [23,24,74], [31,12,"?"]], ["32", "34", "43", "45"], "34", "In each row: Sum the first two numbers and reverse the digits. Row 3: 31 + 12 = 43. Reversed is 34."),
+            buildQ(defaultPrompt, [[52,24,67], [35,17,25], [42,19,"?"]], ["16", "17", "61", "71"], "16", "In each row: Sum the first two numbers and reverse the digits. Row 3: 42 + 19 = 61. Reversed is 16."),
+            
+            // Col Logic: Constant Product
+            buildQ(defaultPrompt, [[4,5,6], [5,6,"?"], [6,4,5]], ["3", "4", "5", "6"], "4", "The product of the three numbers in every column is exactly 120. Col 3: 6 × 4 × 5 = 120.")
+        ];
+
+        let quizData = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        // Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            // Limit to exactly 50 and shuffle
+            quizData = shuffleArray(rawQuestions).slice(0, 50);
+            
+            document.getElementById('results-screen').classList.remove('show');
+            document.getElementById('quiz-screen').style.display = 'block';
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const currentQ = quizData[currentQuestionIndex];
+            
+            document.getElementById('question-tracker').innerText = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
+            document.getElementById('score-tracker').innerText = `Score: ${score}`;
+            
+            const progressPercent = ((currentQuestionIndex) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            // Insert HTML containing the matrix safely
+            document.getElementById('question-text').innerHTML = currentQ.q;
+
+            const optionsGrid = document.getElementById('options-grid');
+            optionsGrid.innerHTML = ''; 
+            
+            const shuffledOptions = shuffleArray(currentQ.options);
+            
+            shuffledOptions.forEach(opt => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.innerText = opt;
+                button.onclick = () => selectOption(button, opt, currentQ.a, currentQ.exp);
+                optionsGrid.appendChild(button);
+            });
+
+            document.getElementById('explanation-box').classList.remove('show');
+            document.getElementById('next-btn').classList.remove('show');
+        }
+
+        function selectOption(selectedBtn, selectedText, correctText, explanation) {
+            if (answered) return; 
+            answered = true;
+
+            const allOptions = document.querySelectorAll('.option');
+            
+            if (selectedText === correctText) {
+                selectedBtn.classList.add('correct');
+                score++;
+                document.getElementById('score-tracker').innerText = `Score: ${score}`;
+            } else {
+                selectedBtn.classList.add('incorrect');
+                allOptions.forEach(btn => {
+                    if (btn.innerText === correctText) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+
+            allOptions.forEach(btn => btn.classList.add('disabled'));
+
+            document.getElementById('explanation-text').innerText = explanation;
+            document.getElementById('explanation-box').classList.add('show');
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.innerText = (currentQuestionIndex === quizData.length - 1) ? "Finish Quiz" : "Next Question";
+            nextBtn.classList.add('show');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('progress-bar').style.width = `100%`;
+            document.getElementById('quiz-screen').style.display = 'none';
+            
+            const resultsScreen = document.getElementById('results-screen');
+            resultsScreen.classList.add('show');
+
+            document.getElementById('final-score').innerText = `${score}/${quizData.length}`;
+            
+            const messageEl = document.getElementById('results-message');
+            const percent = (score / quizData.length) * 100;
+            
+            if (percent >= 90) {
+                messageEl.innerText = "Phenomenal! Your matrix and grid logic is flawless.";
+            } else if (percent >= 70) {
+                messageEl.innerText = "Great job! You cracked most of the tough patterns.";
+            } else if (percent >= 50) {
+                messageEl.innerText = "Good effort. Keep practicing row and column algebraic relations.";
+            } else {
+                messageEl.innerText = "Keep practicing! Always look for squares, cubes, and common multipliers first.";
+            }
+        }
+
+        // Start the quiz on load
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>
